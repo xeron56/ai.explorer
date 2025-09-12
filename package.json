@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^14.2.13",
+    "@svgr/webpack": "^8.1.0",
     "@tailwindcss/postcss": "4.1.10",
     "@types/node": "24.3.1",
     "@types/react": "^19.1.8",
