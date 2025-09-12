@@ -7,7 +7,7 @@ export default {
   backToTop: "回到顶部",
   lastUpdated: "最后更新于",
   logo: {
-    title: "React 数据获取 Hooks",
+    title: "Nextra doc 模板",
   },
   // notFound: '页面未找到',
   poweredBy: "技术支持由",
@@ -24,4 +24,8 @@ export default {
   remoteLocal: "远程 + 本地",
   editPage: "在 GitHub 上编辑此页",
   by: "作者",
+  banner: {
+    message: "Nextra Doc Template 🚀",
+    readMore: "Read more →",
+  },
 } satisfies Dictionary;
