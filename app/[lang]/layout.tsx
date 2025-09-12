@@ -136,9 +136,9 @@ const RootLayout: FC<LayoutProps> = async ({ children, params }) => {
           docsRepositoryBase="https://github.com/qianniuspace/nextra-doc-template"
           i18n={[
             { locale: "en", name: "English" },
+            { locale: "zh", name: "简体中文" },
             { locale: "es", name: "Español RTL" },
             { locale: "ru", name: "Русский" },
-            { locale: "zh", name: "简体中文" },
           ]}
           sidebar={{
             defaultMenuCollapseLevel: 1,
