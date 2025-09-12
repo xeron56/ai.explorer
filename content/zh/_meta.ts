@@ -16,7 +16,7 @@ export default {
     title: "关于",
     items: {
       contributors: {
-        href: "https://github.com/vercel/swr/graphs/contributors",
+        href: "https://github.com/qianniuspace/nextra-doc-template/graphs/contributors",
       },
       // team: "团队",
       // acknowledgement: "致谢",
@@ -42,6 +42,6 @@ export default {
   nextra_link: {
     type: "page",
     title: "Nextra",
-    href: "https://github.com/shuding/nextra",
+    href: "https://github.com/qianniuspace/nextra-doc-template",
   },
 };

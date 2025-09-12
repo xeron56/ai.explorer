@@ -1,47 +1,47 @@
 export default {
   index: {
-    type: 'page',
-    display: 'hidden',
+    type: "page",
+    display: "hidden",
     theme: {
-      typesetting: 'article',
-      toc: false
-    }
+      typesetting: "article",
+      toc: false,
+    },
   },
   docs: {
-    type: 'page',
-    title: 'Documentation'
+    type: "page",
+    title: "Documentation",
   },
   about: {
-    type: 'menu',
-    title: 'About',
+    type: "menu",
+    title: "About",
     items: {
       contributors: {
-        href: 'https://github.com/vercel/swr/graphs/contributors'
+        href: "https://github.com/qianniuspace/nextra-doc-template/graphs/contributors",
       },
-      team: '',
-      acknowledgement: '',
-      'a-page': '',
-      changelog: ''
-    }
+      team: "",
+      acknowledgement: "",
+      "a-page": "",
+      changelog: "",
+    },
   },
   examples: {
-    type: 'page',
-    title: 'Examples',
+    type: "page",
+    title: "Examples",
     theme: {
-      layout: 'full'
-    }
+      layout: "full",
+    },
   },
   blog: {
-    type: 'page',
-    title: 'Blog',
+    type: "page",
+    title: "Blog",
     theme: {
       sidebar: false,
-      typesetting: 'article'
-    }
+      typesetting: "article",
+    },
   },
   nextra_link: {
-    type: 'page',
-    title: 'Nextra',
-    href: 'https://github.com/shuding/nextra'
-  }
-}
+    type: "page",
+    title: "Nextra",
+    href: "https://github.com/qianniuspace/nextra-doc-template",
+  },
+};

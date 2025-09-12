@@ -1,5 +1,5 @@
-import { SwrIcon } from '@app/_icons'
-import type { FC, ReactNode } from 'react'
+import { SwrIcon } from "@app/_icons";
+import type { FC, ReactNode } from "react";
 
 export const Separator: FC<{ children: ReactNode }> = ({ children }) => {
   return (
@@ -7,45 +7,45 @@ export const Separator: FC<{ children: ReactNode }> = ({ children }) => {
       <SwrIcon height="6" className="shrink-0" />
       {children}
     </div>
-  )
-}
+  );
+};
 
 export default {
   _: {
     title: <Separator>Getting Started</Separator>,
-    type: 'separator'
+    type: "separator",
   },
-  'getting-started': '',
-  options: '',
-  'global-configuration': '',
-  'data-fetching': '',
-  'error-handling': {
-    display: 'hidden'
+  "getting-started": "",
+  options: "",
+  "global-configuration": "",
+  "data-fetching": "",
+  "error-handling": {
+    display: "hidden",
   },
-  revalidation: 'Auto Revalidation',
-  'conditional-fetching': 'Conditional Data Fetching',
-  arguments: '',
-  mutation: '',
-  pagination: '',
+  revalidation: "Auto Revalidation",
+  "conditional-fetching": "Conditional Data Fetching",
+  arguments: "",
+  mutation: "",
+  pagination: "",
   _2: {
     title: <Separator>Advanced</Separator>,
-    type: 'separator'
+    type: "separator",
   },
-  prefetching: '',
-  'with-nextjs': 'Next.js SSG and SSR',
-  typescript: 'TypeScript :)',
-  suspense: '',
-  middleware: '',
-  advanced: '',
-  'change-log': {
+  prefetching: "",
+  "with-nextjs": "Next.js SSG and SSR",
+  typescript: "TypeScript :)",
+  suspense: "",
+  middleware: "",
+  advanced: "",
+  "change-log": {
     theme: {
-      sidebar: false
-    }
+      sidebar: false,
+    },
   },
   github_link: {
-    title: 'GitHub 🐙',
-    href: 'https://github.com/shuding/nextra'
+    title: "GitHub 🐙",
+    href: "https://github.com/qianniuspace/nextra-doc-template",
   },
-  'wrap-toc-items': 'Wrap Table of Content Items',
-  'custom-header-ids': 'Custom Header IDs'
-}
+  "wrap-toc-items": "Wrap Table of Content Items",
+  "custom-header-ids": "Custom Header IDs",
+};
