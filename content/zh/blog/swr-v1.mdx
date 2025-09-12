@@ -1,0 +1,65 @@
+---
+title: 宣布 SWR 1.0 发布
+image: https://assets.vercel.com/image/upload/v1630059453/swr/v1.png
+description: '大约 2 年前我们开源了 SWR，这个备受人们喜爱的轻量级数据获取 React 库。今天我们迎来了另一个里程碑：SWR 1.0 版本！'
+date: 2021-08-27
+authors:
+  - name: Shu Ding
+    link: https://twitter.com/shuding_
+  - name: Jiachi Liu
+    link: https://twitter.com/huozhi
+---
+
+import { TopContent } from '@app/_components/authors'
+
+<TopContent lang={props.params.lang} {...metadata} />
+
+大约 2 年前我们[开源](https://twitter.com/vercel/status/1188911002626097157)了 SWR，这个备受人们喜爱的轻量级数据获取 React 库。今天我们迎来了另一个里程碑：SWR 1.0 版本！
+
+## 新特性
+
+### 更小的体积
+
+[性能](/docs/advanced/performance)是 SWR 最重要的特性之一。在 1.0 版本中，我们在**不删除任何现有功能**的情况下显著减小了库的体积：
+
+- 核心代码减小 41%（gzip 后减小 24%，仅 **3.9 kB**）
+- 包安装体积减小 52%
+- 改进了 tree-shaking
+
+让库更轻量有很多好处：你的应用将拥有更小的打包体积、更精简的运行时间和更小的 `node_modules` 目录。
+
+我们还改进了包的打包方式，现在支持路径导入：
+
+```js
+import useSWR from 'swr'
+import useSWRInfinite from 'swr/infinite'
+```
+
+如果你不使用 `useSWRInfinite`，它不会被包含在你的应用中。
+
+### 后备数据
+
+在 1.0 版本中，新增了 `fallback` 选项，你可以提供任何预获取的数据作为具有特定键的所有 SWR hook 的初始值：
+
+```jsx
+<SWRConfig
+  value={{
+    fallback: {
+      '/api/user': {
+        name: 'Bob'
+        // ...
+      },
+      '/api/items': {
+        // ...
+      }
+      // ...
+    }
+  }}
+>
+  <App />
+</SWRConfig>
+```
+
+这对于 SSG、SSR 和测试数据模拟等场景非常有用。查看文档 [Next.js SSG 和 SSR](/docs/with-nextjs) 获取更多详情。
+
+为了更好的

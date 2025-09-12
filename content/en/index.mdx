@@ -1,130 +1,138 @@
 ---
-title: React Hooks for Data Fetching
+title: Nextra - The Next.js Static Site Generator
 searchable: false
 ---
 
 import { Features } from '@app/_components/features'
 import { Callout, Tabs } from 'nextra/components'
 
-# SWR
+# Nextra
 
 <Features lang={props.params.lang} title={metadata.title} />
 
-<Tabs items={['JavaScript', 'C++', {label:'C', disabled: true}, 'Python', 'TypeScript', 'GraphQL', 'Rust', 'C#', 'Go', 'HTML', 'CSS', 'plaintext', 'bash']} defaultIndex={1}>
+<Tabs items={['next.config.js', 'mdx-components.js', 'package.json']} defaultIndex={0}>
   <Tabs.Tab>
-    ```js filename="hi.js"
-    import { useState, useEffect } from 'react';
+    ```js filename="next.config.js"
+    import nextra from 'nextra'
+
+    const withNextra = nextra({
+      defaultShowCopyCode: true,
+      latex: true
+    })
+
+    export default withNextra({
+      // Your Next.js config
+    })
     ```
   </Tabs.Tab>
   <Tabs.Tab>
-    ```cpp filename="hi.cpp"
-    #include <iostream>
+    ```js filename="mdx-components.js"
+    export function useMDXComponents(components) {
+      return {
+        // Customize MDX components
+        ...components,
+      }
+    }
     ```
   </Tabs.Tab>
   <Tabs.Tab>
-    ```c filename="hi.c"
-    #include <stdio.h>
-    ```
-  </Tabs.Tab>
-  <Tabs.Tab>
-    ```c filename="hi.c"
-    #include <stdio.h>
+    ```json filename="package.json"
+    {
+      "dependencies": {
+        "next": "^15.0.0",
+        "nextra": "^4.4.0",
+        "nextra-theme-docs": "^4.4.0"
+      }
+    }
     ```
   </Tabs.Tab>
 </Tabs>
 
-The name "SWR" is derived from `stale-while-revalidate`, a HTTP cache
-invalidation strategy popularized by
-[HTTP RFC 5861](https://tools.ietf.org/html/rfc5861). SWR is a strategy to first
-return the data from cache (stale), then send the fetch request (revalidate),
-and finally come with the up-to-date data.
+Nextra is a powerful static site generation framework built on top of Next.js that enables you to create beautiful, content-focused websites with Markdown and MDX. It combines the full power of Next.js with the simplicity of Markdown to deliver exceptional developer and user experiences.
 
-<Callout emoji="✅">
-  With SWR, components will get a stream of data updates **constantly** and
-  **automatically**.
+<Callout emoji="🚀">
+  With Nextra, you get **production-ready** documentation sites **out of the box**.
 
-And the UI will be always **fast** and **reactive**.
+Build **lightning-fast** websites with **zero configuration** needed for most common features.
 
 </Callout>
 
 <div className="mb-20 mt-16 text-center">
-  [Get Started](/docs/getting-started) · [Examples](/examples/basic) ·
-  [Blog](/blog) · [GitHub Repository](https://github.com/vercel/swr)
+  [Get Started](/docs/getting-started) · [Examples](/examples) ·
+  [Documentation](/docs) · [GitHub Repository](https://github.com/shuding/nextra)
 </div>
 
 ## Overview
 
 ```jsx
-import useSWR from 'swr'
+// pages/_app.js
+import { NextraTheme } from 'nextra-theme-docs'
 
-function Profile() {
-  const { data, error } = useSWR('/api/user', fetcher)
-
-  if (error) return <div>failed to load</div>
-  if (!data) return <div>loading...</div>
-  return <div>hello {data.name}!</div>
+export default function App({ Component, pageProps }) {
+  return (
+    <NextraTheme>
+      <Component {...pageProps} />
+    </NextraTheme>
+  )
 }
 ```
 
-```diff
-import useSWR from 'swr'
+```mdx
+// content/getting-started.mdx
+---
+title: Getting Started
+---
 
-function Profile() {
-  const { data, error } = useSWR('/api/user', fetcher)
+# Welcome to Nextra
 
--  if (error) return <div>failed to load</div>
-+  if (!data) return <div>loading...</div>
-  return <div>hello {data.name}!</div>
-}
-```
-
-In this example, the `useSWR` hook accepts a `key` string and a `fetcher`
-function. `key` is a unique identifier of the data (normally the API URL) and
-will be passed to `fetcher`. `fetcher` can be any asynchronous function which
-returns the data, you can use the native fetch or tools like Axios.
-
-The hook returns 2 values: `data` and `error`, based on the status of the
-request.
+Start building your documentation site with just a few files.
 
 ## Features
 
-With just one single line of code, you can simplify the logic of data fetching
-in your project, and also have all these amazing features out-of-the-box:
+- 📝 Write in Markdown or MDX
+- 🎨 Built-in beautiful themes
+- 🔍 Full-text search
+- 🌙 Dark mode support
+```
 
-- **Fast**, **lightweight** and **reusable** data fetching
-- Built-in **cache** and request deduplication
-- **Real-time** experience
-- Transport and protocol agnostic
-- SSR / ISR / SSG support
-- TypeScript ready
-- React Native
+Nextra leverages Next.js's file-based routing system, automatically creating pages from your Markdown files. Each `.mdx` file in your content directory becomes a route, with frontmatter for metadata and full MDX support for interactive components.
 
-SWR has you covered in all aspects of speed, correctness, and stability to help
-you build better experiences:
+## Features
 
-- Fast page navigation
-- Polling on interval
-- Data dependency
-- Revalidation on focus
-- Revalidation on network recovery
-- Local mutation (Optimistic UI)
-- Smart error retry
-- Pagination and scroll position recovery
-- React Suspense
+With Nextra, you get a comprehensive set of features designed for modern documentation and content websites:
 
-And a lot [more](/docs/getting-started).
+- **Zero-config setup** for most common documentation needs
+- **MDX-powered content** with React component support
+- **Automatic TypeScript types** for your content
+- **Built-in search** with Pagefind integration
+- **Internationalization** support out of the box
+- **SEO optimized** with proper meta tags and structure
+- **Performance focused** with Next.js optimizations
+- **Fully customizable** themes and components
+
+Nextra provides everything you need to build professional documentation sites:
+
+- File-based routing with Next.js App Router
+- Automatic syntax highlighting with Shiki
+- Optimized images and links with Next.js components
+- Responsive design with Tailwind CSS
+- Accessibility (a11y) as a top priority
+- Hybrid rendering (SSR, SSG, ISR) support
+- Custom component integration
+- LaTeX math equation support
+- Mermaid diagram support
+- And much [more](/docs/features)
 
 ## Community
 
 <p className="mt-6 flex h-6 gap-2">
-  <img alt="stars" src="https://badgen.net/github/stars/vercel/swr" />
-  <img alt="downloads" src="https://badgen.net/npm/dt/swr" />
-  <img alt="license" src="https://badgen.net/npm/license/swr" />
+  <img alt="stars" src="https://badgen.net/github/stars/shuding/nextra" />
+  <img alt="downloads" src="https://badgen.net/npm/dt/nextra" />
+  <img alt="license" src="https://badgen.net/npm/license/nextra" />
 </p>
 
-SWR is created by the same team behind [Next.js](https://nextjs.org), the React
-framework. Follow [@vercel](https://twitter.com/vercel) on Twitter for future
-project updates.
+Nextra is created and maintained by [Shu Ding](https://github.com/shuding) and the open source community. It's trusted by thousands of developers and companies for their documentation needs.
 
-Feel free to join the
-[discussions on GitHub](https://github.com/vercel/swr/discussions)!
+Join the growing community of Nextra users and contributors! Feel free to ask questions, share your projects, or contribute to the development on [GitHub Discussions](https://github.com/shuding/nextra/discussions).
+
+Built with ❤️ using Nextra itself.

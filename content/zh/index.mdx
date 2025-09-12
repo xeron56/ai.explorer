@@ -1,0 +1,138 @@
+---
+title: Nextra - Next.js 静态站点生成器
+searchable: false
+---
+
+import { Features } from '@app/_components/features'
+import { Callout, Tabs } from 'nextra/components'
+
+# Nextra
+
+<Features lang={props.params.lang} title={metadata.title} />
+
+<Tabs items={['next.config.js', 'mdx-components.js', 'package.json']} defaultIndex={0}>
+  <Tabs.Tab>
+    ```js filename="next.config.js"
+    import nextra from 'nextra'
+
+    const withNextra = nextra({
+      defaultShowCopyCode: true,
+      latex: true
+    })
+
+    export default withNextra({
+      // 你的 Next.js 配置
+    })
+    ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    ```js filename="mdx-components.js"
+    export function useMDXComponents(components) {
+      return {
+        // 自定义 MDX 组件
+        ...components,
+      }
+    }
+    ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    ```json filename="package.json"
+    {
+      "dependencies": {
+        "next": "^15.0.0",
+        "nextra": "^4.4.0",
+        "nextra-theme-docs": "^4.4.0"
+      }
+    }
+    ```
+  </Tabs.Tab>
+</Tabs>
+
+Nextra 是一个基于 Next.js 构建的强大静态站点生成框架，让你能够使用 Markdown 和 MDX 创建美观的内容型网站。它结合了 Next.js 的全部功能与 Markdown 的简洁性，为开发者和用户提供卓越的体验。
+
+<Callout emoji="🚀">
+  使用 Nextra，你可以**开箱即用**地获得**生产就绪**的文档站点。
+
+构建**闪电般快速**的网站，大多数常用功能**无需配置**。
+
+</Callout>
+
+<div className="mb-20 mt-16 text-center">
+  [快速开始](/docs/getting-started) · [示例](/examples) ·
+  [文档](/docs) · [GitHub 仓库](https://github.com/shuding/nextra)
+</div>
+
+## 概述
+
+```jsx
+// pages/_app.js
+import { NextraTheme } from 'nextra-theme-docs'
+
+export default function App({ Component, pageProps }) {
+  return (
+    <NextraTheme>
+      <Component {...pageProps} />
+    </NextraTheme>
+  )
+}
+```
+
+```mdx
+// content/getting-started.mdx
+---
+title: 快速开始
+---
+
+# 欢迎使用 Nextra
+
+只需几个文件即可开始构建你的文档站点。
+
+## 特性
+
+- 📝 使用 Markdown 或 MDX 编写
+- 🎨 内置精美主题
+- 🔍 全文搜索
+- 🌙 暗色模式支持
+```
+
+Nextra 利用 Next.js 基于文件的路由系统，自动从 Markdown 文件创建页面。内容目录中的每个 `.mdx` 文件都会成为一个路由，支持 frontmatter 元数据和完整的 MDX 交互组件功能。
+
+## 特性
+
+使用 Nextra，你可以获得一套为现代文档和内容网站设计的全面功能：
+
+- **零配置设置** - 满足大多数常见文档需求
+- **MDX 驱动的内容** - 支持 React 组件
+- **自动 TypeScript 类型** - 为你的内容提供类型安全
+- **内置搜索** - 集成 Pagefind 全文搜索
+- **国际化支持** - 开箱即用的多语言支持
+- **SEO 优化** - 提供正确的元标签和结构
+- **性能优先** - 基于 Next.js 优化
+- **完全可定制** - 主题和组件均可自定义
+
+Nextra 提供了构建专业文档站点所需的一切：
+
+- 基于 Next.js App Router 的文件路由系统
+- 使用 Shiki 的自动语法高亮
+- 使用 Next.js 组件的优化图片和链接
+- 基于 Tailwind CSS 的响应式设计
+- 无障碍设计（a11y）作为首要考虑
+- 混合渲染支持（SSR、SSG、ISR）
+- 自定义组件集成
+- LaTeX 数学公式支持
+- Mermaid 图表支持
+- 以及更多[功能](/docs/features)
+
+## 社区
+
+<p className="mt-6 flex h-6 gap-2">
+  <img alt="stars" src="https://badgen.net/github/stars/shuding/nextra" />
+  <img alt="downloads" src="https://badgen.net/npm/dt/nextra" />
+  <img alt="license" src="https://badgen.net/npm/license/nextra" />
+</p>
+
+Nextra 由 [Shu Ding](https://github.com/shuding) 和开源社区创建和维护。它被数千名开发者和公司信任，用于他们的文档需求。
+
+加入不断壮大的 Nextra 用户和贡献者社区！欢迎在 [GitHub Discussions](https://github.com/shuding/nextra/discussions) 上提问、分享你的项目或参与开发。
+
+使用 Nextra 本身构建，用心打造 ❤️。
