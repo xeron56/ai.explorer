@@ -19,21 +19,22 @@ import "./styles.css";
 
 export const metadata: Metadata = {
   description:
-    "SWR is a React Hooks library for data fetching. SWR first returns the data from cache (stale), then sends the fetch request (revalidate), and finally comes with the up-to-date data again.",
+    "Nextra is a powerful static site generation framework built on Next.js. Create beautiful, content-focused documentation websites with Markdown and MDX with zero configuration needed.",
   title: {
-    absolute: "",
-    template: "%s | SWR",
+    absolute: "Nextra Documentation Template",
+    template: "%s | Nextra",
   },
-  metadataBase: new URL("https://swr.vercel.app"),
+  metadataBase: new URL("https://nextra-doc-template.vercel.app"),
   openGraph: {
     images:
       "https://assets.vercel.com/image/upload/v1572282926/swr/twitter-card.jpg",
   },
   twitter: {
-    site: "@vercel",
+    site: "@esx_ai",
+    card: "summary_large_image",
   },
   appleWebApp: {
-    title: "SWR",
+    title: "Nextra",
   },
   other: {
     "msapplication-TileColor": "#fff",
