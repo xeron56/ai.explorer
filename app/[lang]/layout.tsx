@@ -1,5 +1,5 @@
 /* eslint-env node */
-import { SwrIcon, VercelIcon } from "@app/_icons";
+import { SwrIcon, NextraImage, NextraIcon } from "@app/_icons";
 import type { Metadata } from "next";
 import {
   Footer,
@@ -66,38 +66,53 @@ const RootLayout: FC<LayoutProps> = async ({ children, params }) => {
   }
   const banner = (
     <Banner storageKey="swr-2">
-      Doc Template <Link href="https://www.plasmocn.org">Read more →</Link>
+      Nextra Doc Template 🚀{"   "}
+      <Link href="https://www.plasmocn.org">Read more →</Link>
     </Banner>
   );
   const navbar = (
     <Navbar
       logo={
         <>
-          <SwrIcon height="12" />
+          <NextraIcon height="32" />
           <span
-            className="ms-2 select-none font-extrabold max-md:hidden"
-            title={`SWR: ${dictionary.logo.title}`}
+            className="ms-2 select-none font-extrabold text-2xl max-md:hidden"
+            title={`Nextra: ${dictionary.logo.title}`}
           >
-            SWR
+            Nextra
           </span>
         </>
       }
-      projectLink="https://github.com/vercel/swr"
-      chatLink="https://discord.com"
+      projectLink="https://github.com/qianniuspace/nextra-doc-template"
+      chatLink="https://discord.gg/9MzEY6jX"
     >
       <LocaleSwitch lite />
     </Navbar>
   );
   const footer = (
     <Footer>
-      <a
-        rel="noreferrer"
-        target="_blank"
-        className="x:focus-visible:nextra-focus flex items-center gap-2 font-semibold"
-        href={dictionary.link.vercel}
-      >
-        {dictionary.poweredBy} <VercelIcon height="20" />
-      </a>
+      <div className="flex flex-col items-start gap-4">
+        <a
+          rel="noreferrer"
+          target="_blank"
+          className="x:focus-visible:nextra-focus flex items-center gap-2 font-semibold"
+          href={"https://nextra.site/"}
+        >
+          {dictionary.poweredBy} <NextraImage height="20" />
+        </a>
+        <span className="text-xs text-gray-600 dark:text-gray-400 mt-2">
+          © {new Date().getFullYear()} 牵牛智慧 &{" "}
+          <a
+            href="https://x.com/intent/follow?screen_name=esx_ai"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+          >
+            @esx_ai
+          </a>{" "}
+          .
+        </span>
+      </div>
     </Footer>
   );
   return (
@@ -122,6 +137,7 @@ const RootLayout: FC<LayoutProps> = async ({ children, params }) => {
             { locale: "en", name: "English" },
             { locale: "es", name: "Español RTL" },
             { locale: "ru", name: "Русский" },
+            { locale: "zh", name: "简体中文" },
           ]}
           sidebar={{
             defaultMenuCollapseLevel: 1,
