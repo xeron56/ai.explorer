@@ -1,0 +1,38 @@
+{
+  "name": "nextra4.4.0-doc-template",
+  "type": "module",
+  "author": "Shu Ding",
+  "version": "1.0.0",
+  "license": "Apache-2.0",
+  "private": true,
+  "scripts": {
+    "analyze": "ANALYZE=true pnpm build",
+    "build": "next build",
+    "debug": "NODE_OPTIONS='--inspect' next dev",
+    "dev": "next --turbopack",
+    "postbuild": "pagefind --site .next/server/app --output-path public/_pagefind",
+    "start": "next start",
+    "types:check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "markdown-to-jsx": "^7.4.0",
+    "next": "^15.0.2",
+    "nextra": "4.4.0",
+    "nextra-theme-docs": "4.4.0",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "react-intersection-observer": "^8.26.2"
+  },
+  "devDependencies": {
+    "@next/bundle-analyzer": "^14.2.13",
+    "@tailwindcss/postcss": "4.1.10",
+    "@types/node": "24.3.1",
+    "@types/react": "^19.1.8",
+    "pagefind": "^1.3.0",
+    "tailwindcss": "4.1.10"
+  },
+  "browserslist": [
+    ">= .25%",
+    "not dead"
+  ]
+}
