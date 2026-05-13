@@ -1,0 +1,22 @@
+---
+title: "Gradient Descent: Intuition & Geometry"
+description: "Visualizing gradients, loss surfaces, and convergence."
+date: "2024-05-12"
+category: "Optimization"
+---
+
+The gradient $\nabla f(x)$ points in the direction of steepest *increase* of
+$f$ at $x$. So gradient descent steps the opposite way:
+
+$$
+x_{t+1} = x_t - \eta\, \nabla f(x_t).
+$$
+
+The step size $\eta$ has to play nice with the local curvature. If the Hessian
+$\nabla^2 f$ has largest eigenvalue $L$, then any $\eta < 2/L$ guarantees
+decrease for quadratic $f$. The "best" rate in the convex case is achieved at
+$\eta = 2 / (L + \mu)$, where $\mu$ is the smallest eigenvalue.
+
+What this means geometrically: gradient descent is a *first-order* method, so
+it's blind to anisotropy. Conditioning the problem — preconditioning,
+normalization, careful parameterization — pays for itself many times over.

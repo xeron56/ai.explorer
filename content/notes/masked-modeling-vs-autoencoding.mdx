@@ -1,0 +1,28 @@
+---
+title: "Masked Modeling vs. Autoencoding"
+description: "Comparing two popular self-supervised objectives."
+date: "2024-05-03"
+category: "Deep Learning"
+---
+
+Both *masked modeling* (BERT, MAE) and classical *autoencoding* reconstruct the
+input. But the masking changes what the network is forced to learn.
+
+Autoencoder loss:
+
+$$
+\mathcal{L}_\text{AE} = \mathbb{E}\!\left[\| x - g(f(x)) \|^2\right]
+$$
+
+without a bottleneck, $f \circ g$ can degenerate to the identity. The model
+learns *nothing* useful.
+
+Masked modeling loss:
+
+$$
+\mathcal{L}_\text{MM} = \mathbb{E}_{x, M}\!\left[\| x_M - g(f(x_{\setminus M})) \|^2\right]
+$$
+
+The mask $M$ removes information that the encoder *cannot copy through*, so the
+network has to model the data distribution to fill it in. This is a much
+stronger signal — and a much better pre-training objective.

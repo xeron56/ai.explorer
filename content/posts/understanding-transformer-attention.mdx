@@ -1,0 +1,72 @@
+---
+title: "Understanding Transformer Attention"
+description: "A mathematical walkthrough of attention mechanism with animations."
+date: "2024-05-20"
+category: "Deep Learning"
+readingTime: 8
+cardClassName: "rk"
+---
+
+Attention is, at its core, a soft lookup table. Given a query $q$, we want to
+fetch a weighted sum of values $V$, where the weights come from how well each
+key in $K$ matches the query.
+
+## Scaled dot-product attention
+
+The canonical form is:
+
+$$
+\operatorname{Attention}(Q, K, V) = \operatorname{softmax}\!\left(\frac{Q K^\top}{\sqrt{d_k}}\right) V
+$$
+
+where $Q \in \mathbb{R}^{n \times d_k}$, $K \in \mathbb{R}^{m \times d_k}$, and
+$V \in \mathbb{R}^{m \times d_v}$. The $\sqrt{d_k}$ scaling keeps the variance
+of $QK^\top$ at roughly $1$ before the softmax saturates.
+
+### Why the temperature matters
+
+If $q$ and $k_i$ are independent with unit variance, then
+$\mathbb{E}[q \cdot k_i] = 0$ and $\operatorname{Var}(q \cdot k_i) = d_k$.
+Without the scaling, large $d_k$ pushes the softmax into a one-hot regime, which
+kills gradient flow.
+
+## Multi-head attention
+
+We split the model dimension into $h$ heads:
+
+$$
+\operatorname{MultiHead}(Q, K, V) = \operatorname{Concat}(\text{head}_1, \dots, \text{head}_h) W^O
+$$
+
+with $\text{head}_i = \operatorname{Attention}(Q W_i^Q, K W_i^K, V W_i^V)$.
+Each head learns a different relational projection — syntactic structure,
+co-reference, positional patterns — and the concatenation gives the next layer a
+richer feature mix.
+
+## A small worked example
+
+Suppose $n = m = 4$, $d_k = 2$, and
+
+$$
+Q = \begin{bmatrix} 1 & 0 \\ 0 & 1 \\ 1 & 1 \\ 1 & -1 \end{bmatrix},
+\quad K = Q, \quad V = I_4.
+$$
+
+Then $\frac{QK^\top}{\sqrt{2}}$ has its largest entries on the diagonal — each
+token attends mostly to itself, with side-lobes wherever query and key align.
+
+```python
+import torch
+import torch.nn.functional as F
+
+def attention(q, k, v):
+    scores = q @ k.transpose(-2, -1) / (q.size(-1) ** 0.5)
+    return F.softmax(scores, dim=-1) @ v
+```
+
+## What attention is *not*
+
+It is not a "memory" — there is no state that persists across forward passes.
+It is also not, strictly, a probability distribution over tokens; the softmax
+output is a vector in the simplex but the *interpretation* as probability is a
+convenient fiction that breaks once you start mixing heads.

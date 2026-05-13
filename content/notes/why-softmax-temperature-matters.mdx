@@ -1,0 +1,20 @@
+---
+title: "Why Softmax Temperature Matters"
+description: "A short note on temperature scaling and its effect on probabilities."
+date: "2024-05-16"
+category: "Theory"
+---
+
+The temperature $\tau$ in $\operatorname{softmax}(z/\tau)$ controls how *peaky*
+the output distribution is.
+
+$$
+p_i = \frac{e^{z_i / \tau}}{\sum_j e^{z_j / \tau}}
+$$
+
+- As $\tau \to 0^+$, the distribution collapses to a one-hot at $\arg\max_i z_i$.
+- As $\tau \to \infty$, the distribution becomes uniform.
+
+A practical consequence: when knowledge-distilling from a large teacher, raise
+$\tau$ on both teacher and student so the *dark knowledge* — the relative
+ordering of the wrong classes — actually contributes to the cross-entropy.

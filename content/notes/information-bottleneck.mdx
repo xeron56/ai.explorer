@@ -1,0 +1,22 @@
+---
+title: "Information Bottleneck in Representation Learning"
+description: "Understanding the trade-off between compression and prediction."
+date: "2024-05-08"
+category: "Theory"
+---
+
+The information bottleneck (IB) principle frames representation learning as
+choosing a stochastic mapping $X \to Z$ that compresses $X$ while keeping the
+information about $Y$:
+
+$$
+\mathcal{L}_\text{IB} = I(Z; Y) - \beta\, I(X; Z).
+$$
+
+- $I(Z; Y)$ — how *useful* $Z$ is for predicting $Y$.
+- $I(X; Z)$ — how *much of $X$* the representation carries.
+- $\beta$ — the trade-off knob.
+
+In deep networks, IB is more lens than literal objective: most architectures
+don't explicitly optimize $I(X; Z)$, but you can read training dynamics through
+this trade-off and the bend in $(I(X;Z), I(Z;Y))$ curves is often striking.

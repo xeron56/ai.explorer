@@ -1,0 +1,77 @@
+---
+title: "A Gentle Intro to Diffusion Models"
+description: "From noise to data: understanding diffusion models intuitively."
+date: "2024-05-18"
+category: "Machine Learning"
+readingTime: 12
+cardClassName: "diffusion"
+---
+
+A diffusion model learns to *reverse* a noise-injection process. We start with a
+real sample $x_0$ and gradually add Gaussian noise over $T$ steps:
+
+$$
+q(x_t \mid x_{t-1}) = \mathcal{N}\!\left(x_t; \sqrt{1 - \beta_t}\, x_{t-1},\; \beta_t I\right).
+$$
+
+After enough steps, $x_T$ is indistinguishable from standard Gaussian noise.
+Sampling means running the *reverse* chain $p_\theta(x_{t-1} \mid x_t)$, which
+we parameterize with a neural net.
+
+## The reparameterization trick
+
+A handy identity collapses the forward chain into one shot. Define
+$\bar{\alpha}_t = \prod_{s=1}^t (1 - \beta_s)$. Then
+
+$$
+x_t = \sqrt{\bar{\alpha}_t}\, x_0 + \sqrt{1 - \bar{\alpha}_t}\,\epsilon,
+\quad \epsilon \sim \mathcal{N}(0, I).
+$$
+
+So we never have to simulate $T$ noise steps during training — we sample $t$
+uniformly and jump straight to $x_t$.
+
+## The denoising loss
+
+The clean loss-of-record is "predict the noise":
+
+$$
+\mathcal{L}_\text{simple} = \mathbb{E}_{t, x_0, \epsilon}\!\left[ \| \epsilon - \epsilon_\theta(x_t, t) \|^2 \right].
+$$
+
+Equivalent up to a constant to a weighted ELBO, but vastly easier to optimize.
+
+## Score matching, the other side of the coin
+
+If you write $p_t(x) \propto e^{-E_t(x)}$, then the optimal denoiser is related
+to the *score* $s_t(x) = \nabla_x \log p_t(x)$:
+
+$$
+\epsilon_\theta(x_t, t) \approx -\sqrt{1 - \bar{\alpha}_t}\, s_t(x_t).
+$$
+
+This is why "score-based" and "denoising-diffusion" people read each other's
+papers without translating.
+
+## Sampling
+
+Plain DDPM sampling steps:
+
+```python
+@torch.no_grad()
+def sample(model, shape, T, betas):
+    alphas = 1 - betas
+    abar = alphas.cumprod(0)
+    x = torch.randn(shape, device=betas.device)
+    for t in reversed(range(T)):
+        eps = model(x, torch.full((shape[0],), t, device=x.device))
+        mean = (x - betas[t] / (1 - abar[t]).sqrt() * eps) / alphas[t].sqrt()
+        if t > 0:
+            x = mean + betas[t].sqrt() * torch.randn_like(x)
+        else:
+            x = mean
+    return x
+```
+
+Variants like DDIM trade stochasticity for speed, and classifier-free guidance
+lets you steer samples without a separate classifier.
