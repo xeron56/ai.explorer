@@ -7,35 +7,37 @@ export function PostThumbnail({ variant }: { title?: string; variant: Variant })
 }
 function RKThumb() {
   return (
-    <div className="w-full h-full bg-[#f3f1ff] dark:bg-[#1a1f3d] flex items-center justify-center">
+    <div className="w-full h-full bg-[#101d33] text-white flex items-center justify-center">
       <svg viewBox="0 0 220 160" className="w-[78%]">
-        <g fontFamily="ui-monospace, monospace" fontSize="11" fill="currentColor">
-          <text x="12" y="22">Self Learning</text>
+        <g fontFamily="ui-monospace, monospace" fontSize="11" fill="#e8edff">
+          <text x="76" y="22">Self Learning</text>
           <text x="14" y="60">R</text>
           <text x="14" y="86">K</text>
           <text x="14" y="112">V</text>
         </g>
         <g>
           {Array.from({ length: 6 }).map((_, c) => Array.from({ length: 6 }).map((_, r) => (
-            <rect key={`${c}-${r}`} x={50 + c * 18} y={48 + r * 14} width="16" height="12" rx="2" fill="#6d5cff" fillOpacity={0.15 + ((c + r) % 5) * 0.14} />
+            <rect key={`${c}-${r}`} x={70 + c * 16} y={48 + r * 13} width="14" height="11" rx="1" fill="#6d5cff" fillOpacity={0.22 + ((c + r) % 5) * 0.14} />
           )))}
         </g>
-        <g fontFamily="ui-monospace, monospace" fontSize="11" fill="currentColor">
-          <text x="178" y="74">Output</text>
+        <g fontFamily="ui-monospace, monospace" fontSize="10" fill="#e8edff">
+          <text x="176" y="115">Output</text>
+          <text x="98" y="132">Softmax</text>
         </g>
         <defs>
           <marker id="arr1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
             <path d="M0,0 L10,5 L0,10 z" fill="#6d5cff" />
           </marker>
         </defs>
-        <path d="M158 92 H178" stroke="#6d5cff" strokeWidth="1.4" markerEnd="url(#arr1)" fill="none" />
+        <path d="M34 58 H66M34 86 H66M34 112 H66M166 86 H188" stroke="#b9c6ff" strokeWidth="1.2" markerEnd="url(#arr1)" fill="none" />
+        <rect x="188" y="76" width="22" height="19" rx="2" fill="#e8edff" opacity="0.85" />
       </svg>
     </div>
   );
 }
 function NormThumb() {
   return (
-    <div className="w-full h-full bg-[#eef0ff] dark:bg-[#181f3a] flex items-center justify-center">
+    <div className="w-full h-full bg-[#f2edff] flex items-center justify-center">
       <svg viewBox="0 0 240 140" className="w-[80%]">
         <defs><marker id="arr2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d5cff" /></marker></defs>
         <text x="14" y="74" fontSize="20" fontWeight="700" fill="#5b4fd6">x</text>
@@ -63,8 +65,10 @@ function DiffusionThumb() {
     r: 2 + (i % 5) * 0.4, c: ["#3aa472", "#5e8bff", "#7457f7"][(i * 7) % 3],
   }));
   return (
-    <div className="w-full h-full bg-[#e8f4ff] dark:bg-[#0e1f3a] flex items-center justify-center">
+    <div className="w-full h-full bg-[#f7f5ea] flex items-center justify-center">
       <svg viewBox="0 0 240 160" className="w-[85%]">
+        <path d="M28 132H210M30 132V24" stroke="#8390a3" strokeWidth="1.2" />
+        <path d="M210 132l-6-4M210 132l-6 4M30 24l-4 6M30 24l4 6" stroke="#8390a3" strokeWidth="1.2" />
         {pts.map((p, i) => <circle key={i} cx={p.cx} cy={p.cy} r={p.r} fill={p.c} fillOpacity="0.78" />)}
       </svg>
     </div>

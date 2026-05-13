@@ -2,25 +2,25 @@
 import { MailIcon } from "./icons";
 export function Newsletter() {
   return (
-    <section className="pb-10">
-      <div className="rounded-2xl border bg-[var(--color-bg)] p-5 md:p-6 flex flex-col md:flex-row md:items-center gap-5" style={{ borderColor: "var(--color-border)" }}>
-        <div className="flex items-center gap-4 flex-1">
-          <div className="w-11 h-11 rounded-full bg-[var(--color-accent-strong)] text-white flex items-center justify-center shrink-0">
+    <section className="pb-[23px]">
+      <div className="flex min-h-[88px] flex-col gap-5 rounded-[8px] border bg-white p-[14px] shadow-[0_8px_24px_rgba(15,23,42,0.03)] md:flex-row md:items-center" style={{ borderColor: "var(--color-border)" }}>
+        <div className="flex flex-1 items-center gap-[20px]">
+          <div className="flex h-[58px] w-[58px] shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#5a34f4] to-[#704cff] text-white shadow-[0_10px_22px_rgba(91,53,244,0.22)]">
             <MailIcon />
           </div>
           <div>
-            <h3 className="font-semibold text-[15.5px]">Stay in the loop</h3>
-            <p className="text-[13px] text-[var(--color-fg-muted)] mt-0.5">Get notified about new posts and updates.</p>
+            <h3 className="text-[17px] font-bold text-[#10172d]">Stay in the loop</h3>
+            <p className="mt-[7px] text-[14px] text-[#44516a]">Get notified about new posts and updates.</p>
           </div>
         </div>
-        <form action="#" method="post" className="flex gap-2 w-full md:w-auto" onSubmit={(e) => e.preventDefault()}>
+        <form action="#" method="post" className="flex w-full gap-[12px] md:w-auto" onSubmit={(e) => e.preventDefault()}>
           <input type="email" required placeholder="you@example.com"
-            className="px-4 py-2.5 rounded-lg border text-[14px] bg-[var(--color-bg-elevated)] outline-none focus:border-[var(--color-accent)] flex-1 min-w-0 md:min-w-[260px]"
+            className="h-[42px] min-w-0 flex-1 rounded-[7px] border bg-white px-[16px] text-[14px] outline-none focus:border-[var(--color-accent)] md:min-w-[242px]"
             style={{ borderColor: "var(--color-border)" }} />
-          <button type="submit" className="px-5 py-2.5 rounded-lg bg-[var(--color-accent-strong)] hover:bg-[var(--color-accent)] text-white text-[14px] font-semibold whitespace-nowrap">Subscribe</button>
+          <button type="submit" className="h-[42px] whitespace-nowrap rounded-[7px] bg-gradient-to-r from-[#5a34f4] to-[#704cff] px-[26px] text-[14px] font-semibold text-white hover:brightness-105">Subscribe</button>
         </form>
       </div>
-      <p className="text-center text-[12.5px] text-[var(--color-fg-subtle)] mt-6">Made with 💜 for curiosity and the love of learning.</p>
+      <p className="mt-[33px] text-center text-[13px] text-[#44516a]">Made with ♥ for curiosity and the love of learning.</p>
     </section>
   );
 }

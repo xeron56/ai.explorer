@@ -6,7 +6,7 @@ import { Newsletter } from "./_components/Newsletter";
 
 export default function HomePage() {
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="mx-auto max-w-[946px]">
       <Hero />
       <FeaturedPosts />
       <ResearchAreas />

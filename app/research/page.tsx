@@ -1,27 +1,335 @@
 import Link from "next/link";
+import { ArrowRightIcon, FileTextIcon, SparklesIcon } from "../_components/icons";
+
 export const metadata = { title: "Research" };
-const TOPICS = [
-  { slug: "deep-learning", title: "Deep Learning", body: "Architectures, training dynamics, and generalization." },
-  { slug: "optimization", title: "Optimization", body: "Algorithms, theory, and optimization in machine learning." },
-  { slug: "theory", title: "Theory", body: "Mathematics of ML, information theory, and more." },
-  { slug: "generative-models", title: "Generative Models", body: "Diffusion models, VAEs, GANs, and beyond." },
-  { slug: "interpretability", title: "Interpretability", body: "Understanding and explaining model behaviors." },
+
+const FILTERS = ["All", "Deep Learning", "Optimization", "Theory", "Generative Models", "Representation Learning"];
+
+const ONGOING = [
+  {
+    title: "Scaling Laws in Large Language Models",
+    topic: "Deep Learning",
+    body: "Understanding how model performance scales with compute, data, and parameters.",
+    progress: 65,
+    tone: "purple",
+  },
+  {
+    title: "Optimization in High Dimensions",
+    topic: "Optimization",
+    body: "Exploring modern optimization algorithms and their behavior in high-dimensional spaces.",
+    progress: 40,
+    tone: "green",
+  },
+  {
+    title: "Representation Learning",
+    topic: "Theory",
+    body: "How neural networks learn useful representations and what makes them generalize.",
+    progress: 30,
+    tone: "amber",
+  },
 ];
+
+const PAPERS = [
+  ["Attention Is All You Need", "Vaswani et al., 2017", "Deep Learning", "May 20, 2024", "Finished"],
+  ["On Layer Normalization in the Transformer Architecture", "Xiong et al., 2020", "Deep Learning", "May 18, 2024", "In Review"],
+  ["Adafactor: Adaptive Learning Rates with Sublinear Memory Cost", "Shazeer & Stern, 2018", "Optimization", "May 15, 2024", "To Read"],
+  ["Scaling Laws for Neural Language Models", "Kaplan et al., 2020", "Deep Learning", "May 12, 2024", "In Review"],
+  ["Understanding Deep Learning (MIT Press Book)", "Simon J.D. Prince, 2023", "Theory", "May 8, 2024", "Reading"],
+];
+
+const COLLECTIONS = [
+  {
+    title: "Transformers Deep Dive",
+    count: "24 notes",
+    body: "Everything about transformers: architecture, attention, position encoding, scaling, and more.",
+    color: "text-[var(--color-accent-strong)]",
+    bg: "bg-[var(--color-accent-soft)]",
+  },
+  {
+    title: "Optimization Notes",
+    count: "18 notes",
+    body: "Gradient methods, convex optimization, Adam variants, convergence, and theory.",
+    color: "text-emerald-600",
+    bg: "bg-emerald-50",
+  },
+  {
+    title: "Probabilistic Models",
+    count: "16 notes",
+    body: "Probabilistic modeling, Bayesian inference, variational methods, and uncertainty.",
+    color: "text-orange-500",
+    bg: "bg-orange-50",
+  },
+  {
+    title: "Generative Models",
+    count: "20 notes",
+    body: "GANs, VAEs, Diffusion Models, normalizing flows, and their theory.",
+    color: "text-sky-600",
+    bg: "bg-sky-50",
+  },
+];
+
 export default function ResearchPage() {
   return (
-    <div className="max-w-4xl mx-auto pt-10 pb-16">
-      <h1 className="text-4xl font-extrabold tracking-tight">Research</h1>
-      <p className="text-[var(--color-fg-muted)] mt-2">Topics I'm currently exploring and writing about.</p>
-      <div className="mt-8 grid gap-4 md:grid-cols-2">
-        {TOPICS.map((t) => (
-          <Link key={t.slug} href={`/blog?category=${encodeURIComponent(t.title)}`}
-            className="rounded-2xl border p-6 hover:shadow-md hover:-translate-y-0.5 transition-all bg-[var(--color-bg)]"
-            style={{ borderColor: "var(--color-border)" }}>
-            <h3 className="font-semibold text-lg">{t.title}</h3>
-            <p className="mt-2 text-[13.5px] text-[var(--color-fg-muted)] leading-6">{t.body}</p>
-          </Link>
+    <div className="mx-auto max-w-[946px] pb-[48px] pt-[46px]">
+      <ResearchHero />
+      <FilterBar />
+      <OngoingResearch />
+      <ReadingList />
+      <Collections />
+      <ProjectCta />
+    </div>
+  );
+}
+
+function ResearchHero() {
+  return (
+    <section className="grid min-h-[190px] items-center gap-8 lg:grid-cols-[1fr_390px]">
+      <div>
+        <h1 className="text-[42px] font-extrabold leading-tight tracking-[-0.025em] text-[#10172d]">Research</h1>
+        <p className="mt-[15px] max-w-[555px] text-[18px] leading-[31px] text-[#263458]">
+          A collection of in-depth research notes, surveys, and reading lists on topics I&apos;m exploring.
+        </p>
+      </div>
+      <ResearchArtwork />
+    </section>
+  );
+}
+
+function FilterBar() {
+  return (
+    <div className="mt-[28px] flex flex-wrap items-center gap-[11px] border-b pb-[26px]" style={{ borderColor: "var(--color-border)" }}>
+      {FILTERS.map((filter, index) => (
+        <button
+          key={filter}
+          className={`h-[36px] rounded-full border px-[15px] text-[12px] font-semibold ${
+            index === 0
+              ? "border-transparent bg-gradient-to-r from-[#5a34f4] to-[#704cff] text-white shadow-[0_10px_22px_rgba(91,53,244,0.18)]"
+              : "border-[var(--color-border)] bg-white text-[#263458]"
+          }`}
+        >
+          {filter}
+        </button>
+      ))}
+      <button className="ml-auto inline-flex h-[36px] items-center gap-[8px] rounded-[7px] border bg-white px-[14px] text-[13px] font-semibold text-[#263458]" style={{ borderColor: "var(--color-border)" }}>
+        <FilterIcon />
+        Filters
+      </button>
+    </div>
+  );
+}
+
+function OngoingResearch() {
+  return (
+    <section className="pt-[29px]">
+      <SectionHeader title="Ongoing Research" subtitle="Topics I'm currently diving deep into." link="View all ongoing" />
+      <div className="mt-[26px] grid gap-[20px] md:grid-cols-3">
+        {ONGOING.map((item) => (
+          <article key={item.title} className="rounded-[8px] border bg-white p-[20px] shadow-[0_8px_24px_rgba(15,23,42,0.03)]" style={{ borderColor: "var(--color-border)" }}>
+            <div className="grid grid-cols-[64px_1fr] gap-[17px]">
+              <ResearchThumb tone={item.tone} />
+              <h3 className="text-[16px] font-bold leading-[24px] text-[#10172d]">{item.title}</h3>
+            </div>
+            <span className={`mt-[20px] inline-block rounded-[7px] px-[10px] py-[6px] text-[12px] font-semibold ${topicClass(item.topic)}`}>{item.topic}</span>
+            <p className="mt-[17px] text-[14px] leading-[24px] text-[#263458]">{item.body}</p>
+            <div className="mt-[28px] flex items-center justify-between text-[12px] text-[#59657b]">
+              <span>In Progress</span>
+              <span>{item.progress}%</span>
+            </div>
+            <div className="mt-[12px] h-[4px] rounded-full bg-[#e5e7f0]">
+              <div className="h-full rounded-full bg-gradient-to-r from-[#5a34f4] to-[#704cff]" style={{ width: `${item.progress}%` }} />
+            </div>
+          </article>
         ))}
       </div>
+    </section>
+  );
+}
+
+function ReadingList() {
+  return (
+    <section className="pt-[52px]">
+      <SectionHeader title="Research Papers / Reading List" subtitle="Curated papers and resources I'm studying." link="View all papers" />
+      <div className="mt-[27px] overflow-hidden rounded-[8px] border bg-white shadow-[0_8px_24px_rgba(15,23,42,0.03)]" style={{ borderColor: "var(--color-border)" }}>
+        <div className="grid h-[45px] grid-cols-[1fr_150px_128px_118px_32px] items-center border-b px-[24px] text-[12px] font-semibold text-[#4c5871]" style={{ borderColor: "var(--color-border)" }}>
+          <span>Paper</span>
+          <span>Topic</span>
+          <span>Added</span>
+          <span>Status</span>
+          <span />
+        </div>
+        {PAPERS.map(([title, author, topic, date, status]) => (
+          <div key={title} className="grid min-h-[72px] grid-cols-[1fr_150px_128px_118px_32px] items-center border-b px-[24px] last:border-b-0" style={{ borderColor: "var(--color-border)" }}>
+            <div className="flex items-center gap-[18px]">
+              <span className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-[7px] bg-[var(--color-accent-soft)] text-[var(--color-accent-strong)]">
+                <FileTextIcon width={17} height={17} />
+              </span>
+              <div>
+                <div className="text-[13px] font-bold text-[#10172d]">{title}</div>
+                <div className="mt-[5px] text-[12px] text-[#59657b]">{author}</div>
+              </div>
+            </div>
+            <span className={`w-fit rounded-full px-[12px] py-[6px] text-[11px] font-semibold leading-none ${topicClass(topic)}`}>{topic}</span>
+            <span className="text-[12px] text-[#59657b]">{date}</span>
+            <span className={`w-fit rounded-full px-[12px] py-[6px] text-[11px] font-semibold leading-none ${statusClass(status)}`}>{status}</span>
+            <BookmarkIcon />
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function Collections() {
+  return (
+    <section className="pt-[54px]">
+      <SectionHeader title="Research Notes Collections" subtitle="Organized notes for complex topics." link="View all collections" />
+      <div className="mt-[28px] grid gap-[20px] md:grid-cols-4">
+        {COLLECTIONS.map((collection) => (
+          <article key={collection.title} className="rounded-[8px] border bg-white p-[18px] shadow-[0_8px_24px_rgba(15,23,42,0.03)]" style={{ borderColor: "var(--color-border)" }}>
+            <div className="grid grid-cols-[48px_1fr] items-start gap-[16px]">
+              <span className={`flex h-[48px] w-[48px] items-center justify-center rounded-[7px] ${collection.bg} ${collection.color}`}>
+                <SparklesIcon />
+              </span>
+              <h3 className="text-[14px] font-bold leading-[21px] text-[#10172d]">{collection.title}</h3>
+            </div>
+            <div className="mt-[20px] text-[13px] text-[#263458]">{collection.count}</div>
+            <p className="mt-[18px] min-h-[90px] text-[13px] leading-[22px] text-[#263458]">{collection.body}</p>
+            <Link href="/notes" className={`mt-[20px] inline-flex items-center gap-2 text-[13px] font-bold ${collection.color}`}>
+              Open Collection <ArrowRightIcon width={14} height={14} />
+            </Link>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function ProjectCta() {
+  return (
+    <section className="mt-[37px] flex min-h-[78px] items-center gap-[20px] rounded-[8px] border border-[#d7cdff] bg-[#f8f5ff] px-[24px] py-[17px]">
+      <span className="flex h-[54px] w-[54px] shrink-0 items-center justify-center rounded-[10px] text-[var(--color-accent-strong)]">
+        <FlaskIcon />
+      </span>
+      <div className="flex-1">
+        <h3 className="text-[15px] font-bold text-[#10172d]">Curious about my experiments?</h3>
+        <p className="mt-[7px] text-[14px] text-[#44516a]">Check out projects where I implement and test these ideas.</p>
+      </div>
+      <Link href="/projects" className="inline-flex h-[38px] items-center gap-2 rounded-[6px] bg-gradient-to-r from-[#5a34f4] to-[#704cff] px-[28px] text-[13px] font-bold text-white">
+        View Projects <ArrowRightIcon width={14} height={14} />
+      </Link>
+    </section>
+  );
+}
+
+function SectionHeader({ title, subtitle, link }: { title: string; subtitle: string; link: string }) {
+  return (
+    <div className="flex items-end justify-between gap-4">
+      <div>
+        <h2 className="text-[20px] font-bold tracking-[-0.01em] text-[#10172d]">{title}</h2>
+        <p className="mt-[9px] text-[13px] text-[#44516a]">{subtitle}</p>
+      </div>
+      <Link href="#" className="inline-flex items-center gap-2 text-[13px] font-bold text-[var(--color-accent-strong)]">
+        {link} <ArrowRightIcon width={14} height={14} />
+      </Link>
     </div>
+  );
+}
+
+function ResearchArtwork() {
+  return (
+    <div className="relative h-[190px]">
+      <svg viewBox="0 0 390 190" className="h-full w-full" fill="none">
+        <defs>
+          <linearGradient id="researchPurple" x1="0" y1="0" x2="1" y2="1">
+            <stop stopColor="#d9d2ff" />
+            <stop offset="1" stopColor="#6748f5" />
+          </linearGradient>
+          <filter id="researchShadow" x="-20%" y="-20%" width="160%" height="160%">
+            <feDropShadow dx="0" dy="12" stdDeviation="12" floodColor="#6d50ff" floodOpacity="0.24" />
+          </filter>
+        </defs>
+        <g stroke="#dfe3f4" strokeWidth="1">
+          <path d="M20 130 102 76 350 33" />
+          <path d="M48 50 160 91 378 112" />
+          <path d="M8 92 138 20 300 62" />
+        </g>
+        {[30, 70, 130, 194, 270, 336, 372].map((x, i) => (
+          <circle key={x} cx={x} cy={i % 2 ? 45 : 88} r="3" fill="#765cff" opacity="0.58" />
+        ))}
+        <g filter="url(#researchShadow)">
+          <rect x="122" y="50" width="118" height="92" rx="8" fill="#f7f5ff" stroke="#e6e1ff" transform="rotate(-10 181 96)" />
+          <rect x="135" y="64" width="90" height="8" rx="4" fill="#d8d0ff" transform="rotate(-10 181 96)" />
+          <path d="M142 95c25-18 51 8 77-13" stroke="#b7a9ff" strokeWidth="4" strokeLinecap="round" transform="rotate(-10 181 96)" />
+          <path d="M146 120c20-12 46 6 68-9" stroke="#c9c0ff" strokeWidth="4" strokeLinecap="round" transform="rotate(-10 181 96)" />
+          <circle cx="247" cy="82" r="42" stroke="url(#researchPurple)" strokeWidth="12" />
+          <path d="M276 111 326 157" stroke="url(#researchPurple)" strokeWidth="17" strokeLinecap="round" />
+        </g>
+      </svg>
+    </div>
+  );
+}
+
+function ResearchThumb({ tone }: { tone: string }) {
+  const color = tone === "green" ? "#42c793" : tone === "amber" ? "#f2a139" : "#7358ff";
+
+  return (
+    <svg viewBox="0 0 64 64" className="h-[64px] w-[64px] rounded-[7px]" fill="none">
+      <rect x="1" y="1" width="62" height="62" rx="7" fill={`${color}12`} stroke={color} />
+      {tone === "green" ? (
+        <path d="M9 31c14-19 31 18 46-2M9 22c14-19 31 18 46-2M9 40c14-19 31 18 46-2" stroke={color} strokeWidth="1.5" />
+      ) : tone === "amber" ? (
+        <g stroke={color} strokeWidth="1.5">
+          <circle cx="32" cy="32" r="5" />
+          {[12, 20, 32, 44, 52].map((x, i) => <circle key={x} cx={x} cy={i % 2 ? 16 : 48} r="2.5" />)}
+          <path d="M32 32 12 48M32 32 20 16M32 32 44 16M32 32 52 48" />
+        </g>
+      ) : (
+        <g stroke={color} strokeWidth="1.4">
+          {Array.from({ length: 6 }).map((_, i) => <path key={i} d={`M4 ${8 + i * 9}H60`} />)}
+          {Array.from({ length: 6 }).map((_, i) => <path key={i} d={`M${8 + i * 9} 4V60`} />)}
+        </g>
+      )}
+    </svg>
+  );
+}
+
+function topicClass(topic: string) {
+  if (topic === "Optimization") return "bg-emerald-50 text-emerald-600";
+  if (topic === "Theory") return "bg-orange-50 text-orange-500";
+  return "bg-[var(--color-accent-soft)] text-[var(--color-accent-strong)]";
+}
+
+function statusClass(status: string) {
+  if (status === "Finished") return "bg-emerald-50 text-emerald-600";
+  if (status === "Reading") return "bg-orange-50 text-orange-500";
+  if (status === "In Review") return "bg-sky-50 text-sky-600";
+  return "bg-slate-100 text-slate-500";
+}
+
+function FilterIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M4 5h16l-6 7v5l-4 2v-7z" />
+    </svg>
+  );
+}
+
+function BookmarkIcon() {
+  return (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#10172d" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M6 4h12v17l-6-4-6 4z" />
+    </svg>
+  );
+}
+
+function FlaskIcon() {
+  return (
+    <svg width="42" height="42" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M25 8h14" />
+      <path d="M28 8v19L14 51c-2 4 1 7 5 7h26c4 0 7-3 5-7L36 27V8" />
+      <path d="M22 45h20" />
+      <circle cx="27" cy="51" r="2" fill="currentColor" stroke="none" />
+      <circle cx="38" cy="48" r="2" fill="currentColor" stroke="none" />
+    </svg>
   );
 }

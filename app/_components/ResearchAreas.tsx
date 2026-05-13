@@ -17,21 +17,21 @@ const TONES: Record<string, { bg: string; fg: string }> = {
 };
 export function ResearchAreas() {
   return (
-    <section className="pb-14">
-      <h2 className="text-2xl font-bold tracking-tight">Research Areas</h2>
-      <p className="text-[14px] text-[var(--color-fg-muted)] mt-1">Topics I work on and explore.</p>
-      <div className="mt-5 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+    <section className="pb-[41px]">
+      <h2 className="text-[22px] font-bold tracking-[-0.02em] text-[#10172d]">Research Areas</h2>
+      <p className="mt-[7px] text-[13px] text-[#44516a]">Topics I work on and explore.</p>
+      <div className="mt-[24px] grid grid-cols-2 gap-[18px] md:grid-cols-3 lg:grid-cols-5">
         {AREAS.map(({ href, title, body, icon: Icon, tone }) => {
           const t = TONES[tone];
           return (
             <Link key={title} href={href}
-              className="rounded-2xl border p-5 hover:shadow-md hover:-translate-y-0.5 transition-all bg-[var(--color-bg)]"
+              className="min-h-[194px] rounded-[8px] border bg-white p-[17px] transition-all hover:-translate-y-0.5 hover:shadow-md"
               style={{ borderColor: "var(--color-border)" }}>
-              <div className={`w-11 h-11 rounded-full flex items-center justify-center mb-4 ${t.bg} ${t.fg}`}>
+              <div className={`mb-[24px] flex h-[42px] w-[42px] items-center justify-center rounded-full ${t.bg} ${t.fg}`}>
                 <Icon />
               </div>
-              <div className="font-semibold text-[15px] leading-tight">{title}</div>
-              <p className="mt-2 text-[12.5px] leading-5 text-[var(--color-fg-muted)]">{body}</p>
+              <div className="text-[13px] font-bold leading-tight text-[#10172d]">{title}</div>
+              <p className="mt-[15px] text-[13px] leading-[21px] text-[#44516a]">{body}</p>
             </Link>
           );
         })}

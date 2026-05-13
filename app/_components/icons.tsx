@@ -7,9 +7,9 @@ const base = {
 };
 export function HomeIcon(p: IconProps) { return (<svg {...base} {...p}><path d="M3 11l9-8 9 8" /><path d="M5 10v10h14V10" /></svg>); }
 export function BlogIcon(p: IconProps) { return (<svg {...base} {...p}><rect x="4" y="4" width="16" height="16" rx="2" /><path d="M8 8h8M8 12h8M8 16h5" /></svg>); }
-export function ResearchIcon(p: IconProps) { return (<svg {...base} {...p}><circle cx="11" cy="11" r="6" /><path d="M20 20l-4.3-4.3" /></svg>); }
-export function ProjectsIcon(p: IconProps) { return (<svg {...base} {...p}><path d="M3 7h6l2 2h10v11H3z" /></svg>); }
-export function NotesIcon(p: IconProps) { return (<svg {...base} {...p}><rect x="5" y="3" width="14" height="18" rx="2" /><path d="M9 7h6M9 11h6M9 15h4" /></svg>); }
+export function ResearchIcon(p: IconProps) { return (<svg {...base} {...p}><path d="M12 3l4.5 4.5L12 12 7.5 7.5 12 3z" /><path d="M7.5 12 12 16.5 16.5 12" /><path d="M12 16.5V21" /></svg>); }
+export function ProjectsIcon(p: IconProps) { return (<svg {...base} {...p}><rect x="4" y="9" width="16" height="11" rx="2" /><path d="M4 13h16M12 9v11M8.5 9C7.1 9 6 8.1 6 6.9 6 5.8 6.9 5 8 5c1.7 0 3 2 4 4 1-2 2.3-4 4-4 1.1 0 2 .8 2 1.9 0 1.2-1.1 2.1-2.5 2.1" /></svg>); }
+export function NotesIcon(p: IconProps) { return (<svg {...base} {...p}><rect x="5" y="4" width="14" height="16" rx="2" /><path d="M9 8h6M9 16h3" /><path d="M14.5 12.5 16 11l1 1-1.5 1.5L13 14z" /></svg>); }
 export function AboutIcon(p: IconProps) { return (<svg {...base} {...p}><circle cx="12" cy="12" r="9" /><path d="M12 8v.01M11 12h1v4h1" /></svg>); }
 export function SearchIcon(p: IconProps) { return (<svg {...base} {...p}><circle cx="11" cy="11" r="6" /><path d="M20 20l-4.3-4.3" /></svg>); }
 export function SunIcon(p: IconProps) { return (<svg {...base} {...p}><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" /></svg>); }

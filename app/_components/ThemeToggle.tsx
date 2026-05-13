@@ -11,7 +11,7 @@ export function ThemeToggle({ minimal = false }: { minimal?: boolean }) {
     return (
       <button aria-label="Toggle theme" onClick={() => setTheme(isDark ? "light" : "dark")}
         className="p-2 rounded-md text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] hover:bg-[var(--color-bg-elevated)]">
-        {isDark ? <SunIcon /> : <MoonIcon />}
+        {isDark ? <MoonIcon /> : <SunIcon />}
       </button>
     );
   }
