@@ -1,81 +1,31 @@
 import Link from "next/link";
 import { ArrowRightIcon, FileTextIcon, SparklesIcon } from "../_components/icons";
+import {
+  getResearchCollections,
+  getResearchItems,
+  getResearchPapers,
+  type ResearchCollection,
+  type ResearchItem,
+  type ResearchPaper,
+} from "../_lib/posts";
 
 export const metadata = { title: "Research" };
 
-const FILTERS = ["All", "Deep Learning", "Optimization", "Theory", "Generative Models", "Representation Learning"];
+export default async function ResearchPage() {
+  const [ongoing, papers, collections] = await Promise.all([
+    getResearchItems(),
+    getResearchPapers(),
+    getResearchCollections(),
+  ]);
+  const filters = ["All", ...Array.from(new Set([...ongoing.map((item) => item.topic), ...papers.map((paper) => paper.topic)]))];
 
-const ONGOING = [
-  {
-    title: "Scaling Laws in Large Language Models",
-    topic: "Deep Learning",
-    body: "Understanding how model performance scales with compute, data, and parameters.",
-    progress: 65,
-    tone: "purple",
-  },
-  {
-    title: "Optimization in High Dimensions",
-    topic: "Optimization",
-    body: "Exploring modern optimization algorithms and their behavior in high-dimensional spaces.",
-    progress: 40,
-    tone: "green",
-  },
-  {
-    title: "Representation Learning",
-    topic: "Theory",
-    body: "How neural networks learn useful representations and what makes them generalize.",
-    progress: 30,
-    tone: "amber",
-  },
-];
-
-const PAPERS = [
-  ["Attention Is All You Need", "Vaswani et al., 2017", "Deep Learning", "May 20, 2024", "Finished"],
-  ["On Layer Normalization in the Transformer Architecture", "Xiong et al., 2020", "Deep Learning", "May 18, 2024", "In Review"],
-  ["Adafactor: Adaptive Learning Rates with Sublinear Memory Cost", "Shazeer & Stern, 2018", "Optimization", "May 15, 2024", "To Read"],
-  ["Scaling Laws for Neural Language Models", "Kaplan et al., 2020", "Deep Learning", "May 12, 2024", "In Review"],
-  ["Understanding Deep Learning (MIT Press Book)", "Simon J.D. Prince, 2023", "Theory", "May 8, 2024", "Reading"],
-];
-
-const COLLECTIONS = [
-  {
-    title: "Transformers Deep Dive",
-    count: "24 notes",
-    body: "Everything about transformers: architecture, attention, position encoding, scaling, and more.",
-    color: "text-[var(--color-accent-strong)]",
-    bg: "bg-[var(--color-accent-soft)]",
-  },
-  {
-    title: "Optimization Notes",
-    count: "18 notes",
-    body: "Gradient methods, convex optimization, Adam variants, convergence, and theory.",
-    color: "text-emerald-600",
-    bg: "bg-emerald-50",
-  },
-  {
-    title: "Probabilistic Models",
-    count: "16 notes",
-    body: "Probabilistic modeling, Bayesian inference, variational methods, and uncertainty.",
-    color: "text-orange-500",
-    bg: "bg-orange-50",
-  },
-  {
-    title: "Generative Models",
-    count: "20 notes",
-    body: "GANs, VAEs, Diffusion Models, normalizing flows, and their theory.",
-    color: "text-sky-600",
-    bg: "bg-sky-50",
-  },
-];
-
-export default function ResearchPage() {
   return (
     <div className="mx-auto max-w-[946px] pb-[48px] pt-[46px]">
       <ResearchHero />
-      <FilterBar />
-      <OngoingResearch />
-      <ReadingList />
-      <Collections />
+      <FilterBar filters={filters} />
+      <OngoingResearch items={ongoing} />
+      <ReadingList papers={papers} />
+      <Collections collections={collections} />
       <ProjectCta />
     </div>
   );
@@ -95,10 +45,10 @@ function ResearchHero() {
   );
 }
 
-function FilterBar() {
+function FilterBar({ filters }: { filters: string[] }) {
   return (
     <div className="mt-[28px] flex flex-wrap items-center gap-[11px] border-b pb-[26px]" style={{ borderColor: "var(--color-border)" }}>
-      {FILTERS.map((filter, index) => (
+      {filters.map((filter, index) => (
         <button
           key={filter}
           className={`h-[36px] rounded-full border px-[15px] text-[12px] font-semibold ${
@@ -118,19 +68,19 @@ function FilterBar() {
   );
 }
 
-function OngoingResearch() {
+function OngoingResearch({ items }: { items: ResearchItem[] }) {
   return (
     <section className="pt-[29px]">
       <SectionHeader title="Ongoing Research" subtitle="Topics I'm currently diving deep into." link="View all ongoing" />
       <div className="mt-[26px] grid gap-[20px] md:grid-cols-3">
-        {ONGOING.map((item) => (
+        {items.map((item) => (
           <article key={item.title} className="rounded-[8px] border bg-white p-[20px] shadow-[0_8px_24px_rgba(15,23,42,0.03)]" style={{ borderColor: "var(--color-border)" }}>
             <div className="grid grid-cols-[64px_1fr] gap-[17px]">
               <ResearchThumb tone={item.tone} />
               <h3 className="text-[16px] font-bold leading-[24px] text-[#10172d]">{item.title}</h3>
             </div>
             <span className={`mt-[20px] inline-block rounded-[7px] px-[10px] py-[6px] text-[12px] font-semibold ${topicClass(item.topic)}`}>{item.topic}</span>
-            <p className="mt-[17px] text-[14px] leading-[24px] text-[#263458]">{item.body}</p>
+            <p className="mt-[17px] text-[14px] leading-[24px] text-[#263458]">{item.description}</p>
             <div className="mt-[28px] flex items-center justify-between text-[12px] text-[#59657b]">
               <span>In Progress</span>
               <span>{item.progress}%</span>
@@ -145,7 +95,7 @@ function OngoingResearch() {
   );
 }
 
-function ReadingList() {
+function ReadingList({ papers }: { papers: ResearchPaper[] }) {
   return (
     <section className="pt-[52px]">
       <SectionHeader title="Research Papers / Reading List" subtitle="Curated papers and resources I'm studying." link="View all papers" />
@@ -157,20 +107,20 @@ function ReadingList() {
           <span>Status</span>
           <span />
         </div>
-        {PAPERS.map(([title, author, topic, date, status]) => (
-          <div key={title} className="grid min-h-[72px] grid-cols-[1fr_150px_128px_118px_32px] items-center border-b px-[24px] last:border-b-0" style={{ borderColor: "var(--color-border)" }}>
+        {papers.map((paper) => (
+          <div key={paper.slug} className="grid min-h-[72px] grid-cols-[1fr_150px_128px_118px_32px] items-center border-b px-[24px] last:border-b-0" style={{ borderColor: "var(--color-border)" }}>
             <div className="flex items-center gap-[18px]">
               <span className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-[7px] bg-[var(--color-accent-soft)] text-[var(--color-accent-strong)]">
                 <FileTextIcon width={17} height={17} />
               </span>
               <div>
-                <div className="text-[13px] font-bold text-[#10172d]">{title}</div>
-                <div className="mt-[5px] text-[12px] text-[#59657b]">{author}</div>
+                <div className="text-[13px] font-bold text-[#10172d]">{paper.title}</div>
+                <div className="mt-[5px] text-[12px] text-[#59657b]">{paper.authors}</div>
               </div>
             </div>
-            <span className={`w-fit rounded-full px-[12px] py-[6px] text-[11px] font-semibold leading-none ${topicClass(topic)}`}>{topic}</span>
-            <span className="text-[12px] text-[#59657b]">{date}</span>
-            <span className={`w-fit rounded-full px-[12px] py-[6px] text-[11px] font-semibold leading-none ${statusClass(status)}`}>{status}</span>
+            <span className={`w-fit rounded-full px-[12px] py-[6px] text-[11px] font-semibold leading-none ${topicClass(paper.topic)}`}>{paper.topic}</span>
+            <span className="text-[12px] text-[#59657b]">{paper.formattedDate}</span>
+            <span className={`w-fit rounded-full px-[12px] py-[6px] text-[11px] font-semibold leading-none ${statusClass(paper.status)}`}>{paper.status}</span>
             <BookmarkIcon />
           </div>
         ))}
@@ -179,26 +129,29 @@ function ReadingList() {
   );
 }
 
-function Collections() {
+function Collections({ collections }: { collections: ResearchCollection[] }) {
   return (
     <section className="pt-[54px]">
       <SectionHeader title="Research Notes Collections" subtitle="Organized notes for complex topics." link="View all collections" />
       <div className="mt-[28px] grid gap-[20px] md:grid-cols-4">
-        {COLLECTIONS.map((collection) => (
+        {collections.map((collection) => {
+          const tone = collectionTone(collection.tone);
+          return (
           <article key={collection.title} className="rounded-[8px] border bg-white p-[18px] shadow-[0_8px_24px_rgba(15,23,42,0.03)]" style={{ borderColor: "var(--color-border)" }}>
             <div className="grid grid-cols-[48px_1fr] items-start gap-[16px]">
-              <span className={`flex h-[48px] w-[48px] items-center justify-center rounded-[7px] ${collection.bg} ${collection.color}`}>
+              <span className={`flex h-[48px] w-[48px] items-center justify-center rounded-[7px] ${tone.bg} ${tone.color}`}>
                 <SparklesIcon />
               </span>
               <h3 className="text-[14px] font-bold leading-[21px] text-[#10172d]">{collection.title}</h3>
             </div>
             <div className="mt-[20px] text-[13px] text-[#263458]">{collection.count}</div>
-            <p className="mt-[18px] min-h-[90px] text-[13px] leading-[22px] text-[#263458]">{collection.body}</p>
-            <Link href="/notes" className={`mt-[20px] inline-flex items-center gap-2 text-[13px] font-bold ${collection.color}`}>
+            <p className="mt-[18px] min-h-[90px] text-[13px] leading-[22px] text-[#263458]">{collection.description}</p>
+            <Link href="/notes" className={`mt-[20px] inline-flex items-center gap-2 text-[13px] font-bold ${tone.color}`}>
               Open Collection <ArrowRightIcon width={14} height={14} />
             </Link>
           </article>
-        ))}
+        );
+        })}
       </div>
     </section>
   );
@@ -297,6 +250,12 @@ function topicClass(topic: string) {
   if (topic === "Optimization") return "bg-emerald-50 text-emerald-600";
   if (topic === "Theory") return "bg-orange-50 text-orange-500";
   return "bg-[var(--color-accent-soft)] text-[var(--color-accent-strong)]";
+}
+function collectionTone(tone: string) {
+  if (tone === "green") return { bg: "bg-emerald-50", color: "text-emerald-600" };
+  if (tone === "amber") return { bg: "bg-orange-50", color: "text-orange-500" };
+  if (tone === "blue") return { bg: "bg-sky-50", color: "text-sky-600" };
+  return { bg: "bg-[var(--color-accent-soft)]", color: "text-[var(--color-accent-strong)]" };
 }
 
 function statusClass(status: string) {

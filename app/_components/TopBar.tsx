@@ -12,6 +12,10 @@ export function TopBar() {
     ? "Search posts, topics, papers..."
     : pathname.startsWith("/projects")
       ? "Search projects, tools, topics..."
+      : pathname.startsWith("/learning")
+        ? "Search topics, chapters, notes..."
+        : pathname.startsWith("/about")
+          ? "Search topics, notes, equations..."
       : pathname.startsWith("/notes")
         ? "Search notes, topics, equations..."
         : "Search posts...";

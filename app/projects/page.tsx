@@ -1,74 +1,17 @@
 import Link from "next/link";
 import { ArrowRightIcon, GithubIcon } from "../_components/icons";
+import { getAllProjects, type Project } from "../_lib/posts";
 
 export const metadata = { title: "Projects" };
 
-const FILTERS = ["All Projects", "Featured", "Research", "Tools", "Experiments"];
+export default async function ProjectsPage() {
+  const projects = await getAllProjects();
+  const filters = ["All Projects", "Featured", ...Array.from(new Set(projects.map((project) => project.type)))];
 
-const PROJECTS = [
-  {
-    title: "TinyTransformer",
-    description: "A clean, from-scratch implementation of the Transformer architecture in PyTorch.",
-    status: "Completed",
-    date: "May 20, 2024",
-    stars: 128,
-    tags: ["Deep Learning", "Transformers", "PyTorch"],
-    variant: "network",
-    featured: true,
-  },
-  {
-    title: "Visualize-ML",
-    description: "Interactive visualizations for ML algorithms and high-dimensional data.",
-    status: "Completed",
-    date: "Apr 28, 2024",
-    stars: 96,
-    tags: ["Machine Learning", "Visualization", "Streamlit"],
-    variant: "scatter",
-    featured: true,
-  },
-  {
-    title: "Diffusion Playground",
-    description: "A minimal playground to understand and experiment with diffusion models.",
-    status: "In Progress",
-    date: "Apr 10, 2024",
-    stars: 112,
-    tags: ["Deep Learning", "Diffusion Models", "PyTorch"],
-    variant: "diffusion",
-  },
-  {
-    title: "Optimizer Zoo",
-    description: "Implementations and visual comparisons of popular optimization algorithms.",
-    status: "Completed",
-    date: "Mar 15, 2024",
-    stars: 78,
-    tags: ["Optimization", "Algorithms", "PyTorch"],
-    variant: "optimizer",
-  },
-  {
-    title: "Training Dashboard",
-    description: "A lightweight dashboard to monitor and analyze model training in real-time.",
-    status: "Prototype",
-    date: "Mar 2, 2024",
-    stars: 64,
-    tags: ["MLOps", "Dashboard", "Python"],
-    variant: "terminal",
-  },
-  {
-    title: "LLM from Scratch",
-    description: "Building a tiny GPT-style language model step by step.",
-    status: "Completed",
-    date: "Feb 18, 2024",
-    stars: 143,
-    tags: ["LLM", "NLP", "PyTorch"],
-    variant: "grid",
-  },
-];
-
-export default function ProjectsPage() {
   return (
     <div className="mx-auto max-w-[946px] pb-[48px] pt-[46px]">
       <ProjectsHero />
-      <ProjectFilters />
+      <ProjectFilters filters={filters} />
       <div className="mt-[43px] grid gap-[38px] xl:grid-cols-[minmax(0,1fr)_226px]">
         <main>
           <div className="mb-[24px] flex items-end justify-between gap-4">
@@ -84,13 +27,13 @@ export default function ProjectsPage() {
             </div>
           </div>
           <div className="grid gap-[22px]">
-            {PROJECTS.map((project) => (
+            {projects.map((project) => (
               <ProjectRow key={project.title} project={project} />
             ))}
           </div>
           <Pagination />
         </main>
-        <ProjectSidebar />
+        <ProjectSidebar projects={projects} />
       </div>
       <OpenSourceCta />
     </div>
@@ -111,10 +54,10 @@ function ProjectsHero() {
   );
 }
 
-function ProjectFilters() {
+function ProjectFilters({ filters }: { filters: string[] }) {
   return (
     <div className="mt-[28px] flex flex-wrap gap-[16px]">
-      {FILTERS.map((filter, index) => (
+      {filters.map((filter, index) => (
         <button
           key={filter}
           className={`h-[36px] rounded-full border px-[22px] text-[13px] font-semibold ${
@@ -130,7 +73,7 @@ function ProjectFilters() {
   );
 }
 
-function ProjectRow({ project }: { project: (typeof PROJECTS)[number] }) {
+function ProjectRow({ project }: { project: Project }) {
   return (
     <article className="grid gap-[20px] rounded-[8px] border bg-white p-[14px] shadow-[0_8px_24px_rgba(15,23,42,0.03)] md:grid-cols-[140px_1fr]" style={{ borderColor: "var(--color-border)" }}>
       <ProjectThumb variant={project.variant} />
@@ -160,25 +103,30 @@ function ProjectRow({ project }: { project: (typeof PROJECTS)[number] }) {
   );
 }
 
-function ProjectSidebar() {
+function ProjectSidebar({ projects }: { projects: Project[] }) {
+  const statusCounts = countBy(projects.map((project) => project.status));
+  const typeCounts = countBy(projects.map((project) => project.type));
+  const techCounts = countBy(projects.flatMap((project) => project.techStack));
+  const totalStars = projects.reduce((sum, project) => sum + project.stars, 0);
+
   return (
     <aside className="hidden xl:block">
       <div className="space-y-[26px]">
         <SideCard>
           <h3 className="text-[12px] font-extrabold uppercase tracking-[0.02em] text-[#10172d]">Filters</h3>
-          <FilterGroup title="Status" items={[["All", "28", true], ["Completed", "15"], ["In Progress", "7"], ["Prototype", "6"]]} />
-          <FilterGroup title="Type" items={[["Research", "14", false, "nodes"], ["Tools", "8", false, "tools"], ["Experiments", "6", false, "flask"]]} />
-          <FilterGroup title="Tech Stack" items={[["PyTorch", "18"], ["Python", "20"], ["JAX", "6"], ["TensorFlow", "4"], ["Streamlit", "5"]]} />
+          <FilterGroup title="Status" items={[["All", String(projects.length), true], ...Object.entries(statusCounts).map(([label, count]) => [label, String(count)] as [string, string])]} />
+          <FilterGroup title="Type" items={Object.entries(typeCounts).map(([label, count]) => [label, String(count), false, label === "Research" ? "nodes" : label === "Experiments" ? "flask" : "tools"])} />
+          <FilterGroup title="Tech Stack" items={Object.entries(techCounts).map(([label, count]) => [label, String(count)] as [string, string])} />
           <button className="mt-[14px] text-[13px] font-bold text-[var(--color-accent-strong)]">Show more</button>
         </SideCard>
         <SideCard>
           <h3 className="text-[12px] font-extrabold uppercase tracking-[0.02em] text-[#10172d]">Project Stats</h3>
           <div className="mt-[27px] grid gap-[19px]">
-            <StatLine value="28" label="Total Projects" color="text-[var(--color-accent-strong)]" />
-            <StatLine value="15" label="Completed" color="text-emerald-600" />
-            <StatLine value="7" label="In Progress" color="text-[var(--color-accent-strong)]" />
-            <StatLine value="6" label="Prototypes" color="text-orange-500" />
-            <StatLine value="3.2k" label="Total GitHub Stars" color="text-orange-500" />
+            <StatLine value={String(projects.length)} label="Total Projects" color="text-[var(--color-accent-strong)]" />
+            <StatLine value={String(statusCounts.Completed ?? 0)} label="Completed" color="text-emerald-600" />
+            <StatLine value={String(statusCounts["In Progress"] ?? 0)} label="In Progress" color="text-[var(--color-accent-strong)]" />
+            <StatLine value={String(statusCounts.Prototype ?? 0)} label="Prototypes" color="text-orange-500" />
+            <StatLine value={formatStars(totalStars)} label="Total GitHub Stars" color="text-orange-500" />
           </div>
           <svg viewBox="0 0 180 40" className="mt-[15px] h-[34px] w-full" fill="none">
             <path d="M2 32c18 0 25-3 43-4s27-7 45-8 21-5 39-4 31-6 49-8" stroke="#8a75ff" strokeWidth="2" />
@@ -400,6 +348,15 @@ function tagClass(tag: string) {
   if (tag === "Optimization") return "bg-emerald-50 text-emerald-600";
   if (tag === "Machine Learning") return "bg-sky-50 text-sky-600";
   return "bg-[var(--color-accent-soft)] text-[var(--color-accent-strong)]";
+}
+function countBy(values: string[]) {
+  return values.reduce<Record<string, number>>((counts, value) => {
+    counts[value] = (counts[value] ?? 0) + 1;
+    return counts;
+  }, {});
+}
+function formatStars(stars: number) {
+  return stars >= 1000 ? `${Number((stars / 1000).toFixed(1))}k` : String(stars);
 }
 
 function StatLine({ value, label, color }: { value: string; label: string; color: string }) {

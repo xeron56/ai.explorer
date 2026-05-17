@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { HomeIcon, BlogIcon, ResearchIcon, ProjectsIcon, NotesIcon, AboutIcon } from "./icons";
+import { HomeIcon, BlogIcon, ResearchIcon, ProjectsIcon, LearningIcon, NotesIcon, AboutIcon } from "./icons";
 
 const NAV = [
   { href: "/", label: "Home", icon: HomeIcon, match: (path: string) => path === "/" },
   { href: "/blog", label: "Blog", icon: BlogIcon, match: (path: string) => path.startsWith("/blog") },
   { href: "/research", label: "Research", icon: ResearchIcon, match: (path: string) => path.startsWith("/research") },
   { href: "/projects", label: "Projects", icon: ProjectsIcon, match: (path: string) => path.startsWith("/projects") },
+  { href: "/learning", label: "Learning", icon: LearningIcon, match: (path: string) => path.startsWith("/learning") },
   { href: "/notes", label: "Notes", icon: NotesIcon, match: (path: string) => path.startsWith("/notes") },
   { href: "/about", label: "About", icon: AboutIcon, match: (path: string) => path.startsWith("/about") },
 ];

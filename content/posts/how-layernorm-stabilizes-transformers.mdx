@@ -5,6 +5,20 @@ date: "2024-05-18"
 category: "Deep Learning"
 readingTime: 10
 cardClassName: "norm"
+tags: ["transformer", "normalization", "layernorm", "deep-learning", "optimization"]
+liveCode: |
+  import torch
+  import torch.nn as nn
+
+  ln = nn.LayerNorm(8)
+  x = torch.tensor([[1.2, -0.7, 0.3, 2.1, -1.4, 0.0, 0.8, -0.3]])
+
+  y = ln(x)
+  print(y)
+liveOutput: |
+  tensor([[ 0.9981, -1.1933, -0.0391,
+            1.6650, -1.3380, -0.6531,
+            0.4568,  0.0394]])
 ---
 
 Layer normalization removes a feature-wise mean and variance, then re-injects

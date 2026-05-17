@@ -1,89 +1,26 @@
 import Link from "next/link";
 import { ArrowRightIcon, FileTextIcon, SparklesIcon } from "../_components/icons";
+import { getAllNotes, type Post } from "../_lib/posts";
 
 export const metadata = { title: "Notes" };
 
-const PINNED = [
-  {
-    title: "Attention Mechanism – Key Ideas",
-    category: "Deep Learning",
-    date: "Updated May 20, 2024",
-    kind: "formula",
-    accent: "purple",
-  },
-  {
-    title: "Common Optimization Algorithms",
-    category: "Optimization",
-    date: "Updated May 15, 2024",
-    kind: "checklist",
-    accent: "green",
-  },
-  {
-    title: "Useful Math Refresher",
-    category: "Math",
-    date: "Updated May 10, 2024",
-    kind: "bullets",
-    accent: "blue",
-  },
-  {
-    title: "Ideas to Explore",
-    category: "Ideas",
-    date: "Updated May 8, 2024",
-    kind: "ideas",
-    accent: "amber",
-  },
-];
+export default async function NotesIndex() {
+  const notes = await getAllNotes();
+  const pinned = notes.filter((note) => note.pinned).slice(0, 4);
+  const recent = notes.slice(0, 5);
+  const tags = countBy(notes.flatMap((note) => note.tags));
+  const collections = countBy(notes.map((note) => note.collection).filter((value): value is string => Boolean(value)));
 
-const NOTES = [
-  ["Why Softmax Temperature Matters ⭐", "A short note on how temperature scaling affects probability distributions and model confidence.", "Theory", "May 16, 2024", "purple"],
-  ["Deriving the Attention Equation Step by Step", "From dot-product similarity to weighted sum. A full derivation with shapes and intuition.", "Deep Learning", "May 12, 2024", "dark"],
-  ["Gradient Descent Intuition", "Geometric interpretation and why it works.", "Optimization", "May 9, 2024", "green"],
-  ["Information Bottleneck Explained", "Balancing compression and prediction.", "Theory", "May 5, 2024", "pink"],
-  ["Bias–Variance Tradeoff", "Understanding the tradeoff with simple examples and plots.", "Machine Learning", "May 2, 2024", "purple"],
-  ["Matrix Calculus Cheat Sheet", "Derivatives: d(AX) / dX = A^T, tr(AX) / dX = A^T ...", "Math", "Apr 28, 2024", "blue"],
-  ["Transformer Architecture Overview", "Notes from reading “Attention Is All You Need”.", "Deep Learning", "Apr 25, 2024", "purple"],
-  ["Useful PyTorch Snippets", "Collection of handy snippets I use frequently.", "Tools", "Apr 22, 2024", "amber"],
-];
-
-const RECENT = [
-  ["Why Softmax Temperature Matters", "Just now", "purple"],
-  ["Deriving the Attention Equation Step by Step", "2 days ago", "dark"],
-  ["Gradient Descent Intuition", "5 days ago", "green"],
-  ["Information Bottleneck Explained", "7 days ago", "pink"],
-  ["Matrix Calculus Cheat Sheet", "Apr 28, 2024", "blue"],
-];
-
-const TAGS = [
-  ["deep-learning", "24"],
-  ["optimization", "16"],
-  ["theory", "14"],
-  ["math", "13"],
-  ["machine-learning", "11"],
-  ["transformers", "9"],
-  ["pytorch", "6"],
-  ["ideas", "6"],
-  ["tools", "5"],
-];
-
-const COLLECTIONS = [
-  ["Study Notes", "18"],
-  ["Paper Notes", "24"],
-  ["Ideas & Brainstorm", "12"],
-  ["Cheat Sheets", "9"],
-  ["Books", "7"],
-];
-
-export default function NotesIndex() {
   return (
     <div className="mx-auto max-w-[946px] pb-[56px] pt-[44px]">
       <NotesHero />
       <NotesToolbar />
       <div className="mt-[33px] grid gap-[38px] xl:grid-cols-[minmax(0,1fr)_226px]">
         <main>
-          <PinnedNotes />
-          <AllNotes />
+          <PinnedNotes notes={pinned} />
+          <AllNotes notes={notes} />
         </main>
-        <NotesSidebar />
+        <NotesSidebar recent={recent} tags={tags} collections={collections} notes={notes} />
       </div>
     </div>
   );
@@ -138,23 +75,23 @@ function NotesToolbar() {
   );
 }
 
-function PinnedNotes() {
+function PinnedNotes({ notes }: { notes: Post[] }) {
   return (
     <section>
       <h2 className="flex items-center gap-[9px] text-[20px] font-bold tracking-[-0.01em] text-[#10172d]"><PinIcon /> Pinned Notes</h2>
       <div className="mt-[24px] grid gap-[15px] md:grid-cols-4">
-        {PINNED.map((note) => (
+        {notes.map((note) => (
           <article key={note.title} className="min-h-[254px] rounded-[8px] border bg-white p-[16px] shadow-[0_8px_24px_rgba(15,23,42,0.03)]" style={{ borderColor: "var(--color-border)" }}>
             <div className="flex items-center justify-between">
               <span className={`flex h-[30px] w-[30px] items-center justify-center rounded-[7px] ${softBg(note.accent)} ${textColor(note.accent)}`}>
                 <FileTextIcon width={16} height={16} />
               </span>
-              {note.kind === "formula" ? <span className="text-yellow-400">★</span> : note.kind === "checklist" ? <ChevronDownIcon /> : null}
+              {note.favorite ? <span className="text-yellow-400">★</span> : note.noteKind === "checklist" ? <ChevronDownIcon /> : null}
             </div>
             <h3 className="mt-[18px] min-h-[42px] text-[14px] font-bold leading-[21px] text-[#10172d]">{note.title}</h3>
-            <PinnedBody kind={note.kind} />
-            <span className={`mt-[21px] inline-block rounded-[7px] px-[10px] py-[6px] text-[11px] font-semibold leading-none ${categoryClass(note.category)}`}>{note.category}</span>
-            <div className="mt-[18px] text-[12px] text-[#59657b]">{note.date}</div>
+            <PinnedBody kind={note.noteKind ?? "bullets"} />
+            {note.category && <span className={`mt-[21px] inline-block rounded-[7px] px-[10px] py-[6px] text-[11px] font-semibold leading-none ${categoryClass(note.category)}`}>{note.category}</span>}
+            <div className="mt-[18px] text-[12px] text-[#59657b]">Updated {note.formattedDate}</div>
           </article>
         ))}
       </div>
@@ -162,7 +99,7 @@ function PinnedNotes() {
   );
 }
 
-function AllNotes() {
+function AllNotes({ notes }: { notes: Post[] }) {
   return (
     <section className="mt-[39px]">
       <h2 className="text-[20px] font-bold tracking-[-0.01em] text-[#10172d]">All Notes</h2>
@@ -171,17 +108,17 @@ function AllNotes() {
         <input className="h-[38px] w-full rounded-[7px] border bg-white pl-[42px] pr-[14px] text-[13px] outline-none placeholder:text-[#7b849b]" placeholder="Search notes..." style={{ borderColor: "var(--color-border)" }} />
       </div>
       <div className="mt-[18px] overflow-hidden rounded-[8px] border bg-white shadow-[0_8px_24px_rgba(15,23,42,0.03)]" style={{ borderColor: "var(--color-border)" }}>
-        {NOTES.map(([title, description, category, date, accent]) => (
-          <Link href="/notes/why-softmax-temperature-matters" key={title} className="grid min-h-[72px] grid-cols-[42px_1fr_120px_96px_20px] items-center gap-[16px] border-b px-[14px] last:border-b-0 hover:bg-[#fafbff]" style={{ borderColor: "var(--color-border)" }}>
-            <span className={`flex h-[38px] w-[38px] items-center justify-center rounded-[7px] ${softBg(accent)} ${textColor(accent)}`}>
+        {notes.map((note) => (
+          <Link href={`/notes/${note.slug}`} key={note.slug} className="grid min-h-[72px] grid-cols-[42px_1fr_120px_96px_20px] items-center gap-[16px] border-b px-[14px] last:border-b-0 hover:bg-[#fafbff]" style={{ borderColor: "var(--color-border)" }}>
+            <span className={`flex h-[38px] w-[38px] items-center justify-center rounded-[7px] ${softBg(note.accent)} ${textColor(note.accent)}`}>
               <FileTextIcon width={18} height={18} />
             </span>
             <span>
-              <span className="block text-[13px] font-bold leading-[19px] text-[#10172d]">{title}</span>
-              <span className="mt-[4px] block text-[12px] leading-[18px] text-[#44516a]">{description}</span>
+              <span className="block text-[13px] font-bold leading-[19px] text-[#10172d]">{note.title}{note.favorite ? " ★" : ""}</span>
+              {note.description && <span className="mt-[4px] block text-[12px] leading-[18px] text-[#44516a]">{note.description}</span>}
             </span>
-            <span className={`w-fit rounded-[7px] px-[10px] py-[6px] text-[11px] font-semibold leading-none ${categoryClass(category)}`}>{category}</span>
-            <span className="text-[12px] text-[#263458]">{date}</span>
+            <span className={`w-fit rounded-[7px] px-[10px] py-[6px] text-[11px] font-semibold leading-none ${categoryClass(note.category ?? "Other")}`}>{note.category}</span>
+            <span className="text-[12px] text-[#263458]">{note.formattedDate}</span>
             <span className="text-[#10172d]"><DotsIcon /></span>
           </Link>
         ))}
@@ -197,19 +134,31 @@ function AllNotes() {
   );
 }
 
-function NotesSidebar() {
+function NotesSidebar({
+  recent,
+  tags,
+  collections,
+  notes,
+}: {
+  recent: Post[];
+  tags: Record<string, number>;
+  collections: Record<string, number>;
+  notes: Post[];
+}) {
+  const wordCount = notes.reduce((sum, note) => sum + note.content.split(/\s+/).filter(Boolean).length, 0);
+
   return (
     <aside className="hidden xl:block">
       <div className="space-y-[23px]">
         <SideCard>
           <h3 className="text-[12px] font-extrabold uppercase tracking-[0.02em] text-[#10172d]">Recently Edited</h3>
           <div className="mt-[25px] grid gap-[21px]">
-            {RECENT.map(([title, date, accent]) => (
-              <Link href="/notes/why-softmax-temperature-matters" key={title} className="grid grid-cols-[36px_1fr] gap-[13px]">
-                <span className={`flex h-[36px] w-[36px] items-center justify-center rounded-[7px] ${softBg(accent)} ${textColor(accent)}`}><FileTextIcon width={17} height={17} /></span>
+            {recent.map((note) => (
+              <Link href={`/notes/${note.slug}`} key={note.slug} className="grid grid-cols-[36px_1fr] gap-[13px]">
+                <span className={`flex h-[36px] w-[36px] items-center justify-center rounded-[7px] ${softBg(note.accent)} ${textColor(note.accent)}`}><FileTextIcon width={17} height={17} /></span>
                 <span>
-                  <span className="line-clamp-2 text-[13px] font-bold leading-[18px] text-[#10172d]">{title}</span>
-                  <span className="mt-[5px] block text-[12px] text-[#59657b]">{date}</span>
+                  <span className="line-clamp-2 text-[13px] font-bold leading-[18px] text-[#10172d]">{note.title}</span>
+                  <span className="mt-[5px] block text-[12px] text-[#59657b]">{note.recentLabel ?? note.formattedDate}</span>
                 </span>
               </Link>
             ))}
@@ -218,7 +167,7 @@ function NotesSidebar() {
         <SideCard>
           <h3 className="text-[12px] font-extrabold uppercase tracking-[0.02em] text-[#10172d]">Top Tags</h3>
           <div className="mt-[24px] flex flex-wrap gap-[10px]">
-            {TAGS.map(([tag, count]) => (
+            {Object.entries(tags).map(([tag, count]) => (
               <span key={tag} className="inline-flex items-center gap-[9px] rounded-full bg-[var(--color-accent-soft)] px-[11px] py-[7px] text-[12px] font-semibold text-[var(--color-accent-strong)]">
                 {tag}
                 <span className="rounded-full bg-white/70 px-[7px] py-[2px] text-[10px] text-[#59657b]">{count}</span>
@@ -230,7 +179,7 @@ function NotesSidebar() {
         <SideCard>
           <h3 className="text-[12px] font-extrabold uppercase tracking-[0.02em] text-[#10172d]">Collections</h3>
           <div className="mt-[24px] grid gap-[17px]">
-            {COLLECTIONS.map(([title, count]) => (
+            {Object.entries(collections).map(([title, count]) => (
               <div key={title} className="flex items-center gap-[10px] text-[13px] text-[#263458]">
                 <FolderIcon />
                 <span>{title}</span>
@@ -243,9 +192,9 @@ function NotesSidebar() {
         <SideCard>
           <h3 className="text-[12px] font-extrabold uppercase tracking-[0.02em] text-[#10172d]">Stats</h3>
           <div className="mt-[25px] grid gap-[20px]">
-            <StatBox icon="file" label="Total Notes" value="128" />
-            <StatBox icon="text" label="Words Written" value="24.6k" />
-            <StatBox icon="calendar" label="Days Active" value="67" />
+            <StatBox icon="file" label="Total Notes" value={String(notes.length)} />
+            <StatBox icon="text" label="Words Written" value={formatNumber(wordCount)} />
+            <StatBox icon="calendar" label="Days Active" value={String(new Set(notes.map((note) => note.date)).size)} />
           </div>
         </SideCard>
       </div>
@@ -325,7 +274,7 @@ function StatBox({ icon, label, value }: { icon: string; label: string; value: s
   );
 }
 
-function softBg(accent: string) {
+function softBg(accent?: string) {
   if (accent === "green") return "bg-emerald-50";
   if (accent === "blue") return "bg-sky-50";
   if (accent === "amber") return "bg-orange-50";
@@ -334,7 +283,7 @@ function softBg(accent: string) {
   return "bg-[var(--color-accent-soft)]";
 }
 
-function textColor(accent: string) {
+function textColor(accent?: string) {
   if (accent === "green") return "text-emerald-600";
   if (accent === "blue") return "text-sky-600";
   if (accent === "amber") return "text-orange-500";
@@ -349,6 +298,15 @@ function categoryClass(category: string) {
   if (category === "Ideas" || category === "Tools") return "bg-orange-50 text-orange-500";
   if (category === "Machine Learning") return "bg-sky-50 text-sky-600";
   return "bg-[var(--color-accent-soft)] text-[var(--color-accent-strong)]";
+}
+function countBy(values: string[]) {
+  return values.reduce<Record<string, number>>((counts, value) => {
+    counts[value] = (counts[value] ?? 0) + 1;
+    return counts;
+  }, {});
+}
+function formatNumber(value: number) {
+  return value >= 1000 ? `${Number((value / 1000).toFixed(1))}k` : String(value);
 }
 
 function ToolbarIcon({ type }: { type: string }) {
