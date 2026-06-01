@@ -6,8 +6,8 @@ import { TopBar } from "./_components/TopBar";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: { default: "ai.explorer — Exploring AI, one idea at a time", template: "%s · ai.explorer" },
-  description: "Thoughts, research, and experiments on deep learning, mathematics, and the future of intelligence.",
+  title: { default: "code.explorer — Code. Solve. Conquer.", template: "%s · code.explorer" },
+  description: "Programming tutorials, problem solutions, contest notes, and coding journey essays.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

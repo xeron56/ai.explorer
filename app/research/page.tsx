@@ -1,294 +1,378 @@
-import Link from "next/link";
-import { ArrowRightIcon, FileTextIcon, SparklesIcon } from "../_components/icons";
 import {
-  getResearchCollections,
-  getResearchItems,
-  getResearchPapers,
-  type ResearchCollection,
-  type ResearchItem,
-  type ResearchPaper,
-} from "../_lib/posts";
+  FilterSelect,
+  GhostButton,
+  MetricTile,
+  PageHeading,
+  PageShell,
+  PrimaryButton,
+  RailCard,
+  SearchField,
+  Surface,
+  Tabs,
+  Tag,
+  Toolbar,
+} from "../_components/pagePrimitives";
 
-export const metadata = { title: "Research" };
+const contests = [
+  {
+    name: "Codeforces Round 958 (Div. 2)",
+    platform: "Codeforces",
+    date: "May 18, 2024",
+    time: "17:05 (IST)",
+    duration: "2 hours",
+    level: "Div. 2",
+    participants: "12.4K",
+    status: "Upcoming",
+    countdown: "2h 45m 12s",
+    action: "View Details",
+    tone: "purple" as const,
+  },
+  {
+    name: "AtCoder Beginner Contest 345",
+    platform: "AtCoder",
+    date: "May 19, 2024",
+    time: "14:00 (IST)",
+    duration: "100 minutes",
+    level: "Beginner",
+    participants: "8.7K",
+    status: "Upcoming",
+    countdown: "1d 23h 40m",
+    action: "View Details",
+    tone: "green" as const,
+  },
+  {
+    name: "CodeChef Starters 121",
+    platform: "CodeChef",
+    date: "May 20, 2024",
+    time: "20:00 (IST)",
+    duration: "2 hours",
+    level: "Starters",
+    participants: "5.3K",
+    status: "Upcoming",
+    countdown: "2d 5h 40m",
+    action: "View Details",
+    tone: "orange" as const,
+  },
+  {
+    name: "LeetCode Biweekly Contest 133",
+    platform: "LeetCode",
+    date: "May 25, 2024",
+    time: "22:30 (IST)",
+    duration: "1.5 hours",
+    level: "All Levels",
+    participants: "15.2K",
+    status: "Upcoming",
+    countdown: "7d 8h 10m",
+    action: "View Details",
+    tone: "blue" as const,
+  },
+  {
+    name: "Educational Codeforces Round 162 (Rated)",
+    platform: "Codeforces",
+    date: "May 15, 2024",
+    time: "20:05 (IST)",
+    duration: "2 hours",
+    level: "Rated",
+    participants: "7.1K",
+    status: "Ongoing",
+    countdown: "Live",
+    action: "Participate",
+    tone: "green" as const,
+  },
+  {
+    name: "AtCoder Regular Contest 168",
+    platform: "AtCoder",
+    date: "May 11, 2024",
+    time: "14:00 (IST)",
+    duration: "100 minutes",
+    level: "All Levels",
+    participants: "9.2K",
+    status: "Ended",
+    countdown: "Ended",
+    action: "View Editorial",
+    tone: "slate" as const,
+  },
+];
 
-export default async function ResearchPage() {
-  const [ongoing, papers, collections] = await Promise.all([
-    getResearchItems(),
-    getResearchPapers(),
-    getResearchCollections(),
-  ]);
-  const filters = ["All", ...Array.from(new Set([...ongoing.map((item) => item.topic), ...papers.map((paper) => paper.topic)]))];
+const upcoming = [
+  ["Codeforces Round 958 (Div. 2)", "May 18, 2024", "17:05 IST", "2h 45m"],
+  ["AtCoder Beginner Contest 345", "May 19, 2024", "14:00 IST", "1d 23h"],
+  ["CodeChef Starters 121", "May 20, 2024", "20:00 IST", "2d 5h"],
+  ["LeetCode Biweekly Contest 133", "May 25, 2024", "22:30 IST", "7d 8h"],
+  ["Codeforces Round 959 (Div. 3)", "May 26, 2024", "17:05 IST", "8d 2h"],
+];
 
+const platforms = [
+  ["Codeforces", "128"],
+  ["AtCoder", "96"],
+  ["CodeChef", "87"],
+  ["LeetCode", "72"],
+  ["HackerRank", "54"],
+];
+
+export const metadata = { title: "Contests" };
+
+export default function ContestsPage() {
   return (
-    <div className="mx-auto max-w-[946px] pb-[48px] pt-[46px]">
-      <ResearchHero />
-      <FilterBar filters={filters} />
-      <OngoingResearch items={ongoing} />
-      <ReadingList papers={papers} />
-      <Collections collections={collections} />
-      <ProjectCta />
-    </div>
-  );
-}
-
-function ResearchHero() {
-  return (
-    <section className="grid min-h-[190px] items-center gap-8 lg:grid-cols-[1fr_390px]">
-      <div>
-        <h1 className="text-[42px] font-extrabold leading-tight tracking-[-0.025em] text-[#10172d]">Research</h1>
-        <p className="mt-[15px] max-w-[555px] text-[18px] leading-[31px] text-[#263458]">
-          A collection of in-depth research notes, surveys, and reading lists on topics I&apos;m exploring.
-        </p>
-      </div>
-      <ResearchArtwork />
-    </section>
-  );
-}
-
-function FilterBar({ filters }: { filters: string[] }) {
-  return (
-    <div className="mt-[28px] flex flex-wrap items-center gap-[11px] border-b pb-[26px]" style={{ borderColor: "var(--color-border)" }}>
-      {filters.map((filter, index) => (
-        <button
-          key={filter}
-          className={`h-[36px] rounded-full border px-[15px] text-[12px] font-semibold ${
-            index === 0
-              ? "border-transparent bg-gradient-to-r from-[#5a34f4] to-[#704cff] text-white shadow-[0_10px_22px_rgba(91,53,244,0.18)]"
-              : "border-[var(--color-border)] bg-white text-[#263458]"
-          }`}
-        >
-          {filter}
-        </button>
-      ))}
-      <button className="ml-auto inline-flex h-[36px] items-center gap-[8px] rounded-[7px] border bg-white px-[14px] text-[13px] font-semibold text-[#263458]" style={{ borderColor: "var(--color-border)" }}>
-        <FilterIcon />
-        Filters
-      </button>
-    </div>
-  );
-}
-
-function OngoingResearch({ items }: { items: ResearchItem[] }) {
-  return (
-    <section className="pt-[29px]">
-      <SectionHeader title="Ongoing Research" subtitle="Topics I'm currently diving deep into." link="View all ongoing" />
-      <div className="mt-[26px] grid gap-[20px] md:grid-cols-3">
-        {items.map((item) => (
-          <article key={item.title} className="rounded-[8px] border bg-white p-[20px] shadow-[0_8px_24px_rgba(15,23,42,0.03)]" style={{ borderColor: "var(--color-border)" }}>
-            <div className="grid grid-cols-[64px_1fr] gap-[17px]">
-              <ResearchThumb tone={item.tone} />
-              <h3 className="text-[16px] font-bold leading-[24px] text-[#10172d]">{item.title}</h3>
-            </div>
-            <span className={`mt-[20px] inline-block rounded-[7px] px-[10px] py-[6px] text-[12px] font-semibold ${topicClass(item.topic)}`}>{item.topic}</span>
-            <p className="mt-[17px] text-[14px] leading-[24px] text-[#263458]">{item.description}</p>
-            <div className="mt-[28px] flex items-center justify-between text-[12px] text-[#59657b]">
-              <span>In Progress</span>
-              <span>{item.progress}%</span>
-            </div>
-            <div className="mt-[12px] h-[4px] rounded-full bg-[#e5e7f0]">
-              <div className="h-full rounded-full bg-gradient-to-r from-[#5a34f4] to-[#704cff]" style={{ width: `${item.progress}%` }} />
-            </div>
-          </article>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function ReadingList({ papers }: { papers: ResearchPaper[] }) {
-  return (
-    <section className="pt-[52px]">
-      <SectionHeader title="Research Papers / Reading List" subtitle="Curated papers and resources I'm studying." link="View all papers" />
-      <div className="mt-[27px] overflow-hidden rounded-[8px] border bg-white shadow-[0_8px_24px_rgba(15,23,42,0.03)]" style={{ borderColor: "var(--color-border)" }}>
-        <div className="grid h-[45px] grid-cols-[1fr_150px_128px_118px_32px] items-center border-b px-[24px] text-[12px] font-semibold text-[#4c5871]" style={{ borderColor: "var(--color-border)" }}>
-          <span>Paper</span>
-          <span>Topic</span>
-          <span>Added</span>
-          <span>Status</span>
-          <span />
-        </div>
-        {papers.map((paper) => (
-          <div key={paper.slug} className="grid min-h-[72px] grid-cols-[1fr_150px_128px_118px_32px] items-center border-b px-[24px] last:border-b-0" style={{ borderColor: "var(--color-border)" }}>
-            <div className="flex items-center gap-[18px]">
-              <span className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-[7px] bg-[var(--color-accent-soft)] text-[var(--color-accent-strong)]">
-                <FileTextIcon width={17} height={17} />
+    <PageShell>
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_300px]">
+        <main className="min-w-0">
+          <PageHeading
+            badge={
+              <span className="inline-flex h-10 w-10 items-center justify-center rounded-[14px] bg-[#fff3e5] text-[#f59e0b]">
+                <TrophyIcon />
               </span>
-              <div>
-                <div className="text-[13px] font-bold text-[#10172d]">{paper.title}</div>
-                <div className="mt-[5px] text-[12px] text-[#59657b]">{paper.authors}</div>
-              </div>
-            </div>
-            <span className={`w-fit rounded-full px-[12px] py-[6px] text-[11px] font-semibold leading-none ${topicClass(paper.topic)}`}>{paper.topic}</span>
-            <span className="text-[12px] text-[#59657b]">{paper.formattedDate}</span>
-            <span className={`w-fit rounded-full px-[12px] py-[6px] text-[11px] font-semibold leading-none ${statusClass(paper.status)}`}>{paper.status}</span>
-            <BookmarkIcon />
+            }
+            title="Contests"
+            description="Participate in coding contests, improve your skills and climb the rankings."
+            actions={
+              <>
+                <GhostButton>
+                  <CalendarIcon />
+                  Calendar View
+                </GhostButton>
+                <PrimaryButton className="w-[46px] px-0 text-[24px]">+</PrimaryButton>
+              </>
+            }
+          />
+
+          <div className="mt-8">
+            <Tabs items={["All Contests", "Upcoming", "Ongoing", "Virtual", "Past"]} active="All Contests" />
           </div>
-        ))}
-      </div>
-    </section>
-  );
-}
 
-function Collections({ collections }: { collections: ResearchCollection[] }) {
-  return (
-    <section className="pt-[54px]">
-      <SectionHeader title="Research Notes Collections" subtitle="Organized notes for complex topics." link="View all collections" />
-      <div className="mt-[28px] grid gap-[20px] md:grid-cols-4">
-        {collections.map((collection) => {
-          const tone = collectionTone(collection.tone);
-          return (
-          <article key={collection.title} className="rounded-[8px] border bg-white p-[18px] shadow-[0_8px_24px_rgba(15,23,42,0.03)]" style={{ borderColor: "var(--color-border)" }}>
-            <div className="grid grid-cols-[48px_1fr] items-start gap-[16px]">
-              <span className={`flex h-[48px] w-[48px] items-center justify-center rounded-[7px] ${tone.bg} ${tone.color}`}>
-                <SparklesIcon />
-              </span>
-              <h3 className="text-[14px] font-bold leading-[21px] text-[#10172d]">{collection.title}</h3>
+          <Toolbar className="lg:flex-nowrap">
+            <SearchField placeholder="Search contests..." className="flex-1" />
+            <div className="flex flex-1 flex-wrap gap-3 lg:justify-end">
+              <FilterSelect label="All Platforms" />
+              <FilterSelect label="All Durations" />
+              <FilterSelect label="All Levels" />
+              <FilterSelect label="Start Time" wide />
             </div>
-            <div className="mt-[20px] text-[13px] text-[#263458]">{collection.count}</div>
-            <p className="mt-[18px] min-h-[90px] text-[13px] leading-[22px] text-[#263458]">{collection.description}</p>
-            <Link href="/notes" className={`mt-[20px] inline-flex items-center gap-2 text-[13px] font-bold ${tone.color}`}>
-              Open Collection <ArrowRightIcon width={14} height={14} />
-            </Link>
-          </article>
-        );
-        })}
+          </Toolbar>
+
+          <div className="mt-5 space-y-4">
+            {contests.map((contest) => (
+              <Surface
+                key={contest.name}
+                className={`p-5 ${contest.status === "Ongoing" ? "bg-[linear-gradient(180deg,#f8fff9_0%,#fff_100%)]" : ""}`}
+              >
+                <div className="flex flex-col gap-5 lg:flex-row lg:items-center">
+                  <div className="flex items-start gap-4">
+                    <div className="grid h-[76px] w-[76px] place-items-center rounded-[22px] border border-[var(--color-border)] bg-[#fbfbfe]">
+                      <PlatformGlyph platform={contest.platform} />
+                    </div>
+                    <div>
+                      <div className="flex flex-wrap items-center gap-3">
+                        <h2 className="text-[28px] font-extrabold tracking-[-0.03em] text-[#131a2d]">
+                          {contest.name}
+                        </h2>
+                        <Tag>{contest.status === "Ongoing" ? "Rated" : "Virtual"}</Tag>
+                      </div>
+                      <div className="mt-3 flex flex-wrap gap-5 text-[14px] text-[#65748d]">
+                        <span>{contest.platform}</span>
+                        <span>{contest.date}</span>
+                        <span>{contest.time}</span>
+                      </div>
+                      <div className="mt-4 flex flex-wrap gap-3">
+                        <Tag tone="orange">{contest.duration}</Tag>
+                        <Tag
+                          tone={
+                            contest.tone === "green"
+                              ? "green"
+                              : contest.tone === "orange"
+                                ? "orange"
+                                : contest.tone === "blue"
+                                  ? "blue"
+                                  : contest.tone === "slate"
+                                    ? "slate"
+                                    : "purple"
+                          }
+                        >
+                          {contest.level}
+                        </Tag>
+                        <Tag tone="slate">{contest.participants}</Tag>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="ml-auto min-w-[180px] text-center">
+                    <Tag
+                      tone={
+                        contest.status === "Ongoing"
+                          ? "blue"
+                          : contest.status === "Ended"
+                            ? "slate"
+                            : "green"
+                      }
+                    >
+                      {contest.status}
+                    </Tag>
+                    <div className="mt-4 text-[34px] font-extrabold tracking-[-0.03em] text-[#131a2d]">
+                      {contest.countdown}
+                    </div>
+                    <button
+                      className={`mt-4 inline-flex h-[44px] min-w-[140px] items-center justify-center rounded-[14px] border px-5 text-[14px] font-bold ${
+                        contest.status === "Ongoing"
+                          ? "border-transparent bg-gradient-to-r from-[#5b35f4] to-[#744dff] text-white shadow-[0_16px_30px_rgba(91,53,244,0.18)]"
+                          : "border-[#d8d0ff] bg-white text-[#5b35f4]"
+                      }`}
+                    >
+                      {contest.action}
+                    </button>
+                  </div>
+                </div>
+              </Surface>
+            ))}
+          </div>
+
+          <div className="mt-6 flex justify-center">
+            <GhostButton>
+              Load More
+              <ArrowDownIcon />
+            </GhostButton>
+          </div>
+        </main>
+
+        <aside className="space-y-5">
+          <RailCard title="Upcoming Contests" action={<button className="text-[13px] font-bold text-[#5b35f4]">View all</button>}>
+            <div className="space-y-4">
+              {upcoming.map(([name, date, time, eta]) => (
+                <div key={name} className="flex items-start gap-3">
+                  <div className="grid h-11 w-11 place-items-center rounded-[14px] border border-[var(--color-border)] bg-[#fbfbfe]">
+                    <BarsIcon />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-[14px] font-bold leading-6 text-[#141b2d]">{name}</div>
+                    <div className="mt-1 text-[13px] text-[#7a879b]">
+                      {date} · {time}
+                    </div>
+                  </div>
+                  <Tag>{eta}</Tag>
+                </div>
+              ))}
+            </div>
+          </RailCard>
+
+          <RailCard title="Contest Stats" action={<button className="text-[13px] font-semibold text-[#73819a]">This Month</button>}>
+            <div className="grid grid-cols-3 gap-3">
+              <MetricTile value="12" label="Participated" icon={<TrophyIcon />} />
+              <MetricTile value="7" label="In Top 10" icon={<ChartUpIcon />} />
+              <MetricTile value="1520" label="Rating Change" icon={<FlameIcon />} />
+            </div>
+          </RailCard>
+
+          <RailCard title="Filter Contests" action={<button className="text-[13px] font-bold text-[#5b35f4]">Clear all</button>}>
+            <div className="grid gap-4 text-[14px] text-[#516078]">
+              <div className="grid grid-cols-2 gap-3">
+                {["Virtual", "Onsite", "Rated", "Unrated"].map((item, index) => (
+                  <label key={item} className="flex items-center gap-3 rounded-[14px] border border-[var(--color-border)] px-4 py-3">
+                    <input defaultChecked={index < 2} type="checkbox" className="h-4 w-4 accent-[#5b35f4]" />
+                    {item}
+                  </label>
+                ))}
+              </div>
+              <FilterSelect label="All Platforms" />
+              <FilterSelect label="All Durations" />
+              <FilterSelect label="All Levels" />
+            </div>
+          </RailCard>
+
+          <RailCard title="Popular Platforms">
+            <div className="space-y-4">
+              {platforms.map(([name, count]) => (
+                <div key={name} className="flex items-center gap-3">
+                  <div className="grid h-11 w-11 place-items-center rounded-[14px] border border-[var(--color-border)] bg-[#fbfbfe]">
+                    <BarsIcon />
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-[14px] font-bold text-[#141b2d]">{name}</div>
+                    <div className="text-[13px] text-[#7c879b]">Contests: {count}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <button className="mt-5 inline-flex text-[14px] font-bold text-[#5b35f4]">
+              View all platforms
+            </button>
+          </RailCard>
+        </aside>
       </div>
-    </section>
+    </PageShell>
   );
 }
 
-function ProjectCta() {
-  return (
-    <section className="mt-[37px] flex min-h-[78px] items-center gap-[20px] rounded-[8px] border border-[#d7cdff] bg-[#f8f5ff] px-[24px] py-[17px]">
-      <span className="flex h-[54px] w-[54px] shrink-0 items-center justify-center rounded-[10px] text-[var(--color-accent-strong)]">
-        <FlaskIcon />
-      </span>
-      <div className="flex-1">
-        <h3 className="text-[15px] font-bold text-[#10172d]">Curious about my experiments?</h3>
-        <p className="mt-[7px] text-[14px] text-[#44516a]">Check out projects where I implement and test these ideas.</p>
+function PlatformGlyph({ platform }: { platform: string }) {
+  if (platform === "Codeforces") {
+    return (
+      <div className="flex items-end gap-1">
+        <span className="h-8 w-3 rounded-full bg-[#4ea1ff]" />
+        <span className="h-11 w-3 rounded-full bg-[#ffd166]" />
+        <span className="h-6 w-3 rounded-full bg-[#ef476f]" />
       </div>
-      <Link href="/projects" className="inline-flex h-[38px] items-center gap-2 rounded-[6px] bg-gradient-to-r from-[#5a34f4] to-[#704cff] px-[28px] text-[13px] font-bold text-white">
-        View Projects <ArrowRightIcon width={14} height={14} />
-      </Link>
-    </section>
+    );
+  }
+  if (platform === "AtCoder") {
+    return <span className="text-[18px] font-black text-[#1f2937]">At</span>;
+  }
+  if (platform === "CodeChef") {
+    return <span className="text-[18px] font-black text-[#9a6b45]">CC</span>;
+  }
+  return <span className="text-[18px] font-black text-[#f59e0b]">LC</span>;
+}
+
+function TrophyIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M8 21h8" />
+      <path d="M12 17v4" />
+      <path d="M7 4h10v5a5 5 0 0 1-10 0V4Z" />
+      <path d="M17 6h3a2 2 0 0 1-2 2h-1" />
+      <path d="M7 6H4a2 2 0 0 0 2 2h1" />
+    </svg>
   );
 }
 
-function SectionHeader({ title, subtitle, link }: { title: string; subtitle: string; link: string }) {
+function CalendarIcon() {
   return (
-    <div className="flex items-end justify-between gap-4">
-      <div>
-        <h2 className="text-[20px] font-bold tracking-[-0.01em] text-[#10172d]">{title}</h2>
-        <p className="mt-[9px] text-[13px] text-[#44516a]">{subtitle}</p>
-      </div>
-      <Link href="#" className="inline-flex items-center gap-2 text-[13px] font-bold text-[var(--color-accent-strong)]">
-        {link} <ArrowRightIcon width={14} height={14} />
-      </Link>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="5" width="18" height="16" rx="2" />
+      <path d="M16 3v4M8 3v4M3 10h18" />
+    </svg>
+  );
+}
+
+function ArrowDownIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  );
+}
+
+function BarsIcon() {
+  return (
+    <div className="flex items-end gap-1">
+      <span className="h-7 w-2.5 rounded-full bg-[#4ea1ff]" />
+      <span className="h-10 w-2.5 rounded-full bg-[#ffd166]" />
+      <span className="h-5 w-2.5 rounded-full bg-[#ef476f]" />
     </div>
   );
 }
 
-function ResearchArtwork() {
+function ChartUpIcon() {
   return (
-    <div className="relative h-[190px]">
-      <svg viewBox="0 0 390 190" className="h-full w-full" fill="none">
-        <defs>
-          <linearGradient id="researchPurple" x1="0" y1="0" x2="1" y2="1">
-            <stop stopColor="#d9d2ff" />
-            <stop offset="1" stopColor="#6748f5" />
-          </linearGradient>
-          <filter id="researchShadow" x="-20%" y="-20%" width="160%" height="160%">
-            <feDropShadow dx="0" dy="12" stdDeviation="12" floodColor="#6d50ff" floodOpacity="0.24" />
-          </filter>
-        </defs>
-        <g stroke="#dfe3f4" strokeWidth="1">
-          <path d="M20 130 102 76 350 33" />
-          <path d="M48 50 160 91 378 112" />
-          <path d="M8 92 138 20 300 62" />
-        </g>
-        {[30, 70, 130, 194, 270, 336, 372].map((x, i) => (
-          <circle key={x} cx={x} cy={i % 2 ? 45 : 88} r="3" fill="#765cff" opacity="0.58" />
-        ))}
-        <g filter="url(#researchShadow)">
-          <rect x="122" y="50" width="118" height="92" rx="8" fill="#f7f5ff" stroke="#e6e1ff" transform="rotate(-10 181 96)" />
-          <rect x="135" y="64" width="90" height="8" rx="4" fill="#d8d0ff" transform="rotate(-10 181 96)" />
-          <path d="M142 95c25-18 51 8 77-13" stroke="#b7a9ff" strokeWidth="4" strokeLinecap="round" transform="rotate(-10 181 96)" />
-          <path d="M146 120c20-12 46 6 68-9" stroke="#c9c0ff" strokeWidth="4" strokeLinecap="round" transform="rotate(-10 181 96)" />
-          <circle cx="247" cy="82" r="42" stroke="url(#researchPurple)" strokeWidth="12" />
-          <path d="M276 111 326 157" stroke="url(#researchPurple)" strokeWidth="17" strokeLinecap="round" />
-        </g>
-      </svg>
-    </div>
-  );
-}
-
-function ResearchThumb({ tone }: { tone: string }) {
-  const color = tone === "green" ? "#42c793" : tone === "amber" ? "#f2a139" : "#7358ff";
-
-  return (
-    <svg viewBox="0 0 64 64" className="h-[64px] w-[64px] rounded-[7px]" fill="none">
-      <rect x="1" y="1" width="62" height="62" rx="7" fill={`${color}12`} stroke={color} />
-      {tone === "green" ? (
-        <path d="M9 31c14-19 31 18 46-2M9 22c14-19 31 18 46-2M9 40c14-19 31 18 46-2" stroke={color} strokeWidth="1.5" />
-      ) : tone === "amber" ? (
-        <g stroke={color} strokeWidth="1.5">
-          <circle cx="32" cy="32" r="5" />
-          {[12, 20, 32, 44, 52].map((x, i) => <circle key={x} cx={x} cy={i % 2 ? 16 : 48} r="2.5" />)}
-          <path d="M32 32 12 48M32 32 20 16M32 32 44 16M32 32 52 48" />
-        </g>
-      ) : (
-        <g stroke={color} strokeWidth="1.4">
-          {Array.from({ length: 6 }).map((_, i) => <path key={i} d={`M4 ${8 + i * 9}H60`} />)}
-          {Array.from({ length: 6 }).map((_, i) => <path key={i} d={`M${8 + i * 9} 4V60`} />)}
-        </g>
-      )}
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 19h16" />
+      <path d="M7 15v-4M12 15V7M17 15v-2" />
+      <path d="m6 10 5-4 5 3 2-3" />
     </svg>
   );
 }
 
-function topicClass(topic: string) {
-  if (topic === "Optimization") return "bg-emerald-50 text-emerald-600";
-  if (topic === "Theory") return "bg-orange-50 text-orange-500";
-  return "bg-[var(--color-accent-soft)] text-[var(--color-accent-strong)]";
-}
-function collectionTone(tone: string) {
-  if (tone === "green") return { bg: "bg-emerald-50", color: "text-emerald-600" };
-  if (tone === "amber") return { bg: "bg-orange-50", color: "text-orange-500" };
-  if (tone === "blue") return { bg: "bg-sky-50", color: "text-sky-600" };
-  return { bg: "bg-[var(--color-accent-soft)]", color: "text-[var(--color-accent-strong)]" };
-}
-
-function statusClass(status: string) {
-  if (status === "Finished") return "bg-emerald-50 text-emerald-600";
-  if (status === "Reading") return "bg-orange-50 text-orange-500";
-  if (status === "In Review") return "bg-sky-50 text-sky-600";
-  return "bg-slate-100 text-slate-500";
-}
-
-function FilterIcon() {
+function FlameIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M4 5h16l-6 7v5l-4 2v-7z" />
-    </svg>
-  );
-}
-
-function BookmarkIcon() {
-  return (
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#10172d" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M6 4h12v17l-6-4-6 4z" />
-    </svg>
-  );
-}
-
-function FlaskIcon() {
-  return (
-    <svg width="42" height="42" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M25 8h14" />
-      <path d="M28 8v19L14 51c-2 4 1 7 5 7h26c4 0 7-3 5-7L36 27V8" />
-      <path d="M22 45h20" />
-      <circle cx="27" cy="51" r="2" fill="currentColor" stroke="none" />
-      <circle cx="38" cy="48" r="2" fill="currentColor" stroke="none" />
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 3c2 3 4 4 4 8a4 4 0 0 1-8 0c0-2 1-3 2-5 0 3 2 3 2 5 0-4 2-5 2-8Z" />
+      <path d="M9 14a3 3 0 1 0 6 0c0-1.2-.6-2.1-1.4-2.9-.1 1.3-.8 2.2-1.6 2.9-.3-.9-.9-1.7-1.7-2.4C9.7 12.4 9 13 9 14Z" />
     </svg>
   );
 }

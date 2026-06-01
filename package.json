@@ -8,6 +8,7 @@
     "build": "next build",
     "dev": "next dev",
     "start": "next start",
+    "start:dev": "pnpm run dev",
     "types:check": "tsc --noEmit"
   },
   "dependencies": {

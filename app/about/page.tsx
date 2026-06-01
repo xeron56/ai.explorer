@@ -1,203 +1,322 @@
-import Link from "next/link";
-import { notFound } from "next/navigation";
-import { getAboutProfile, type AboutInterest, type AboutTool } from "../_lib/posts";
-import { GithubIcon, MailIcon } from "../_components/icons";
+import {
+  PageHeading,
+  PageShell,
+  RailCard,
+  Surface,
+  Tabs,
+} from "../_components/pagePrimitives";
+
+const features = [
+  ["All-in-One Platform", "Everything you need to code, learn, and grow in one place.", "green"],
+  ["Curated Content", "High quality tutorials, editorials, and resources created by experts.", "purple"],
+  ["Active Community", "Learn, discuss, and grow together with a passionate community.", "amber"],
+  ["Track Progress", "Monitor your progress, streaks, and rankings over time.", "blue"],
+  ["Privacy First", "Your data is secure and we never share your personal information.", "pink"],
+];
+
+const stats = [
+  ["150K+", "Active Users", "code"],
+  ["1.2M+", "Problems Solved", "spark"],
+  ["25K+", "Contests Hosted", "trophy"],
+  ["3.5K+", "Tutorials & Articles", "book"],
+  ["500K+", "Notes Created", "bookmark"],
+  ["120K+", "Community Members", "users"],
+];
+
+const stack = [
+  "React",
+  "Next.js",
+  "TypeScript",
+  "Tailwind CSS",
+  "Node.js",
+  "PostgreSQL",
+  "Redis",
+  "Docker",
+];
 
 export const metadata = { title: "About" };
 
-export default async function AboutPage() {
-  const profile = await getAboutProfile();
-  if (!profile) notFound();
-
+export default function AboutPage() {
   return (
-    <div className="mx-auto max-w-[1050px] pb-12 pt-[33px]">
-      <section className="grid gap-[58px] pb-[48px] lg:grid-cols-[minmax(0,455px)_1fr]">
-        <div>
-          <h1 className="text-[31px] font-extrabold tracking-[-0.03em] text-[#10172d]">
-            About <span className="bg-gradient-to-r from-[#5a34f4] to-[#704cff] bg-clip-text text-transparent">ai.explorer</span>
-          </h1>
-          <p className="mt-[26px] max-w-[425px] text-[15px] leading-[29px] text-[#10172d]">{profile.intro}</p>
-          <div className="mt-[46px] rounded-[8px] border bg-[#faf7ff] p-[26px] shadow-[0_12px_28px_rgba(91,53,244,0.04)]" style={{ borderColor: "#eee7ff" }}>
-            <div className="text-[26px] font-black leading-none text-[var(--color-accent-strong)]">“</div>
-            <p className="mt-[13px] max-w-[315px] text-[17px] font-semibold leading-[29px] text-[#263458]">{profile.quote}</p>
-            <div className="mt-[20px] text-[15px] font-bold text-[var(--color-accent-strong)]">- {profile.quoteAuthor}</div>
-          </div>
-        </div>
+    <PageShell>
+      <PageHeading
+        badge={
+          <span className="inline-flex h-10 w-10 items-center justify-center rounded-[14px] bg-[#efeaff] text-[#5b35f4]">
+            <InfoIcon />
+          </span>
+        }
+        title="About"
+        description="Learn more about code.explorer, our mission, and the people behind it."
+      />
 
-        <ProfileCard bio={profile.bio} location={profile.location} focus={profile.focus} experience={profile.experience} />
-      </section>
+      <div className="mt-8">
+        <Tabs items={["Overview", "Mission", "Team", "Careers", "Contact"]} active="Overview" />
+      </div>
 
-      <section className="grid gap-[48px] border-y py-[38px] lg:grid-cols-2" style={{ borderColor: "var(--color-border)" }}>
-        <div className="pr-6">
-          <SectionTitle icon="rocket" title="My Mission" />
-          <p className="mt-[28px] max-w-[560px] text-[14px] leading-[28px] text-[#10172d]">{profile.mission}</p>
-        </div>
-        <div className="border-l-0 lg:border-l lg:pl-[38px]" style={{ borderColor: "var(--color-border)" }}>
-          <SectionTitle icon="clipboard" title="What I Do Here" />
-          <ul className="mt-[24px] grid gap-[18px]">
-            {profile.doing.map((item) => (
-              <li key={item} className="flex items-center gap-[13px] text-[14px] font-medium text-[#10172d]">
-                <CheckCircleIcon /> {item}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      <section className="grid gap-[55px] border-b py-[34px] lg:grid-cols-[minmax(0,1fr)_330px]" style={{ borderColor: "var(--color-border)" }}>
-        <div>
-          <h2 className="text-[22px] font-extrabold tracking-[-0.02em] text-[#10172d]">My Interests</h2>
-          <div className="mt-[25px] grid gap-[14px] sm:grid-cols-2 lg:grid-cols-4">
-            {profile.interests.map((interest) => <InterestCard key={interest.title} interest={interest} />)}
-          </div>
-        </div>
-        <div>
-          <h2 className="text-[22px] font-extrabold tracking-[-0.02em] text-[#10172d]">Tools I Use</h2>
-          <div className="mt-[25px] grid grid-cols-2 gap-[13px]">
-            {profile.tools.map((tool) => <ToolPill key={tool.name} tool={tool} />)}
-          </div>
-        </div>
-      </section>
-
-      <section className="border-b py-[35px]" style={{ borderColor: "var(--color-border)" }}>
-        <h2 className="text-[22px] font-extrabold tracking-[-0.02em] text-[#10172d]">My Journey</h2>
-        <div className="relative mt-[29px] grid gap-[10px]">
-          <div className="absolute bottom-[22px] left-[13px] top-[22px] w-px bg-[#d8d0ff]" />
-          {profile.journey.map((step) => (
-            <div key={step.label} className="relative grid min-h-[58px] grid-cols-[190px_1fr] items-center overflow-hidden rounded-[8px] border bg-white" style={{ borderColor: "var(--color-border)" }}>
-              <span className="absolute left-[8px] h-[12px] w-[12px] rounded-full border-[3px] border-white bg-[var(--color-accent-strong)] shadow-[0_0_0_1px_#d8d0ff]" />
-              <span className="pl-[44px] text-[17px] font-extrabold text-[#263458]">{step.label}</span>
-              <span className="border-l px-[25px] py-[18px] text-[13px] leading-[22px] text-[#44516a]" style={{ borderColor: "var(--color-border)" }}>{step.description}</span>
+      <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_460px]">
+        <Surface className="p-7">
+          <div className="grid gap-6 lg:grid-cols-[220px_1fr] lg:items-center">
+            <Illustration />
+            <div>
+              <h2 className="text-[40px] font-extrabold tracking-[-0.04em] text-[#141b2d]">
+                Welcome to <span className="text-[#5b35f4]">code.explorer</span>
+              </h2>
+              <p className="mt-4 text-[15px] leading-8 text-[#56647f]">
+                Your all-in-one platform to practice coding, participate in contests, learn from
+                tutorials, save notes, and collaborate with a community of developers worldwide.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-5">
+                {[
+                  ["Practice", "Solve problems"],
+                  ["Learn", "Explore tutorials"],
+                  ["Compete", "Join contests"],
+                ].map(([label, desc]) => (
+                  <div key={label} className="rounded-[16px] border border-[var(--color-border)] bg-[#fbfbfe] px-4 py-3">
+                    <div className="text-[14px] font-bold text-[#141b2d]">{label}</div>
+                    <div className="mt-1 text-[13px] text-[#7a869b]">{desc}</div>
+                  </div>
+                ))}
+              </div>
             </div>
-          ))}
-        </div>
-      </section>
+          </div>
+        </Surface>
 
-      <section className="mt-[38px] flex min-h-[106px] items-center gap-[25px] rounded-[8px] border bg-[#faf7ff] px-[32px]" style={{ borderColor: "#e5dbff" }}>
-        <span className="flex h-[58px] w-[58px] items-center justify-center rounded-full bg-[#ebe5ff] text-[var(--color-accent-strong)]"><MailIcon width={28} height={28} /></span>
-        <div className="min-w-0 flex-1">
-          <h2 className="text-[20px] font-extrabold text-[#10172d]">Let's Connect</h2>
-          <p className="mt-[9px] text-[13px] leading-[22px] text-[#44516a]">I'm always open to discussions, collaborations, and new ideas.<br />Feel free to reach out!</p>
-        </div>
-        <div className="flex gap-[16px]">
-          <a href={`mailto:${profile.email}`} className="inline-flex h-[46px] min-w-[182px] items-center justify-center gap-[11px] rounded-[7px] bg-gradient-to-r from-[#5a34f4] to-[#704cff] text-[13px] font-bold text-white shadow-[0_12px_24px_rgba(91,53,244,0.17)]">
-            <MailIcon width={16} height={16} /> Send Email
-          </a>
-          <Link href={profile.github} className="inline-flex h-[46px] min-w-[182px] items-center justify-center gap-[11px] rounded-[7px] border bg-white text-[13px] font-bold text-[#10172d]" style={{ borderColor: "#bcb0ec" }}>
-            <GithubIcon width={16} height={16} /> View GitHub
-          </Link>
-        </div>
-      </section>
-    </div>
-  );
-}
-
-function ProfileCard({ bio, location, focus, experience }: { bio: string; location: string; focus: string; experience: string }) {
-  return (
-    <article className="overflow-hidden rounded-[8px] border bg-white shadow-[0_12px_28px_rgba(15,23,42,0.035)]" style={{ borderColor: "var(--color-border)" }}>
-      <div className="grid gap-[28px] p-[30px] md:grid-cols-[116px_1fr]">
-        <Avatar />
-        <p className="text-[15px] font-semibold leading-[29px] text-[#10172d]">{bio}</p>
+        <Surface className="p-7">
+          <h2 className="text-[18px] font-extrabold text-[#141b2d]">code.explorer in Numbers</h2>
+          <div className="mt-6 grid grid-cols-2 gap-4">
+            {stats.map(([value, label, icon]) => (
+              <div key={label} className="rounded-[20px] border border-[var(--color-border)] p-5">
+                <div className="mb-3 grid h-12 w-12 place-items-center rounded-[16px] bg-[#f6f4ff] text-[#5b35f4]">
+                  <StatIcon kind={icon} />
+                </div>
+                <div className="text-[30px] font-extrabold tracking-[-0.03em] text-[#12182b]">{value}</div>
+                <div className="mt-2 text-[13px] text-[#687690]">{label}</div>
+              </div>
+            ))}
+          </div>
+        </Surface>
       </div>
-      <div className="grid border-t p-[27px] md:grid-cols-3" style={{ borderColor: "var(--color-border)" }}>
-        <ProfileFact icon="pin" label="Location" value={location} />
-        <ProfileFact icon="focus" label="Focus" value={focus} />
-        <ProfileFact icon="bag" label="Experience" value={experience} />
+
+      <div className="mt-6 grid gap-4 xl:grid-cols-5">
+        {features.map(([title, description, tone]) => (
+          <Surface key={title} className="p-5 text-center">
+            <div className={`mx-auto grid h-16 w-16 place-items-center rounded-full ${toneBg(tone)} ${toneText(tone)}`}>
+              <FeatureIcon tone={tone} />
+            </div>
+            <h3 className="mt-5 text-[20px] font-extrabold tracking-[-0.03em] text-[#141b2d]">{title}</h3>
+            <p className="mt-3 text-[14px] leading-7 text-[#5d6b84]">{description}</p>
+          </Surface>
+        ))}
       </div>
-    </article>
+
+      <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_520px]">
+        <Surface className="p-7">
+          <h2 className="text-[28px] font-extrabold tracking-[-0.03em] text-[#141b2d]">Our Story</h2>
+          <div className="mt-5 space-y-5 text-[15px] leading-8 text-[#56647f]">
+            <p>
+              code.explorer was started with a simple idea: make coding practice and learning
+              accessible, structured, and enjoyable for everyone.
+            </p>
+            <p>
+              Whether you are a beginner taking your first steps in programming or an experienced
+              engineer preparing for interviews and contests, we are here to support your journey.
+            </p>
+            <p>
+              We continuously build and improve the platform based on your feedback. Thank you for
+              being a part of our journey.
+            </p>
+          </div>
+          <div className="mt-6 rounded-[22px] bg-[#f7f3ff] px-5 py-6">
+            <div className="text-[28px] font-black text-[#5b35f4]">"</div>
+            <p className="mt-2 text-[20px] font-semibold leading-8 text-[#5b35f4]">
+              The best way to predict the future is to create it.
+            </p>
+            <div className="mt-3 text-[15px] font-bold text-[#4f5d78]">Alan Kay</div>
+          </div>
+        </Surface>
+
+        <div className="space-y-6">
+          <RailCard title="Technology Stack">
+            <p className="text-[14px] leading-7 text-[#5d6b84]">
+              Built using modern technologies for performance, scalability and reliability.
+            </p>
+            <div className="mt-5 grid grid-cols-2 gap-3">
+              {stack.map((item) => (
+                <div key={item} className="rounded-[16px] border border-[var(--color-border)] px-4 py-3 text-[14px] font-bold text-[#141b2d]">
+                  {item}
+                </div>
+              ))}
+            </div>
+          </RailCard>
+
+          <RailCard title="Connect with us">
+            <p className="text-[14px] leading-7 text-[#5d6b84]">
+              We&apos;d love to hear from you. Follow us on social media or reach out anytime.
+            </p>
+            <div className="mt-5 flex flex-wrap gap-3">
+              {["GitHub", "Twitter", "LinkedIn", "YouTube", "Email"].map((item) => (
+                <button
+                  key={item}
+                  className="grid h-12 w-12 place-items-center rounded-[16px] border border-[var(--color-border)] bg-white text-[12px] font-bold text-[#141b2d]"
+                >
+                  {item.slice(0, 2)}
+                </button>
+              ))}
+            </div>
+          </RailCard>
+        </div>
+      </div>
+
+      <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-[var(--color-border)] pt-6 text-[14px] text-[#738099]">
+        <span>© 2024 code.explorer. All rights reserved.</span>
+        <div className="flex flex-wrap gap-6">
+          <button>Privacy Policy</button>
+          <button>Terms of Service</button>
+          <button>Cookie Policy</button>
+        </div>
+      </div>
+    </PageShell>
   );
-}
-
-function Avatar() {
-  return (
-    <div className="relative h-[116px] w-[116px] overflow-hidden rounded-full bg-[#d6e4ff]">
-      <div className="absolute left-1/2 top-[30px] h-[32px] w-[32px] -translate-x-1/2 rounded-full bg-[#c98952]" />
-      <div className="absolute left-[28px] top-[23px] h-[24px] w-[60px] rounded-t-full bg-[#111827]" />
-      <div className="absolute bottom-[12px] left-1/2 h-[54px] w-[74px] -translate-x-1/2 rounded-t-[34px] bg-[#253a68]" />
-      <div className="absolute left-[43px] top-[47px] h-[3px] w-[3px] rounded-full bg-[#111827]" />
-      <div className="absolute right-[43px] top-[47px] h-[3px] w-[3px] rounded-full bg-[#111827]" />
-    </div>
-  );
-}
-
-function ProfileFact({ icon, label, value }: { icon: string; label: string; value: string }) {
-  return (
-    <div className="grid grid-cols-[28px_1fr] gap-[12px] text-[13px]">
-      <span className="mt-[3px] text-[var(--color-accent-strong)]"><SmallIcon type={icon} /></span>
-      <span>
-        <span className="block font-semibold text-[#59657b]">{label}</span>
-        <span className="mt-[5px] block font-extrabold text-[#10172d]">{value}</span>
-      </span>
-    </div>
-  );
-}
-
-function SectionTitle({ icon, title }: { icon: string; title: string }) {
-  return (
-    <h2 className="flex items-center gap-[13px] text-[21px] font-extrabold tracking-[-0.02em] text-[#10172d]">
-      <span className="flex h-[34px] w-[34px] items-center justify-center rounded-[7px] bg-[var(--color-accent-soft)] text-[var(--color-accent-strong)]"><SmallIcon type={icon} /></span>
-      {title}
-    </h2>
-  );
-}
-
-function InterestCard({ interest }: { interest: AboutInterest }) {
-  return (
-    <article className="min-h-[210px] rounded-[8px] border bg-white p-[25px] text-center shadow-[0_8px_22px_rgba(15,23,42,0.03)]" style={{ borderColor: "var(--color-border)" }}>
-      <span className={`mx-auto flex h-[52px] w-[52px] items-center justify-center rounded-[8px] ${toneBg(interest.tone)} ${toneText(interest.tone)}`}>
-        <SmallIcon type={interest.icon} />
-      </span>
-      <h3 className="mt-[21px] text-[14px] font-extrabold text-[#10172d]">{interest.title}</h3>
-      <p className="mt-[13px] text-[12.5px] leading-[22px] text-[#44516a]">{interest.description}</p>
-    </article>
-  );
-}
-
-function ToolPill({ tool }: { tool: AboutTool }) {
-  return (
-    <div className="flex h-[47px] items-center gap-[13px] rounded-[7px] border bg-white px-[17px] text-[13px] font-bold text-[#10172d]" style={{ borderColor: "var(--color-border)" }}>
-      <span className={toneText(tool.tone)}><SmallIcon type={tool.icon} /></span>
-      {tool.name}
-    </div>
-  );
-}
-
-function CheckCircleIcon() {
-  return <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5b35f4" strokeWidth="2.4"><circle cx="12" cy="12" r="9" /><path d="m8 12 2.5 2.5L16 9" /></svg>;
-}
-
-function SmallIcon({ type }: { type: string }) {
-  if (type === "brain") return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path d="M9 4a3 3 0 0 0-3 3v1a3 3 0 0 0-1 5.7V15a3 3 0 0 0 4 2.8V20a2 2 0 0 0 4 0V4a2 2 0 0 0-4 0z" /><path d="M15 4a3 3 0 0 1 3 3v1a3 3 0 0 1 1 5.7V15a3 3 0 0 1-4 2.8" /></svg>;
-  if (type === "chart") return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path d="M3 20h18" /><path d="M7 17V9M12 17V5M17 17v-6" /><path d="m6 9 6-4 5 6" /></svg>;
-  if (type === "rocket") return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path d="M5 15c-1 1-2 4-2 4s3-1 4-2" /><path d="M8 14 4 10l5-1 5-5c3-3 6-2 6-2s1 3-2 6l-5 5-1 5z" /><path d="m15 9-6 6" /></svg>;
-  if (type === "lightbulb") return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path d="M9 18h6" /><path d="M10 22h4" /><path d="M8 14a6 6 0 1 1 8 0c-1 1-1 2-1 4H9c0-2 0-3-1-4z" /></svg>;
-  if (type === "clipboard") return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><rect x="6" y="5" width="12" height="16" rx="2" /><path d="M9 3h6v4H9z" /><path d="M9 12h6M9 16h6" /></svg>;
-  if (type === "pin") return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0z" /><circle cx="12" cy="10" r="2" /></svg>;
-  if (type === "focus") return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path d="M12 3v4M12 17v4M3 12h4M17 12h4" /><circle cx="12" cy="12" r="3" /><circle cx="12" cy="12" r="8" /></svg>;
-  if (type === "bag") return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><rect x="5" y="7" width="14" height="13" rx="2" /><path d="M9 7V5a3 3 0 0 1 6 0v2" /></svg>;
-  if (type === "python") return <span className="text-[20px] font-black">Py</span>;
-  if (type === "pytorch") return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path d="M12 22c4 0 7-3 7-7 0-3-2-5-4-7 .2 2-1 3.5-2.2 4.4C13 9 11 6 8 4c.4 4-3 6-3 11 0 4 3 7 7 7z" /></svg>;
-  if (type === "tensorflow") return <span className="text-[22px] font-black">T</span>;
-  if (type === "numpy") return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3z" /><path d="M4 7.5 12 12l8-4.5" /><path d="M12 12v9" /></svg>;
-  if (type === "pandas") return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path d="M6 4v16M18 4v16M11 7v10M13 5v4M13 15v4" /></svg>;
-  if (type === "formula") return <span className="font-serif text-[18px] font-black">LaTeX</span>;
-  if (type === "code") return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path d="m8 9-4 3 4 3M16 9l4 3-4 3M14 5l-4 14" /></svg>;
-  return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><circle cx="12" cy="12" r="9" /></svg>;
 }
 
 function toneBg(tone: string) {
-  if (tone === "green") return "bg-emerald-50";
-  if (tone === "orange" || tone === "amber") return "bg-orange-50";
-  if (tone === "blue") return "bg-sky-50";
-  if (tone === "red") return "bg-red-50";
-  if (tone === "dark") return "bg-slate-100";
-  return "bg-[var(--color-accent-soft)]";
+  if (tone === "green") return "bg-[#edfdf3]";
+  if (tone === "amber") return "bg-[#fff7e9]";
+  if (tone === "blue") return "bg-[#eef5ff]";
+  if (tone === "pink") return "bg-[#fff0f6]";
+  return "bg-[#f5f3ff]";
 }
+
 function toneText(tone: string) {
-  if (tone === "green") return "text-emerald-600";
-  if (tone === "orange" || tone === "amber") return "text-orange-500";
-  if (tone === "blue") return "text-sky-600";
-  if (tone === "red") return "text-red-500";
-  if (tone === "dark") return "text-slate-700";
-  return "text-[var(--color-accent-strong)]";
+  if (tone === "green") return "text-[#16a34a]";
+  if (tone === "amber") return "text-[#f59e0b]";
+  if (tone === "blue") return "text-[#2563eb]";
+  if (tone === "pink") return "text-[#db2777]";
+  return "text-[#5b35f4]";
+}
+
+function InfoIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 8v.01M11 12h1v4h1" />
+    </svg>
+  );
+}
+
+function Illustration() {
+  return (
+    <svg viewBox="0 0 280 210" className="w-full" fill="none">
+      <rect x="34" y="46" width="170" height="102" rx="12" fill="#ffffff" stroke="#c9d3e5" strokeWidth="4" />
+      <rect x="58" y="66" width="122" height="62" rx="8" fill="#f4f0ff" />
+      <path d="M98 81 80 97l18 16" stroke="#5b35f4" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="m142 81 18 16-18 16" stroke="#5b35f4" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="m126 76-12 45" stroke="#5b35f4" strokeWidth="6" strokeLinecap="round" />
+      <path d="M86 165h70" stroke="#7d889e" strokeWidth="5" strokeLinecap="round" />
+      <path d="M120 149v16" stroke="#7d889e" strokeWidth="5" strokeLinecap="round" />
+      <path d="M40 145c-14 0-20 8-20 18 0 10 7 18 18 18" stroke="#6fcf97" strokeWidth="6" strokeLinecap="round" />
+      <path d="M224 129h24c8 0 14 6 14 14v20h-38z" fill="#7c5cff" />
+    </svg>
+  );
+}
+
+function FeatureIcon({ tone }: { tone: string }) {
+  if (tone === "green") return <ShieldIcon />;
+  if (tone === "amber") return <UsersIcon />;
+  if (tone === "blue") return <ChartIcon />;
+  if (tone === "pink") return <LockIcon />;
+  return <CodeIcon />;
+}
+
+function StatIcon({ kind }: { kind: string }) {
+  if (kind === "spark") return <SparkIcon />;
+  if (kind === "trophy") return <TrophyIcon />;
+  if (kind === "book") return <BookIcon />;
+  if (kind === "bookmark") return <BookmarkIcon />;
+  if (kind === "users") return <UsersIcon />;
+  return <CodeIcon />;
+}
+
+function CodeIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m8 9-4 3 4 3M16 9l4 3-4 3M14 5l-4 14" />
+    </svg>
+  );
+}
+
+function SparkIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m13 2-1 7h5l-6 13 1-9H7l6-11Z" />
+    </svg>
+  );
+}
+
+function TrophyIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M8 21h8" />
+      <path d="M12 17v4" />
+      <path d="M7 4h10v5a5 5 0 0 1-10 0V4Z" />
+      <path d="M17 6h3a2 2 0 0 1-2 2h-1" />
+      <path d="M7 6H4a2 2 0 0 0 2 2h1" />
+    </svg>
+  );
+}
+
+function BookIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z" />
+    </svg>
+  );
+}
+
+function BookmarkIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6 4h12v17l-6-4-6 4z" />
+    </svg>
+  );
+}
+
+function UsersIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+    </svg>
+  );
+}
+
+function ShieldIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
+      <path d="m9 12 2 2 4-4" />
+    </svg>
+  );
+}
+
+function ChartIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 19h16" />
+      <path d="M7 15v-4M12 15V7M17 15v-2" />
+      <path d="m6 10 5-4 5 3 2-3" />
+    </svg>
+  );
+}
+
+function LockIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="5" y="11" width="14" height="10" rx="2" />
+      <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+    </svg>
+  );
 }
