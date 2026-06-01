@@ -1,7 +1,12 @@
-import { BlogArticleScreen } from "../_components/BlogArticleScreen";
+import { FinanceBlogHome } from "../_components/FinanceBlogHome";
 
 export const metadata = { title: "Blog" };
 
-export default function BlogPage() {
-  return <BlogArticleScreen />;
+export default async function BlogPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
+  const { q } = await searchParams;
+  return <FinanceBlogHome query={q} />;
 }

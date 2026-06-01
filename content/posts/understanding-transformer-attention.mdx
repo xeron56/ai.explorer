@@ -1,72 +1,33 @@
 ---
-title: "Understanding Transformer Attention"
-description: "A mathematical walkthrough of attention mechanism with animations."
-date: "2024-05-20"
-category: "Deep Learning"
-readingTime: 8
-cardClassName: "rk"
+title: "AI Revolution in Investing: Opportunities and Risks in 2024"
+description: "How artificial intelligence is transforming the investment landscape and what it means for your portfolio."
+date: "2024-05-12"
+category: "Investing"
+readingTime: 6
+tags: ["Investing", "Stock Market", "AI"]
 ---
 
-Attention is, at its core, a soft lookup table. Given a query $q$, we want to
-fetch a weighted sum of values $V$, where the weights come from how well each
-key in $K$ matches the query.
+Artificial intelligence is moving from a research theme into the operating layer of modern finance. Portfolio screens, risk alerts, earnings-call summaries, and trade surveillance can now be produced in minutes instead of days.
 
-## Scaled dot-product attention
+## Where AI helps investors
 
-The canonical form is:
+AI is strongest when the input is wide, repetitive, and noisy. It can scan company filings, flag abnormal guidance language, compare margins across peers, and surface changes that a human analyst might miss.
 
-$$
-\operatorname{Attention}(Q, K, V) = \operatorname{softmax}\!\left(\frac{Q K^\top}{\sqrt{d_k}}\right) V
-$$
+The practical opportunity is not replacing judgment. It is giving investors a faster first draft of the market map.
 
-where $Q \in \mathbb{R}^{n \times d_k}$, $K \in \mathbb{R}^{m \times d_k}$, and
-$V \in \mathbb{R}^{m \times d_v}$. The $\sqrt{d_k}$ scaling keeps the variance
-of $QK^\top$ at roughly $1$ before the softmax saturates.
+## The risk side
 
-### Why the temperature matters
+Models can be confidently wrong. They can overweight recent data, miss regime changes, and repeat consensus assumptions at scale. In fast markets, the same signals can also become crowded.
 
-If $q$ and $k_i$ are independent with unit variance, then
-$\mathbb{E}[q \cdot k_i] = 0$ and $\operatorname{Var}(q \cdot k_i) = d_k$.
-Without the scaling, large $d_k$ pushes the softmax into a one-hot regime, which
-kills gradient flow.
+Investors should treat AI outputs as research inputs, not trading instructions.
 
-## Multi-head attention
+## A balanced workflow
 
-We split the model dimension into $h$ heads:
+Start with a simple checklist:
 
-$$
-\operatorname{MultiHead}(Q, K, V) = \operatorname{Concat}(\text{head}_1, \dots, \text{head}_h) W^O
-$$
+- What data did the model use?
+- Is the output supported by primary filings or market data?
+- What would make the recommendation wrong?
+- Is the position sized for uncertainty?
 
-with $\text{head}_i = \operatorname{Attention}(Q W_i^Q, K W_i^K, V W_i^V)$.
-Each head learns a different relational projection — syntactic structure,
-co-reference, positional patterns — and the concatenation gives the next layer a
-richer feature mix.
-
-## A small worked example
-
-Suppose $n = m = 4$, $d_k = 2$, and
-
-$$
-Q = \begin{bmatrix} 1 & 0 \\ 0 & 1 \\ 1 & 1 \\ 1 & -1 \end{bmatrix},
-\quad K = Q, \quad V = I_4.
-$$
-
-Then $\frac{QK^\top}{\sqrt{2}}$ has its largest entries on the diagonal — each
-token attends mostly to itself, with side-lobes wherever query and key align.
-
-```python
-import torch
-import torch.nn.functional as F
-
-def attention(q, k, v):
-    scores = q @ k.transpose(-2, -1) / (q.size(-1) ** 0.5)
-    return F.softmax(scores, dim=-1) @ v
-```
-
-## What attention is *not*
-
-It is not a "memory" — there is no state that persists across forward passes.
-It is also not, strictly, a probability distribution over tokens; the softmax
-output is a vector in the simplex but the *interpretation* as probability is a
-convenient fiction that breaks once you start mixing heads.
+AI can improve research speed, but risk control still depends on position sizing, diversification, and discipline.

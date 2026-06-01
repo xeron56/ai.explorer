@@ -4,17 +4,17 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-bg: #ffffff;
-  --color-bg-elevated: #f7f7fb;
+  --color-bg: #f5f8f4;
+  --color-bg-elevated: #ffffff;
   --color-fg: #10172d;
-  --color-fg-muted: #526079;
-  --color-fg-subtle: #7b849b;
-  --color-border: #e2e6ef;
+  --color-fg-muted: #566674;
+  --color-fg-subtle: #7b8a96;
+  --color-border: #dfe9e1;
   --color-sidebar: #081225;
-  --color-accent: #7358ff;
-  --color-accent-strong: #5b35f4;
-  --color-accent-soft: #f0edff;
-  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+  --color-accent: #22c55e;
+  --color-accent-strong: #15924c;
+  --color-accent-soft: #eaf8ee;
+  --font-sans: var(--font-manrope, ui-sans-serif), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
     Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
@@ -44,6 +44,7 @@ html, body {
 
 body {
   overflow-x: hidden;
+  background: #fbfcfb;
 }
 
 * { border-color: var(--color-border); }
@@ -61,11 +62,13 @@ body {
 .prose-post li { margin: 0.25rem 0; }
 .prose-post blockquote { border-left: 3px solid var(--color-accent); padding-left: 1rem; margin: 1rem 0; font-style: italic; color: var(--color-fg-muted); }
 .prose-post code:not(pre code) { background: var(--color-bg-elevated); border-radius: 4px; padding: 2px 6px; font-size: 0.9em; font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace; }
-.prose-post pre { background: #0b1124; color: #e6e9f5; border-radius: 0.75rem; padding: 1rem; overflow-x: auto; margin: 1.25rem 0; font-size: 0.875rem; line-height: 1.6; font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace; }
+.prose-post pre { background: #0b1712; color: #e6f2eb; border-radius: 1rem; padding: 1rem; overflow-x: auto; margin: 1.25rem 0; font-size: 0.875rem; line-height: 1.6; font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace; }
 .dark .prose-post pre { background: #060a1c; }
 .prose-post hr { border: 0; border-top: 1px solid var(--color-border); margin: 2rem 0; }
 .prose-post table { width: 100%; border-collapse: collapse; margin: 1.25rem 0; font-size: 0.875rem; }
 .prose-post th, .prose-post td { border: 1px solid var(--color-border); padding: 0.5rem 0.75rem; text-align: left; }
 .prose-post img { border-radius: 0.75rem; margin: 1.5rem 0; }
+.prose-post strong { font-weight: 800; color: #122131; }
+.prose-post h2, .prose-post h3 { color: #122131; }
 
 .katex-display { overflow-x: auto; overflow-y: hidden; padding: 0.25rem 0; }

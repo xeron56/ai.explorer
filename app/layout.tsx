@@ -1,28 +1,27 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { ThemeProvider } from "./_components/ThemeProvider";
-import { Sidebar } from "./_components/Sidebar";
-import { TopBar } from "./_components/TopBar";
+import { Manrope } from "next/font/google";
+import { FinanceHeader } from "./_components/FinanceHeader";
 import "./globals.css";
 
+const manrope = Manrope({
+  subsets: ["latin"],
+  variable: "--font-manrope",
+});
+
 export const metadata: Metadata = {
-  title: { default: "code.explorer — Code. Solve. Conquer.", template: "%s · code.explorer" },
-  description: "Programming tutorials, problem solutions, contest notes, and coding journey essays.",
+  title: { default: "Stock&Trade Blog", template: "%s · Stock&Trade" },
+  description: "A finance-styled MDX blog for market analysis, investing ideas, and long-form insights.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="min-h-screen">
-        <ThemeProvider>
-          <div className="flex min-h-screen">
-            <Sidebar />
-            <div className="flex-1 lg:ml-[246px]">
-              <TopBar />
-              <main className="px-6 md:px-10 lg:px-[50px] pb-10">{children}</main>
-            </div>
-          </div>
-        </ThemeProvider>
+      <body className={`${manrope.variable} ${manrope.className} min-h-screen`}>
+        <div className="min-h-screen">
+          <FinanceHeader />
+          <main className="px-6 pb-14 md:px-10 lg:px-[50px]">{children}</main>
+        </div>
       </body>
     </html>
   );

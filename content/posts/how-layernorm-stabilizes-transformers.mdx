@@ -1,79 +1,29 @@
 ---
-title: "How LayerNorm Stabilizes Transformers"
-description: "Dive into the math, intuition, and impact of Layer Normalization."
-date: "2024-05-18"
-category: "Deep Learning"
-readingTime: 10
-cardClassName: "norm"
-tags: ["transformer", "normalization", "layernorm", "deep-learning", "optimization"]
-liveCode: |
-  import torch
-  import torch.nn as nn
-
-  ln = nn.LayerNorm(8)
-  x = torch.tensor([[1.2, -0.7, 0.3, 2.1, -1.4, 0.0, 0.8, -0.3]])
-
-  y = ln(x)
-  print(y)
-liveOutput: |
-  tensor([[ 0.9981, -1.1933, -0.0391,
-            1.6650, -1.3380, -0.6531,
-            0.4568,  0.0394]])
+title: "How to Build a Diversified Portfolio"
+description: "A step-by-step guide to diversify your investments and manage risk effectively."
+date: "2024-05-10"
+category: "Personal Finance"
+readingTime: 5
+tags: ["Investing", "Personal Finance", "Portfolio"]
 ---
 
-Layer normalization removes a feature-wise mean and variance, then re-injects
-learnable scale $\gamma$ and shift $\beta$:
+Diversification is the habit of refusing to let one forecast decide your financial future. A strong portfolio spreads exposure across asset classes, sectors, currencies, and time horizons.
 
-$$
-\operatorname{LN}(x) = \gamma \odot \frac{x - \mu(x)}{\sqrt{\sigma^2(x) + \epsilon}} + \beta
-$$
+## Start with the goal
 
-where the statistics are computed across the **feature** axis, not the batch
-axis. This makes LayerNorm independent of batch size, which is exactly what you
-want for variable-length sequence models.
+Before choosing investments, define the job of the money. Emergency savings, a home down payment, retirement capital, and speculative capital should not share the same risk profile.
 
-## Pre-norm vs. post-norm
+## Use broad building blocks
 
-The original Transformer applied LayerNorm *after* the residual addition. Most
-modern stacks apply it *before* the sub-layer:
+For many investors, the core can be built from low-cost funds:
 
-$$
-x_{\ell+1} = x_\ell + \operatorname{Sublayer}(\operatorname{LN}(x_\ell))
-$$
+- Broad U.S. equity exposure
+- International equity exposure
+- High-quality bonds or cash equivalents
+- A small allocation to alternatives if appropriate
 
-Pre-norm is more forgiving at large depth because the residual path is the
-identity — gradients can travel from layer $L$ back to layer $1$ without ever
-passing through a normalization step.
+The exact mix depends on time horizon and tolerance for drawdowns.
 
-## A quick stability sketch
+## Rebalance with rules
 
-Without normalization, each sub-layer adds a vector whose norm can grow
-linearly with depth. After $L$ layers the activation norm is $O(\sqrt{L})$. With
-LayerNorm in the pre-norm position, the normalization forces the sub-layer
-input to unit-ish scale before it sees any non-linearity, so each contribution
-is bounded.
-
-```python
-class LayerNorm(nn.Module):
-    def __init__(self, dim, eps=1e-5):
-        super().__init__()
-        self.gamma = nn.Parameter(torch.ones(dim))
-        self.beta = nn.Parameter(torch.zeros(dim))
-        self.eps = eps
-
-    def forward(self, x):
-        mu = x.mean(-1, keepdim=True)
-        var = x.var(-1, keepdim=True, unbiased=False)
-        return self.gamma * (x - mu) / (var + self.eps).sqrt() + self.beta
-```
-
-## RMSNorm: less is more
-
-Recent models drop the mean subtraction entirely:
-
-$$
-\operatorname{RMSNorm}(x) = \gamma \odot \frac{x}{\sqrt{\frac{1}{d}\sum_i x_i^2 + \epsilon}}
-$$
-
-It's a cheaper kernel, removes the $\beta$ parameter, and in practice matches or
-beats LayerNorm on large language models.
+Markets drift. Rebalancing once or twice a year keeps risk aligned with the original plan and forces a disciplined buy-low, sell-high behavior.

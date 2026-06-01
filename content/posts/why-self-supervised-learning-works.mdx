@@ -1,59 +1,22 @@
 ---
-title: "Why Self-Supervised Learning Works"
-description: "Exploring the magic behind self-supervised representations."
-date: "2024-04-28"
-category: "Deep Learning"
-readingTime: 9
-cardClassName: "ssl"
+title: "Emergency Fund: Why It's Your First Investment"
+description: "Why an emergency fund is crucial and how to build one step by step."
+date: "2024-05-06"
+category: "Personal Finance"
+readingTime: 4
+tags: ["Personal Finance", "Saving", "Risk Management"]
 ---
 
-Self-supervised learning (SSL) creates labels *from the data itself* — masked
-patches, predicted next tokens, contrasted views. The bet is that solving these
-pretext tasks forces the model to discover features that transfer to whatever
-you actually care about.
+An emergency fund is not idle money. It is insurance against being forced to sell investments or borrow at a bad time.
 
-## Contrastive learning, in one equation
+## Choose the right size
 
-The InfoNCE loss says: pull positive pairs together, push everything else apart.
+Three to six months of essential expenses is a practical starting range. Freelancers, single-income households, and people in cyclical industries may need a larger buffer.
 
-$$
-\mathcal{L}_\text{NCE} = -\mathbb{E}\!\left[ \log \frac{\exp(\langle z_i, z_i^+ \rangle / \tau)}{\sum_{j} \exp(\langle z_i, z_j \rangle / \tau)} \right]
-$$
+## Keep it boring
 
-with temperature $\tau$ controlling how sharply the model distinguishes the
-positive from the negatives.
+The fund should be liquid, stable, and separate from daily spending. High-yield savings accounts, money market funds, or short Treasury bills can work depending on access needs.
 
-## Why does it transfer?
+## Build it automatically
 
-The shortest honest answer: under mild conditions, InfoNCE is a lower bound on
-the mutual information between two views, $I(Z_1; Z_2)$. Maximizing the bound
-maximizes information shared between augmentations, and that shared information
-is exactly the "object-level" signal — what stays invariant when you crop,
-color-jitter, or mask.
-
-## Non-contrastive methods
-
-BYOL, SimSiam, DINO, and friends remove the negatives entirely. They use one
-of three tricks to prevent collapse:
-
-1. A **momentum target** — the target network is an EMA of the online network.
-2. A **predictor head** — only the online branch is trained, breaking the
-   symmetry that would otherwise let both branches map to a constant.
-3. **Centering / sharpening** — DINO uses a moving-average center and a
-   temperature mismatch between teacher and student.
-
-```python
-# SimSiam-style forward pass
-z1, z2 = f(view1), f(view2)
-p1, p2 = h(z1), h(z2)
-loss = - (cos_sim(p1, z2.detach()) + cos_sim(p2, z1.detach())) / 2
-```
-
-The `.detach()` is doing most of the work — it stops the model from co-adapting
-its own targets, which is what would otherwise produce constant features.
-
-## What's left to figure out
-
-Why exactly non-contrastive methods *don't* collapse is still not fully settled.
-Empirically they work. Theoretically, the explanations are improving but not
-yet airtight.
+Set a monthly transfer and treat it like a bill. Once the target is reached, new savings can flow toward long-term investments.
