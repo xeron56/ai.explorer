@@ -23,20 +23,30 @@ export default async function LearningChapterPage({ params }: { params: Promise<
   if (!chapter) notFound();
   const series = await getLearningSeriesBySlug(chapter.series);
   const MDX = await compileMdx(chapter.content);
-  const previous = chapters.find((item) => item.order === chapter.order - 1);
-  const next = chapters.find((item) => item.order === chapter.order + 1);
+  const seriesChapters = chapters.filter((item) => item.series === chapter.series);
+  const previous = seriesChapters.find((item) => item.order === chapter.order - 1);
+  const next = seriesChapters.find((item) => item.order === chapter.order + 1);
 
   return (
     <div className="mx-auto max-w-[820px] pb-14 pt-[39px]">
-      <Link href="/learning" className="text-[13px] font-bold text-[var(--color-accent-strong)]">&larr; Back to learning</Link>
-      <header className="mt-[28px] rounded-[10px] border bg-white p-[28px]" style={{ borderColor: "var(--color-border)" }}>
-        <div className="text-[13px] font-bold text-[var(--color-accent-strong)]">{series?.title ?? "Learning"} / Chapter {chapter.order}</div>
+      <Link href="/blog" className="text-[13px] font-bold text-[#15924c]">&larr; Back to tutorials</Link>
+      <header className="mt-[28px] rounded-[28px] border border-[#dfe9e1] bg-[linear-gradient(135deg,rgba(255,255,255,0.98)_0%,rgba(242,250,244,0.96)_100%)] p-[28px] shadow-[0_20px_60px_rgba(15,23,42,0.05)]">
+        <div className="text-[13px] font-bold uppercase tracking-[0.12em] text-[#15924c]">
+          {series?.title ?? "Learning"} / Chapter {chapter.order}
+        </div>
+        <div className="mt-[10px] text-[13px] font-bold uppercase tracking-[0.12em] text-[#70808d]">{chapter.chapterTitle}</div>
         <h1 className="mt-[13px] text-[38px] font-extrabold leading-[1.12] tracking-[-0.03em] text-[#10172d]">{chapter.title}</h1>
         <p className="mt-[14px] max-w-[650px] text-[17px] leading-[28px] text-[#44516a]">{chapter.description}</p>
-        <div className="mt-[23px] flex items-center gap-[18px] text-[13px] font-semibold text-[#59657b]">
+        <div className="mt-[23px] flex flex-wrap items-center gap-[18px] text-[13px] font-semibold text-[#59657b]">
+          <span>{chapter.author}</span>
           <span>{chapter.formattedDate}</span>
           <span className="inline-flex items-center gap-2"><ClockIcon width={15} height={15} />{chapter.readingTime} min read</span>
         </div>
+        {chapter.thumbnail.startsWith("/") && (
+          <div className="mt-7 overflow-hidden rounded-[22px]">
+            <img src={chapter.thumbnail} alt="" className="aspect-[2.1] w-full object-cover" />
+          </div>
+        )}
       </header>
       <article className="prose-post mt-[34px]">
         <MDX />
