@@ -1,0 +1,109 @@
+---
+series: finance-education
+order: 12
+chapterTitle: Reading a Live Chart
+topicTitle: Candlestick Charts
+topicSlug: candlestick-charts
+title: "How to Read OHLC Data From a Real Candle"
+description: Walk through two real Apple candles from January 2023 and learn to extract open, high, low, and close data from any chart.
+author: Stock&Trade Editorial
+topicCount: 10
+date: 2026-06-03
+readingTime: 7
+thumbnail: /img/finance/trading-candles.png
+tone: emerald
+bookmarked: false
+tags: [Candlestick Charts, OHLC, Technical Analysis]
+lessons:
+  - How to hover to read OHLC
+  - Opening price on Jan 3 and Jan 6
+  - Closing price on Jan 3 and Jan 6
+  - Highest price (upper wick end)
+  - Lowest price (lower wick end)
+  - Why Jan 3 was red and Jan 6 was green
+  - Reading the price axis
+takeaways:
+  - The opening price is where the market started the period. The closing price is where it finished.
+  - The upper wick end is the session high. The lower wick end is the session low.
+  - A candle is red when close is below open. A candle is green when close is above open.
+related: [candlestick-chart-anatomy, candlestick-time-frames, candlestick-support-resistance-levels]
+---
+
+Reading a candle in theory is straightforward. Reading one on an actual chart with real numbers requires one extra step: knowing where to look for each data point.
+
+The tutorial screenshots use the Apple Inc (`AAPL`) daily chart on NASDAQ from December 2022 to January 2023. Two candles come up repeatedly: January 3 and January 6, 2023. Both candles are used as concrete examples for every OHLC concept that follows.
+
+<CandlestickTutorialChart variant="live-ohlc" />
+
+## How to read a candle on a live chart
+
+On most charting platforms, hover your cursor over any candle. A data panel usually appears showing four numbers labeled O, H, L, C — or Open, High, Low, Close. Some platforms also show a fifth number: V for volume.
+
+The price axis on the right side of the chart is a second way to read values. A horizontal dashed line extends from a specific candle to the right edge, where a number appears in a box. That number shows you the exact price level at that horizontal position.
+
+The screenshots label this specifically: when the cursor hovers over a candle, the dotted line runs to the right edge and the box displays the exact opening, closing, high, or low price of that candle.
+
+## January 3, 2023 — the red candle
+
+The tutorial screenshots walk through the January 3 candle in detail because it captures a bearish session close to the bottom of Apple's decline.
+
+| Data point | Value |
+|------------|-------|
+| Open       | $130.24 |
+| High       | $130.93 |
+| Low        | $124.21 |
+| Close      | $125.13 |
+
+**Reading open:** When the market opened on January 3, the first trade for Apple stock happened at $130.24. This is the horizontal notch on the left side of the candle body.
+
+**Reading close:** When the market closed on January 3, the last trade happened at $125.13. This is the horizontal notch on the right side of the candle body. Because $125.13 is below $130.24, the candle is red — sellers won this day.
+
+**Reading the high:** The wick extends above the body all the way to $130.93. That is the highest price anyone paid for Apple on that day. Buyers briefly pushed above $130 but could not sustain it.
+
+**Reading the low:** The wick extends below the body all the way to $124.21. That is the lowest price any seller accepted. From $124.21, buyers stepped back in and pushed price up to close at $125.13.
+
+Why this day is bearish: price opened at $130.24 and finished at $125.13 — a decline of $5.11 in a single session. That is a meaningful move, and it continued the downward pressure Apple had been experiencing since mid-December.
+
+## January 6, 2023 — the green candle
+
+The very next trading day shows the opposite result. January 6 was a bullish session.
+
+| Data point | Value |
+|------------|-------|
+| Open       | $126.05 |
+| High       | $130.30 |
+| Low        | $124.90 |
+| Close      | $129.61 |
+
+**Open:** Apple opened at $126.05 — below the prior day's close of $125.13? No. Friday January 6 actually gapped open slightly higher than Thursday's close, reflecting overnight order flow.
+
+**Close:** Apple finished the day at $129.61. Because $129.61 is above the open of $126.05, this candle is green. Buyers controlled the entire session.
+
+**High:** The upper wick extends to $130.30 — buyers pushed all the way back toward the January 3 open before sellers created some resistance.
+
+**Low:** The lower wick extends to $124.90 — just below the prior day's low of $124.21. This shows sellers tested lower levels early in the session but buyers immediately rejected that area and price recovered.
+
+Why this day is bullish: price appreciated $3.56 in one session after the prior selloff. Buyers stepped in near the recent low and drove price almost 5% higher by the close.
+
+## What the two candles together tell you
+
+January 3 was a strong bearish day. January 6 immediately followed with a strong bullish day. Taken together, these two candles describe a moment where sellers pushed hard, hit a floor, and then buyers responded.
+
+This is the kind of pattern that produces support areas and potential reversals. Neither candle alone tells the full story — context requires reading both.
+
+## How to use the price axis
+
+The vertical scale on the right side of the chart shows the price range visible in the current window. You can read the approximate price of any candle by tracing a horizontal line across to the right axis.
+
+For precise readings, hover over the candle. The dashed horizontal line that appears crosses the right axis at an exact price in a highlighted box. The screenshots show this for every OHLC value — the dotted line runs from the candle's open, close, high, or low all the way to the right-edge box.
+
+## Beginner mistake to avoid
+
+Do not try to memorize exact price numbers. The lesson from the January 3 and January 6 candles is not the specific dollar values. The lesson is the reading method:
+
+1. Is close above or below open? (Color tells you the winner.)
+2. How big is the body? (Distance between open and close tells you the strength.)
+3. How long are the wicks? (Wick length tells you where price explored but rejected.)
+4. What is the context from the candles around it? (One candle is a clue; a sequence is a story.)
+
+Apply that method to every candle on any chart, at any price level.

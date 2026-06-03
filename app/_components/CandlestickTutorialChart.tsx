@@ -24,7 +24,12 @@ export type CandlestickTutorialVariant =
   | "uptrend"
   | "pullbacks"
   | "momentum-gain"
-  | "momentum-loss";
+  | "momentum-loss"
+  | "timeframes"
+  | "live-ohlc"
+  | "downtrend"
+  | "trend-change-up-to-down"
+  | "trend-change-down-to-up";
 
 type Candle = CandlestickData<Time>;
 type LinePoint = LineData<Time>;
@@ -252,6 +257,87 @@ const appleLikeCandles: Candle[] = [
   candle(20, 137.9, 143.6, 137.2, 141.2),
   candle(21, 141.2, 143.4, 140.1, 142.3),
   candle(22, 142.1, 145.8, 141.1, 144.5),
+];
+
+// Jan 3 and Jan 6 Apple candles with exact OHLC from the tutorial screenshots
+const liveOHLCCandles: Candle[] = [
+  candle(1,  147.4, 151.0, 145.2, 146.2),
+  candle(2,  146.1, 147.2, 141.0, 142.1),
+  candle(3,  142.0, 144.1, 140.5, 141.3),
+  candle(4,  141.5, 143.0, 141.0, 141.6),
+  candle(5,  141.7, 144.7, 141.0, 143.8),
+  candle(6,  143.8, 145.8, 139.9, 140.7),
+  candle(7,  140.8, 141.2, 132.1, 133.6),
+  candle(8,  133.5, 134.5, 130.5, 131.1),
+  candle(9,  131.0, 132.3, 128.2, 130.1),
+  candle(10, 130.2, 132.0, 129.0, 130.8),
+  candle(11, 130.9, 131.3, 127.4, 128.2),
+  candle(12, 128.2, 130.0, 126.0, 129.4),
+  candle(13, 130.24, 130.93, 124.21, 125.13), // Jan 3, 2023 — exact red candle
+  candle(14, 126.05, 130.30, 124.90, 129.61), // Jan 6, 2023 — exact green candle
+  candle(15, 129.4,  133.2,  128.7,  131.9),
+  candle(16, 131.8,  132.5,  130.5,  132.2),
+  candle(17, 132.3,  136.1,  131.7,  135.0),
+  candle(18, 135.1,  136.5,  133.1,  134.1),
+  candle(19, 134.2,  138.5,  133.4,  137.7),
+  candle(20, 137.9,  143.6,  137.2,  141.2),
+  candle(21, 141.2,  143.4,  140.1,  142.3),
+  candle(22, 142.1,  145.8,  141.1,  144.5),
+];
+
+const downtrendCandles: Candle[] = [
+  candle(1,  148, 150, 146, 149),
+  candle(2,  149, 153, 147, 152),  // last HH before downtrend
+  candle(3,  152, 154, 148, 149),
+  candle(4,  149, 151, 143, 144),  // impulse 1 — LL1 forming
+  candle(5,  144, 148, 142, 147),  // bounce — LH1 (< 154)
+  candle(6,  147, 149, 140, 141),  // impulse 2 — LL2
+  candle(7,  141, 145, 139, 144),  // bounce — LH2 (< 149)
+  candle(8,  144, 146, 136, 137),  // impulse 3 — LL3
+  candle(9,  137, 141, 135, 140),  // bounce — LH3 (< 145)
+  candle(10, 140, 142, 132, 133),  // impulse 4 — LL4
+  candle(11, 133, 137, 131, 136),  // bounce — LH4 (< 141)
+  candle(12, 136, 138, 128, 129),  // impulse 5 — LL5
+  candle(13, 129, 132, 127, 131),  // bounce — LH5 (< 137)
+  candle(14, 131, 133, 124, 125),  // impulse 6 — LL6
+  candle(15, 125, 128, 123, 127),
+];
+
+const trendChangeUpToDownCandles: Candle[] = [
+  candle(1,  100, 103, 98,  102),
+  candle(2,  102, 107, 101, 106), // HH1
+  candle(3,  106, 108, 102, 103), // pullback — HL1
+  candle(4,  103, 110, 102, 109), // HH2
+  candle(5,  109, 113, 107, 112), // HH3
+  candle(6,  112, 114, 108, 109), // pullback — HL2 (key level)
+  candle(7,  109, 116, 108, 115), // HH4
+  candle(8,  115, 118, 112, 117), // HH5 — near the peak
+  candle(9,  117, 119, 114, 116), // starts to slow — HL3
+  candle(10, 116, 119, 113, 115), // fails to extend cleanly
+  candle(11, 115, 117, 109, 110), // drops — warning sign
+  candle(12, 110, 113, 106, 107), // FIRST LOWER LOW — breaks HL2 at 108
+  candle(13, 107, 111, 105, 109), // weak bounce
+  candle(14, 109, 110, 103, 104), // lower high + lower low confirmed
+  candle(15, 104, 107, 102, 106),
+  candle(16, 106, 107, 100, 101),
+];
+
+const trendChangeDownToUpCandles: Candle[] = [
+  candle(1,  152, 154, 148, 150), // top of downtrend
+  candle(2,  150, 152, 144, 145), // impulse down
+  candle(3,  145, 148, 143, 147), // bounce — LH1
+  candle(4,  147, 149, 140, 141), // impulse down to LL1
+  candle(5,  141, 144, 138, 142), // bounce — LH2 (< LH1=148)
+  candle(6,  142, 144, 136, 137), // impulse down to LL2
+  candle(7,  137, 139, 134, 138), // bounce — LH3 (< LH2=144)
+  candle(8,  138, 140, 132, 133), // impulse down to LL3
+  candle(9,  133, 138, 131, 137), // larger bounce
+  candle(10, 137, 140, 134, 139), // continues up
+  candle(11, 139, 143, 137, 142), // FIRST HIGHER HIGH — breaks LH3 at 139
+  candle(12, 142, 144, 137, 139), // pullback — higher low forming
+  candle(13, 139, 145, 138, 144), // HH2 confirms new uptrend
+  candle(14, 144, 147, 142, 146),
+  candle(15, 146, 149, 144, 148),
 ];
 
 const lessons: Record<CandlestickTutorialVariant, LessonChart> = {
@@ -579,6 +665,166 @@ const lessons: Record<CandlestickTutorialVariant, LessonChart> = {
         top: "45%",
         right: "5%",
         width: "340px",
+      },
+    ],
+  },
+
+  timeframes: {
+    eyebrow: "Chapter visual 09",
+    title: "Time Frame: One Candle = One Complete Period",
+    description: "Switching from 1D to 1H shows the same price movement 24× more granularly. The structure is identical; the zoom level changes.",
+    candles: appleLikeCandles,
+    callouts: [
+      {
+        title: "1D shown here",
+        body: "Each candle represents one full trading day. The horizontal axis marks where each day starts.",
+        top: "12%",
+        right: "4%",
+        width: "340px",
+      },
+      {
+        title: "Switch to 1H",
+        body: "On a 1H chart the same section would show roughly 6× as many candles — one per market hour instead of one per day.",
+        top: "63%",
+        left: "4%",
+        width: "330px",
+      },
+    ],
+  },
+
+  "live-ohlc": {
+    eyebrow: "Chapter visual 10",
+    title: "Red Candle: Jan 3, Apple — Open 130.24 → Close 125.13",
+    description: "Apple opened at $130.24 and closed at $125.13 on January 3, 2023. The wick ends mark the session high ($130.93) and low ($124.21).",
+    candles: liveOHLCCandles,
+    priceLines: [
+      { price: 130.24, title: "Open 130.24", color: "#111827" },
+      { price: 130.93, title: "High 130.93", color: "#15924c" },
+      { price: 124.21, title: "Low 124.21", color: "#b92323" },
+      { price: 125.13, title: "Close 125.13", color: "#475569" },
+    ],
+    callouts: [
+      {
+        title: "Red = close below open",
+        body: "Close (125.13) is below Open (130.24). Sellers controlled the full day and price dropped $5.11.",
+        top: "13%",
+        right: "4%",
+        width: "310px",
+      },
+      {
+        title: "Lower wick = session low",
+        body: "The wick tip reaches 124.21 — the lowest price any participant agreed to on Jan 3. Buyers stepped in there and pushed price back up to 125.",
+        top: "67%",
+        left: "4%",
+        width: "330px",
+      },
+    ],
+  },
+
+  downtrend: {
+    eyebrow: "Chapter visual 11",
+    title: "Downtrend: Lower Lows and Lower Highs",
+    description: "A downtrend steps downward through repeating impulse drops and corrective bounces — the mirror image of an uptrend.",
+    candles: downtrendCandles,
+    lines: [
+      {
+        data: [point(2, 153), point(5, 148), point(7, 145), point(9, 141), point(11, 137), point(13, 132)],
+        color: "#df2424",
+        lineStyle: LineStyle.Dashed,
+        lineWidth: 2,
+      },
+      {
+        data: [point(4, 143), point(6, 140), point(8, 136), point(10, 132), point(12, 128), point(14, 124)],
+        color: "#111827",
+        lineWidth: 3,
+      },
+    ],
+    callouts: [
+      {
+        title: "Lower high",
+        body: "Every corrective bounce fails below the prior swing high. Sellers defend progressively lower levels.",
+        top: "12%",
+        right: "5%",
+        width: "320px",
+      },
+      {
+        title: "Lower low",
+        body: "Each impulse drop breaks below the prior floor. Buyers cannot hold the same support area.",
+        top: "62%",
+        left: "5%",
+        width: "310px",
+      },
+    ],
+  },
+
+  "trend-change-up-to-down": {
+    eyebrow: "Chapter visual 12",
+    title: "Trend Change: First Lower Low Signals Uptrend Damage",
+    description: "An uptrend is intact while higher lows hold. The first break below a prior higher low is the structural warning to watch.",
+    candles: trendChangeUpToDownCandles,
+    lines: [
+      {
+        data: [point(1, 98), point(3, 102), point(6, 108), point(9, 114)],
+        color: "#15924c",
+        lineWidth: 3,
+      },
+      {
+        data: [point(9, 114), point(12, 106)],
+        color: "#df2424",
+        lineWidth: 3,
+        lineStyle: LineStyle.Dashed,
+      },
+    ],
+    callouts: [
+      {
+        title: "Higher lows held",
+        body: "Pullbacks kept stopping above the prior low — uptrend structure was clean through this section.",
+        top: "11%",
+        left: "5%",
+        width: "320px",
+      },
+      {
+        title: "First lower low",
+        body: "Price breaks below the prior higher low here. This is the first structural warning the uptrend is damaged.",
+        top: "58%",
+        right: "4%",
+        width: "310px",
+      },
+    ],
+  },
+
+  "trend-change-down-to-up": {
+    eyebrow: "Chapter visual 13",
+    title: "Trend Change: First Higher High Signals Downtrend Weakening",
+    description: "A downtrend is intact while lower highs hold. The first break above a prior lower high is the structural signal that buyers are returning.",
+    candles: trendChangeDownToUpCandles,
+    lines: [
+      {
+        data: [point(1, 154), point(3, 148), point(5, 144), point(7, 139), point(8, 140)],
+        color: "#df2424",
+        lineWidth: 3,
+      },
+      {
+        data: [point(8, 140), point(11, 143)],
+        color: "#15924c",
+        lineWidth: 3,
+        lineStyle: LineStyle.Dashed,
+      },
+    ],
+    callouts: [
+      {
+        title: "Lower highs held",
+        body: "Each bounce was capped below the prior rally high — the downtrend structure was clean through this section.",
+        top: "12%",
+        left: "5%",
+        width: "330px",
+      },
+      {
+        title: "First higher high",
+        body: "Price breaks above the prior lower high here. The downtrend rhythm is no longer clean — the structure has shifted.",
+        top: "62%",
+        right: "4%",
+        width: "310px",
       },
     ],
   },
