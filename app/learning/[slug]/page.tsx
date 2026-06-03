@@ -1,9 +1,14 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { CandlestickTutorialChart } from "../../_components/CandlestickTutorialChart";
 import { ChapterActions } from "../../_components/ChapterActions";
 import { compileMdx } from "../../_lib/mdx";
 import { getLearningChapters, getLearningSeriesBySlug } from "../../_lib/posts";
 import { ClockIcon } from "../../_components/icons";
+
+const learningMdxComponents = {
+  CandlestickTutorialChart,
+};
 
 export async function generateStaticParams() {
   const chapters = await getLearningChapters();
@@ -27,12 +32,21 @@ export default async function LearningChapterPage({ params }: { params: Promise<
   const contentWithAnchors = addHeadingAnchors(chapter.content);
   const MDX = await compileMdx(contentWithAnchors);
   const seriesChapters = chapters.filter((item) => item.series === chapter.series);
-  const previous = seriesChapters.find((item) => item.order === chapter.order - 1);
-  const next = seriesChapters.find((item) => item.order === chapter.order + 1);
+  const topicChapters = seriesChapters.filter((item) => item.topicSlug === chapter.topicSlug);
+  const topicIndex = Math.max(0, topicChapters.findIndex((item) => item.slug === chapter.slug));
+  const previous = topicChapters.length > 1
+    ? topicChapters[topicIndex - 1]
+    : seriesChapters.find((item) => item.order === chapter.order - 1);
+  const next = topicChapters.length > 1
+    ? topicChapters[topicIndex + 1]
+    : seriesChapters.find((item) => item.order === chapter.order + 1);
   const relatedChapters = resolveRelatedChapters(seriesChapters, chapter.related, chapter.slug);
   const outline = extractHeadings(chapter.content);
   const lessons = chapter.lessons.length > 0 ? chapter.lessons : outline.map((item) => item.title);
-  const progress = Math.max(1, Math.round((chapter.order / Math.max(seriesChapters.length, 1)) * 100));
+  const progressTotal = topicChapters.length > 1 ? topicChapters.length : seriesChapters.length;
+  const progressIndex = topicChapters.length > 1 ? topicIndex + 1 : chapter.order;
+  const progress = Math.max(1, Math.round((progressIndex / Math.max(progressTotal, 1)) * 100));
+  const topicHref = chapter.topicSlug === "candlestick-charts" ? "/learning/candlestick-charts" : "/learning";
 
   return (
     <div className="mx-auto max-w-[1240px] pb-12 pt-8">
@@ -43,14 +57,18 @@ export default async function LearningChapterPage({ params }: { params: Promise<
             <span>›</span>
             <Link href="/learning" className="transition hover:text-[#15924c]">Tutorials</Link>
             <span>›</span>
-            <span>Chapter {chapter.order}: {chapter.chapterTitle}</span>
+            <Link href={topicHref} className="transition hover:text-[#15924c]">{chapter.topicTitle}</Link>
             <span>›</span>
             <span className="font-semibold text-[#1a2532]">{chapter.title}</span>
           </nav>
 
           <header className="mt-6">
             <div className="text-[12px] font-extrabold uppercase tracking-[0.14em] text-[#15924c]">
-              Chapter {chapter.order} <span className="mx-2 text-[#b1c0b7]">•</span> {chapter.chapterTitle}
+              {chapter.topicTitle}
+              <span className="mx-2 text-[#b1c0b7]">•</span>
+              Chapter {progressIndex} of {progressTotal}
+              <span className="mx-2 text-[#b1c0b7]">•</span>
+              {chapter.chapterTitle}
             </div>
             <h1 className="mt-3 max-w-[14ch] text-[46px] font-extrabold leading-[1.03] tracking-[-0.05em] text-[#101924] md:text-[60px]">
               {chapter.title}
@@ -103,7 +121,7 @@ export default async function LearningChapterPage({ params }: { params: Promise<
           )}
 
           <article className="prose-post prose-finance mt-8">
-            <MDX />
+            <MDX components={learningMdxComponents} />
           </article>
 
           <nav className="mt-8 flex flex-col gap-4 border-t border-[#e2ebe4] pt-8 md:flex-row md:items-center md:justify-between">
@@ -156,7 +174,7 @@ export default async function LearningChapterPage({ params }: { params: Promise<
         <aside className="space-y-5 xl:sticky xl:top-6 xl:self-start">
           <section className="rounded-[24px] border border-[#dfe9e1] bg-white p-5 shadow-[0_10px_32px_rgba(15,23,42,0.035)]">
             <h2 className="text-[18px] font-extrabold text-[#111a27]">Chapter Progress</h2>
-            <div className="mt-4 text-[14px] font-medium text-[#5d6d7a]">Chapter {chapter.order} of {seriesChapters.length}</div>
+            <div className="mt-4 text-[14px] font-medium text-[#5d6d7a]">{chapter.topicTitle}: Chapter {progressIndex} of {progressTotal}</div>
             <div className="mt-3 h-2.5 rounded-full bg-[#edf3ee]">
               <div className="h-full rounded-full bg-[#169b52]" style={{ width: `${progress}%` }} />
             </div>

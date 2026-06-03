@@ -3,9 +3,12 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import * as runtime from "react/jsx-runtime";
-import type { ComponentType } from "react";
+import type { ComponentType, ElementType } from "react";
 
-export async function compileMdx(source: string): Promise<ComponentType> {
+export type MdxComponents = Record<string, ElementType>;
+export type MdxContent = ComponentType<{ components?: MdxComponents }>;
+
+export async function compileMdx(source: string): Promise<MdxContent> {
   const compiled = await compile(source, {
     outputFormat: "function-body",
     development: false,

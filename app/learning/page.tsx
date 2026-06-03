@@ -8,6 +8,7 @@ const topicTabs = [
   "Personal Finance",
   "Investing",
   "Markets",
+  "Trading",
   "Analysis",
   "Economy",
   "Planning",
@@ -78,8 +79,9 @@ export default async function LearningPage({
   const filteredChapters = query
     ? chapters.filter((chapter) => matchesQuery(chapter, query))
     : chapters;
-  const bundles = (filteredChapters.length > 0 ? filteredChapters : chapters).map((chapter, index) =>
-    buildBundle(chapter, index),
+  const bundleSources = buildBundleSources(filteredChapters.length > 0 ? filteredChapters : chapters);
+  const bundles = bundleSources.map((source, index) =>
+    buildBundle(source, index),
   );
   const totalLessons = chapters.reduce((sum, chapter) => sum + Math.max(chapter.topicCount, chapter.lessons.length, 1), 0);
   const completedCount = bundles.filter((bundle) => bundle.progress >= 70).length;
@@ -351,46 +353,46 @@ function Hero() {
 
 function TopicBundleCard({ bundle }: { bundle: ReturnType<typeof buildBundle> }) {
   return (
-    <article className="grid gap-4 rounded-[22px] border border-[#dfe9e1] bg-white p-4 shadow-[0_10px_30px_rgba(15,23,42,0.03)] lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.9fr)_120px]">
+    <Link
+      href={bundle.href}
+      className="group grid gap-4 rounded-[18px] border border-[#dfe9e1] bg-white p-4 shadow-[0_10px_30px_rgba(15,23,42,0.03)] transition hover:-translate-y-0.5 hover:border-[#bfe6cc] hover:shadow-[0_16px_38px_rgba(15,23,42,0.06)] lg:min-h-[146px] lg:grid-cols-[minmax(0,1.05fr)_minmax(210px,0.86fr)_124px]"
+    >
       <div className="flex min-w-0 gap-4">
         <span className={`grid h-14 w-14 shrink-0 place-items-center rounded-[18px] ${bundle.tintBg} ${bundle.tintText}`}>
           <BundleIcon slug={bundle.slug} title={bundle.title} />
         </span>
-        <div className="min-w-0">
-          <div className="text-[22px] font-extrabold tracking-[-0.03em] text-[#15222f]">{bundle.index}. {bundle.title}</div>
-          <p className="mt-2 text-[14px] leading-6 text-[#566674]">{bundle.description}</p>
-          <div className="mt-4 flex flex-wrap items-center gap-4 text-[13px] font-semibold text-[#758290]">
+        <div className="flex min-w-0 flex-col">
+          <div className="text-[19px] font-extrabold tracking-[-0.03em] text-[#15222f]">{bundle.index}. {bundle.title}</div>
+          <p className="mt-2 line-clamp-2 text-[13px] leading-5 text-[#566674]">{bundle.description}</p>
+          <div className="mt-auto flex flex-wrap items-center gap-4 pt-2 text-[12px] font-semibold text-[#758290]">
             <span className="inline-flex items-center gap-2"><BookMiniIcon />{bundle.chapterCount} Chapters</span>
             <span className="inline-flex items-center gap-2"><BadgeMiniIcon />{bundle.level}</span>
           </div>
         </div>
       </div>
 
-      <div className="min-w-0">
-        <ul className="space-y-2 text-[13px] leading-6 text-[#425364]">
+      <div className="min-w-0 lg:border-l lg:border-[#edf3ee] lg:pl-4">
+        <ul className="space-y-2 text-[12px] leading-5 text-[#425364]">
           {bundle.previewLessons.map((lesson) => (
             <li key={lesson} className="flex items-start gap-2">
-              <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-[#16a34a]" />
+              <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[#16a34a]" />
               <span>{lesson}</span>
             </li>
           ))}
           <li className="flex items-start gap-2 text-[#7c8a96]">
-            <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-[#dbe7de]" />
+            <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[#dbe7de]" />
             <span>...</span>
           </li>
         </ul>
       </div>
 
-      <div className="flex flex-col items-end justify-between gap-3">
+      <div className="flex items-center justify-between gap-3 border-t border-[#edf3ee] pt-4 lg:flex-col lg:items-end lg:justify-between lg:border-l lg:border-t-0 lg:py-0 lg:pl-4">
         <ProgressRing value={bundle.progress} size={72} />
-        <Link
-          href={bundle.href}
-          className="inline-flex h-10 items-center justify-center rounded-[12px] border border-[#d9e5db] bg-white px-4 text-[13px] font-semibold text-[#44576a] transition hover:-translate-y-0.5"
-        >
+        <span className="inline-flex h-9 w-full max-w-[112px] items-center justify-center rounded-[10px] border border-[#d9e5db] bg-white px-3 text-center text-[12px] font-semibold leading-4 text-[#44576a] transition group-hover:border-[#9bddb4] group-hover:text-[#15924c]">
           View All Chapters
-        </Link>
+        </span>
       </div>
-    </article>
+    </Link>
   );
 }
 
@@ -406,10 +408,10 @@ function ProgressRing({ value, size = 78 }: { value: number; size?: number }) {
     >
       <div
         className="grid place-items-center rounded-full bg-white text-center leading-none"
-        style={{ width: size - 10, height: size - 10 }}
+        style={{ width: size - 12, height: size - 12 }}
       >
-        <div className="text-[18px] font-extrabold leading-none text-[#14212c]">{value}%</div>
-        <div className="mt-1 text-[8.5px] font-semibold uppercase tracking-[0.06em] text-[#7b8a96]">Complete</div>
+        <div className="text-[17px] font-extrabold leading-none text-[#14212c]">{value}%</div>
+        <div className="mt-1 text-[7.5px] font-extrabold uppercase tracking-[0.04em] text-[#7b8a96]">Complete</div>
       </div>
     </div>
   );
@@ -429,29 +431,83 @@ function StatRow({ icon, label, value }: { icon: string; label: string; value: s
   );
 }
 
-function buildBundle(chapter: LearningChapter, index: number) {
+type BundleSource = {
+  slug: string;
+  title: string;
+  description: string;
+  chapters: LearningChapter[];
+  order: number;
+  tone: string;
+  thumbnail: string;
+};
+
+function buildBundleSources(chapters: LearningChapter[]): BundleSource[] {
+  const grouped = new Map<string, BundleSource>();
+
+  for (const chapter of chapters) {
+    const existing = grouped.get(chapter.topicSlug);
+    if (existing) {
+      existing.chapters.push(chapter);
+      existing.order = Math.min(existing.order, chapter.order);
+      continue;
+    }
+
+    grouped.set(chapter.topicSlug, {
+      slug: chapter.topicSlug,
+      title: chapter.topicTitle,
+      description: topicDescription(chapter),
+      chapters: [chapter],
+      order: chapter.order,
+      tone: chapter.tone,
+      thumbnail: chapter.thumbnail,
+    });
+  }
+
+  return [...grouped.values()].sort((a, b) => a.order - b.order || a.title.localeCompare(b.title));
+}
+
+function buildBundle(source: BundleSource, index: number) {
   const progress = bundleProgress[index % bundleProgress.length];
-  const previewLessons = chapter.lessons.length > 0
-    ? chapter.lessons.slice(0, 3)
-    : extractPreviewLessons(chapter.content);
-  const chapterCount = Math.max(1, Math.round(chapter.topicCount / 2));
+  const firstChapter = source.chapters[0];
+  const previewLessons = source.chapters.length > 1
+    ? source.chapters.slice(0, 3).map((chapter) => chapter.chapterTitle)
+    : firstChapter.lessons.length > 0
+      ? firstChapter.lessons.slice(0, 3)
+      : extractPreviewLessons(firstChapter.content);
+  const chapterCount = source.chapters.length > 1
+    ? source.chapters.length
+    : Math.max(1, Math.round(firstChapter.topicCount / 2));
 
   return {
     index: index + 1,
-    slug: chapter.slug,
-    href: chapter.slug === "personal-finance-budgeting" ? "/learning/personal-finance" : `/learning/${chapter.slug}`,
-    order: chapter.order,
-    title: chapter.chapterTitle,
-    description: chapter.description,
+    slug: source.slug,
+    href: topicHref(source),
+    order: source.order,
+    title: source.title,
+    description: source.description,
     chapterCount,
-    level: difficultyFor(chapter.order),
+    level: difficultyFor(source.order),
     previewLessons,
     progress,
-    image: chapter.thumbnail.startsWith("/") ? chapter.thumbnail : fallbackImages[index % fallbackImages.length],
-    tone: chapter.tone,
-    tintBg: tintBg(chapter.tone),
-    tintText: tintText(chapter.tone),
+    image: source.thumbnail.startsWith("/") ? source.thumbnail : fallbackImages[index % fallbackImages.length],
+    tone: source.tone,
+    tintBg: tintBg(source.tone),
+    tintText: tintText(source.tone),
   };
+}
+
+function topicDescription(chapter: LearningChapter) {
+  if (chapter.topicSlug === "candlestick-charts") {
+    return "Screenshot-based lessons for reading candles, support and resistance, trends, ranges, pullbacks, momentum, and reversal risk.";
+  }
+  return chapter.description;
+}
+
+function topicHref(source: BundleSource) {
+  if (source.slug === "personal-finance") return "/learning/personal-finance";
+  if (source.chapters[0].slug === "personal-finance-budgeting") return "/learning/personal-finance";
+  if (source.slug === "candlestick-charts") return "/learning/candlestick-charts";
+  return `/learning/${source.chapters[0].slug}`;
 }
 
 function extractPreviewLessons(content: string) {
@@ -481,9 +537,11 @@ function tintText(tone: string) {
 }
 
 function buildTopicCounts(chapters: LearningChapter[]) {
-  return chapters.map((chapter) => ({
-    label: chapter.chapterTitle,
-    count: Math.max(chapter.lessons.length, Math.ceil(chapter.topicCount / 2), 1),
+  return buildBundleSources(chapters).map((topic) => ({
+    label: topic.title,
+    count: topic.chapters.length > 1
+      ? topic.chapters.length
+      : Math.max(topic.chapters[0].lessons.length, Math.ceil(topic.chapters[0].topicCount / 2), 1),
   }));
 }
 
@@ -491,6 +549,7 @@ function matchesQuery(chapter: LearningChapter, query: string) {
   return [
     chapter.title,
     chapter.chapterTitle,
+    chapter.topicTitle,
     chapter.description,
     chapter.tags.join(" "),
     chapter.lessons.join(" "),
@@ -498,6 +557,9 @@ function matchesQuery(chapter: LearningChapter, query: string) {
 }
 
 function BundleIcon({ slug, title }: { slug: string; title: string }) {
+  if (slug.includes("candlestick")) {
+    return <GeneratedIcon name="markets" className="h-10 w-10" />;
+  }
   if (slug.includes("personal-finance")) {
     return <GeneratedIcon name="personal-finance" className="h-10 w-10" />;
   }
@@ -532,6 +594,7 @@ function BundleIcon({ slug, title }: { slug: string; title: string }) {
 }
 
 function TopicIcon({ label }: { label: string }) {
+  if (label.includes("Candlestick")) return <GeneratedIcon name="markets" className="h-5 w-5" />;
   if (label.includes("Invest")) return <GeneratedIcon name="investing" className="h-5 w-5" />;
   if (label.includes("Stock")) return <GeneratedIcon name="markets" className="h-5 w-5" />;
   if (label.includes("Finance")) return <GeneratedIcon name="personal-finance" className="h-5 w-5" />;

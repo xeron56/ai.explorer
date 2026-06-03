@@ -39,7 +39,7 @@ export type LearningSeries = {
 };
 export type LearningChapter = {
   slug: string; series: string; order: number; title: string; description: string;
-  chapterTitle: string; author: string; topicCount: number; date: string; formattedDate: string;
+  chapterTitle: string; topicTitle: string; topicSlug: string; author: string; topicCount: number; date: string; formattedDate: string;
   readingTime: number; thumbnail: string; tone: string; bookmarked: boolean; tags: string[];
   lessons: string[]; takeaways: string[]; related: string[]; content: string;
 };
@@ -244,6 +244,8 @@ export async function getLearningChapters(seriesSlug?: string): Promise<Learning
       title: String(data.title ?? slug),
       description: String(data.description ?? ""),
       chapterTitle: String(data.chapterTitle ?? data.title ?? slug),
+      topicTitle: String(data.topicTitle ?? data.chapterTitle ?? data.title ?? slug),
+      topicSlug: String(data.topicSlug ?? slug),
       author: String(data.author ?? "Stock&Trade Editorial"),
       topicCount: Number(data.topicCount ?? 0),
       date,
