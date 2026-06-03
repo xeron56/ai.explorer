@@ -17,6 +17,12 @@ importers:
       katex:
         specifier: ^0.16.22
         version: 0.16.45
+      lightweight-charts:
+        specifier: ^5.2.0
+        version: 5.2.0
+      lightweight-charts-react-wrapper:
+        specifier: ^2.1.1
+        version: 2.1.1(lightweight-charts@5.2.0)(react@19.1.0)(tslib@2.8.1)
       next:
         specifier: ^15.0.2
         version: 15.5.18(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -562,6 +568,9 @@ packages:
   extend@3.0.2:
     resolution: {integrity: sha512-fjquC59cD7CyW6urNXK0FBufkZcoiGG80wTuPujX590cB5Ttln20E2UB4S/WARVqhXffZl2LNgS+gQdPIIim/g==}
 
+  fancy-canvas@2.1.0:
+    resolution: {integrity: sha512-nifxXJ95JNLFR2NgRV4/MxVP45G9909wJTEKz5fg/TZS20JJZA6hfgRVh/bC9bwl2zBtBNcYPjiBE4njQHVBwQ==}
+
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
@@ -708,6 +717,16 @@ packages:
   lightningcss@1.30.1:
     resolution: {integrity: sha512-xi6IyHML+c9+Q3W0S4fCQJOym42pyurFiJUHEcEyHS0CeKzia4yZDEsLlqOFykxOdHpNy0NmvVO31vcSqAxJCg==}
     engines: {node: '>= 12.0.0'}
+
+  lightweight-charts-react-wrapper@2.1.1:
+    resolution: {integrity: sha512-L+iyvHeM6+9yuSsbPRX5WiAx5m/Wg3JutstfYv3QjfSvyBE0cc5F4JPQD6k4e3OvZrvluq935/8ku3x8k5XB6Q==}
+    peerDependencies:
+      lightweight-charts: '>=4.0.0'
+      react: '>=16.8.0'
+      tslib: '*'
+
+  lightweight-charts@5.2.0:
+    resolution: {integrity: sha512-ey3Vas8UhV06ni+LT9TA1nEe4y8So4Mi6CL/oarNHFMyTktz/xy8e8+oh04Q//eO3t6etvFXgayz2fClyFQb5w==}
 
   longest-streak@3.1.0:
     resolution: {integrity: sha512-9Ri+o0JYgehTaVBBDoMqIl8GXtbWg711O3srftcHhZ0dqnETqLaoIK0x17fUw9rFSlK/0NlsKe0Ahhyl5pXE2g==}
@@ -1538,6 +1557,8 @@ snapshots:
 
   extend@3.0.2: {}
 
+  fancy-canvas@2.1.0: {}
+
   graceful-fs@4.2.11: {}
 
   gray-matter@4.0.3:
@@ -1722,6 +1743,16 @@ snapshots:
       lightningcss-linux-x64-musl: 1.30.1
       lightningcss-win32-arm64-msvc: 1.30.1
       lightningcss-win32-x64-msvc: 1.30.1
+
+  lightweight-charts-react-wrapper@2.1.1(lightweight-charts@5.2.0)(react@19.1.0)(tslib@2.8.1):
+    dependencies:
+      lightweight-charts: 5.2.0
+      react: 19.1.0
+      tslib: 2.8.1
+
+  lightweight-charts@5.2.0:
+    dependencies:
+      fancy-canvas: 2.1.0
 
   longest-streak@3.1.0: {}
 

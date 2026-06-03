@@ -1,0 +1,76 @@
+<svg width="760" height="420" viewBox="0 0 760 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bookTop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#A7F3C4"/>
+      <stop offset="100%" stop-color="#22C55E"/>
+    </linearGradient>
+    <linearGradient id="bookMid" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#D9FAE7"/>
+      <stop offset="100%" stop-color="#7CDA9F"/>
+    </linearGradient>
+    <linearGradient id="bookLow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ECFDF3"/>
+      <stop offset="100%" stop-color="#B7EBC8"/>
+    </linearGradient>
+    <linearGradient id="cap" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2B3344"/>
+      <stop offset="100%" stop-color="#121A27"/>
+    </linearGradient>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#22C55E" flood-opacity="0.12"/>
+      <feDropShadow dx="0" dy="10" stdDeviation="18" flood-color="#0F172A" flood-opacity="0.08"/>
+    </filter>
+    <filter id="capShadow" x="-30%" y="-30%" width="160%" height="200%">
+      <feDropShadow dx="0" dy="18" stdDeviation="16" flood-color="#0F172A" flood-opacity="0.22"/>
+    </filter>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(558 222) rotate(90) scale(116 126)">
+      <stop offset="0%" stop-color="#7CE3A0" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#7CE3A0" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <ellipse cx="285" cy="244" rx="110" ry="84" fill="#B7EBC8" fill-opacity="0.22"/>
+  <ellipse cx="543" cy="176" rx="126" ry="106" fill="url(#glow)"/>
+
+  <g filter="url(#softShadow)">
+    <rect x="286" y="232" width="198" height="72" rx="18" transform="rotate(14 286 232)" fill="url(#bookLow)"/>
+    <rect x="315" y="190" width="198" height="78" rx="18" transform="rotate(14 315 190)" fill="url(#bookMid)"/>
+    <rect x="345" y="150" width="198" height="84" rx="18" transform="rotate(14 345 150)" fill="url(#bookTop)"/>
+  </g>
+
+  <g opacity="0.9">
+    <path d="M323 216L517 264" stroke="white" stroke-opacity="0.8" stroke-width="4" stroke-linecap="round"/>
+    <path d="M352 174L546 222" stroke="white" stroke-opacity="0.82" stroke-width="4" stroke-linecap="round"/>
+    <path d="M381 133L575 181" stroke="white" stroke-opacity="0.85" stroke-width="4" stroke-linecap="round"/>
+  </g>
+
+  <g filter="url(#capShadow)">
+    <rect x="394" y="70" width="180" height="76" rx="22" fill="url(#cap)"/>
+    <rect x="430" y="48" width="108" height="28" rx="14" fill="url(#cap)"/>
+    <path d="M483 145L483 196" stroke="#111827" stroke-width="6" stroke-linecap="round"/>
+    <path d="M483 196C493 197 500 204 500 214C491 212 484 208 478 201" fill="#111827"/>
+  </g>
+
+  <g filter="url(#softShadow)">
+    <rect x="250" y="162" width="62" height="104" rx="22" fill="white"/>
+    <rect x="262" y="142" width="8" height="30" rx="4" fill="#71C592"/>
+    <circle cx="283" cy="158" r="18" fill="#D6F7E3"/>
+    <circle cx="298" cy="156" r="14" fill="#A7F3C4"/>
+  </g>
+
+  <g filter="url(#softShadow)">
+    <path d="M638 96L680 54" stroke="#86D6A5" stroke-width="6" stroke-linecap="round"/>
+    <path d="M680 54L721 89" stroke="#86D6A5" stroke-width="6" stroke-linecap="round"/>
+    <path d="M721 89L804 8" stroke="#86D6A5" stroke-width="6" stroke-linecap="round"/>
+    <path d="M788 8H804V24" stroke="#4DBF79" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M642 142L690 95L732 128L804 49" stroke="#BDEFCC" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <g filter="url(#softShadow)">
+    <circle cx="731" cy="191" r="54" fill="#DFF8E8"/>
+    <path d="M731 191L731 137C760.823 137 785 161.177 785 191H731Z" fill="#22C55E"/>
+    <path d="M731 191L768 229C747.013 250.25 713.531 251.211 691.355 231.179L731 191Z" fill="#BDEECC"/>
+    <path d="M731 191L676 191C676 160.624 700.624 136 731 136V191Z" fill="#9BE3B8"/>
+    <circle cx="731" cy="191" r="20" fill="#F8FFF9"/>
+  </g>
+</svg>

@@ -41,7 +41,7 @@ export type LearningChapter = {
   slug: string; series: string; order: number; title: string; description: string;
   chapterTitle: string; author: string; topicCount: number; date: string; formattedDate: string;
   readingTime: number; thumbnail: string; tone: string; bookmarked: boolean; tags: string[];
-  content: string;
+  lessons: string[]; takeaways: string[]; related: string[]; content: string;
 };
 export type AboutInterest = { title: string; description: string; icon: string; tone: string };
 export type AboutTool = { name: string; icon: string; tone: string };
@@ -253,6 +253,9 @@ export async function getLearningChapters(seriesSlug?: string): Promise<Learning
       tone: String(data.tone ?? "purple"),
       bookmarked: boolValue(data.bookmarked),
       tags: arrayValue(data.tags),
+      lessons: arrayValue(data.lessons),
+      takeaways: arrayValue(data.takeaways),
+      related: arrayValue(data.related),
       content,
     } satisfies LearningChapter;
   });
