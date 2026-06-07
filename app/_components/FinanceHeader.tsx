@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AuthMenu } from "./AuthMenu";
 
 const navItems = [
   { label: "Dashboard", href: "#" },
@@ -55,19 +56,7 @@ export function FinanceHeader() {
           >
             <BellIcon />
           </button>
-          <button
-            aria-label="Profile menu"
-            className="flex h-9 items-center gap-2 rounded-md px-1.5"
-          >
-            <span className="relative block h-8 w-8 overflow-hidden rounded-full border border-[#dbe2df] bg-[#eaf5ef]">
-              <img
-                src="/img/finance/avatar-investor.png"
-                alt=""
-                className="h-full w-full object-cover"
-              />
-            </span>
-            <ChevronDown />
-          </button>
+          <AuthMenu />
         </div>
       </div>
 
@@ -114,14 +103,6 @@ function BellIcon() {
     <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
       <path d="M6 9a6 6 0 1 1 12 0v4.2c0 .6.24 1.18.66 1.6L20 16.5H4l1.34-1.7c.42-.42.66-1 .66-1.6Z" />
       <path d="M10 19a2 2 0 0 0 4 0" />
-    </svg>
-  );
-}
-
-function ChevronDown() {
-  return (
-    <svg viewBox="0 0 20 20" className="h-4 w-4 text-[#748292]" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="m5.5 7.5 4.5 5 4.5-5" />
     </svg>
   );
 }

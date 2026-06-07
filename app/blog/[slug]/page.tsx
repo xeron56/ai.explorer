@@ -166,9 +166,9 @@ function AuthorBadge() {
   return (
     <span className="inline-flex items-center gap-2 text-[13px] font-semibold text-[#253444]">
       <span className="h-8 w-8 overflow-hidden rounded-full bg-[#eaf5ef]">
-        <img src="/img/finance/avatar-investor.png" alt="" className="h-full w-full object-cover" />
+        <img src="/img/profile/avatar.png" alt="" className="h-full w-full object-cover" />
       </span>
-      Rahul Mehta
+      MD Shahidul Islam
     </span>
   );
 }

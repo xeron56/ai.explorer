@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Manrope } from "next/font/google";
 import { FinanceHeader } from "./_components/FinanceHeader";
+import { AuthProvider } from "./_components/AuthProvider";
 import "./globals.css";
 
 const manrope = Manrope({
@@ -18,10 +19,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${manrope.variable} ${manrope.className} min-h-screen`}>
-        <div className="min-h-screen">
-          <FinanceHeader />
-          <main className="px-6 pb-14 md:px-10 lg:px-[50px]">{children}</main>
-        </div>
+        <AuthProvider>
+          <div className="min-h-screen">
+            <FinanceHeader />
+            <main className="px-6 pb-14 md:px-10 lg:px-[50px]">{children}</main>
+          </div>
+        </AuthProvider>
       </body>
     </html>
   );

@@ -246,7 +246,7 @@ export async function getLearningChapters(seriesSlug?: string): Promise<Learning
       chapterTitle: String(data.chapterTitle ?? data.title ?? slug),
       topicTitle: String(data.topicTitle ?? data.chapterTitle ?? data.title ?? slug),
       topicSlug: String(data.topicSlug ?? slug),
-      author: String(data.author ?? "Stock&Trade Editorial"),
+      author: String(data.author ?? "MD Shahidul Islam"),
       topicCount: Number(data.topicCount ?? 0),
       date,
       formattedDate: formatDate(date),

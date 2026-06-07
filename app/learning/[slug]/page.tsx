@@ -80,7 +80,7 @@ export default async function LearningChapterPage({ params }: { params: Promise<
             <div className="mt-6 flex flex-wrap items-center gap-4">
               <div className="inline-flex items-center gap-3 text-[13px] font-semibold text-[#2b3a49]">
                 <span className="h-9 w-9 overflow-hidden rounded-full bg-[#eaf5ef]">
-                  <img src="/img/finance/avatar-investor.png" alt="" className="h-full w-full object-cover" />
+                  <img src="/img/profile/avatar.png" alt="" className="h-full w-full object-cover" />
                 </span>
                 <span>{chapter.author}</span>
                 <span className="text-[#a6b3bd]">•</span>

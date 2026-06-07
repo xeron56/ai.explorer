@@ -1,0 +1,1909 @@
+---
+title: "60 Essential Candlestick Patterns: Trading Guide for Beginners"
+description: "A complete beginner-friendly candlestick pattern guide with market psychology, examples, chart code, an interactive pattern explorer, and risk/reward practice."
+date: "2026-06-07"
+category: "Trading"
+readingTime: 45
+tags: ["Candlesticks", "Trading", "Technical Analysis", "Beginners", "Interactive"]
+---
+
+export const CANDLESTICK_LAB_HTML = "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<title>Interactive Candlestick Pattern Lab</title>\n<style>\n  :root {\n    --bg: #f8fafc;\n    --card: #ffffff;\n    --ink: #0f172a;\n    --muted: #64748b;\n    --line: #e2e8f0;\n    --bull: #16a34a;\n    --bear: #dc2626;\n    --blue: #2563eb;\n    --amber: #f59e0b;\n    --violet: #7c3aed;\n    --shadow: 0 20px 55px rgba(15, 23, 42, 0.10);\n  }\n  * { box-sizing: border-box; }\n  body { margin: 0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif; background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 45%, #ecfeff 100%); color: var(--ink); }\n  .app { max-width: 1120px; margin: 0 auto; padding: 20px; }\n  .hero { display: grid; grid-template-columns: 1.4fr 0.8fr; gap: 18px; align-items: stretch; }\n  .panel, .hero-card { background: rgba(255,255,255,0.92); border: 1px solid rgba(148,163,184,0.28); border-radius: 24px; box-shadow: var(--shadow); }\n  .hero-card { padding: 26px; overflow: hidden; position: relative; }\n  .hero-card::after { content: \"\"; position:absolute; width: 190px; height: 190px; border-radius:999px; right:-70px; top:-70px; background: radial-gradient(circle, rgba(37,99,235,.22), rgba(37,99,235,0)); }\n  .eyebrow { margin: 0 0 8px; font-size: 12px; text-transform: uppercase; letter-spacing: .12em; font-weight: 800; color: var(--blue); }\n  h1 { font-size: clamp(28px, 4vw, 46px); line-height: 1; margin: 0 0 12px; }\n  h2 { font-size: 22px; margin: 0 0 10px; }\n  p { color: var(--muted); line-height: 1.6; }\n  .mini-metrics { display:grid; grid-template-columns: repeat(3,1fr); gap:10px; margin-top:20px; }\n  .metric { background:#f8fafc; border:1px solid var(--line); border-radius:18px; padding:14px; }\n  .metric b { display:block; font-size:22px; color: var(--ink); }\n  .metric span { color: var(--muted); font-size:12px; }\n  .tabs { display:flex; flex-wrap:wrap; gap:10px; margin:18px 0; }\n  .tab { border:1px solid var(--line); background:white; border-radius:999px; padding:10px 14px; font-weight:800; color:#334155; cursor:pointer; }\n  .tab.active { background: var(--ink); color:white; border-color: var(--ink); }\n  .panel { padding: 20px; display:none; }\n  .panel.active { display:block; }\n  .grid { display:grid; grid-template-columns: minmax(0, 1.1fr) minmax(300px, .9fr); gap:18px; }\n  .card { background:white; border:1px solid var(--line); border-radius:22px; padding:18px; }\n  .controls { display:grid; gap:14px; }\n  label { font-size:13px; font-weight:800; color:#334155; display:block; margin-bottom: 6px; }\n  input[type=\"range\"] { width:100%; accent-color: var(--blue); }\n  input[type=\"number\"], input[type=\"text\"], select { width:100%; border:1px solid var(--line); border-radius:14px; padding:11px 12px; font:inherit; }\n  .row { display:grid; grid-template-columns: 1fr 78px; gap:10px; align-items:center; }\n  .result { display:grid; grid-template-columns: repeat(3,1fr); gap:10px; }\n  .pill { border-radius:999px; padding:8px 10px; background:#f1f5f9; font-size:13px; font-weight:800; color:#334155; display:inline-flex; align-items:center; gap:6px; }\n  .bull { color: var(--bull); } .bear { color: var(--bear); } .blue { color: var(--blue); } .amber { color: var(--amber); }\n  .pattern-layout { display:grid; grid-template-columns: 300px minmax(0,1fr); gap:18px; }\n  .pattern-list { max-height: 520px; overflow:auto; display:grid; gap:8px; padding-right:6px; }\n  .pattern-btn { text-align:left; border:1px solid var(--line); background:#fff; border-radius:16px; padding:12px; cursor:pointer; }\n  .pattern-btn.active { border-color: var(--blue); background:#eff6ff; }\n  .pattern-btn small { display:block; color:var(--muted); margin-top:3px; }\n  .filters { display:flex; gap:8px; flex-wrap:wrap; margin: 12px 0; }\n  .filter { border:1px solid var(--line); background:#fff; border-radius:999px; padding:7px 10px; font-size:12px; font-weight:800; cursor:pointer; }\n  .filter.active { background:#dbeafe; color:#1d4ed8; border-color:#bfdbfe; }\n  .pattern-facts { display:grid; grid-template-columns: repeat(2, 1fr); gap:10px; margin-top:12px; }\n  .fact { background:#f8fafc; border:1px solid var(--line); border-radius:18px; padding:12px; }\n  .fact b { display:block; margin-bottom:5px; }\n  .callout { border-left:4px solid var(--blue); padding:12px 14px; background:#eff6ff; border-radius:16px; margin-top:14px; color:#1e3a8a; }\n  .quiz-option { display:block; width:100%; text-align:left; margin:8px 0; padding:12px; border-radius:16px; border:1px solid var(--line); background:#fff; cursor:pointer; font-weight:700; }\n  .quiz-option.correct { border-color:#86efac; background:#f0fdf4; }\n  .quiz-option.wrong { border-color:#fecaca; background:#fef2f2; }\n  .feedback { margin-top:12px; font-weight:800; }\n  svg { width:100%; height:auto; }\n  .small-note { font-size:12px; color:var(--muted); }\n  @media (max-width: 880px) { .hero, .grid, .pattern-layout { grid-template-columns:1fr; } .mini-metrics, .result, .pattern-facts { grid-template-columns:1fr; } }\n</style>\n</head>\n<body>\n<div class=\"app\">\n  <div class=\"hero\">\n    <div class=\"hero-card\">\n      <p class=\"eyebrow\">Brilliant-style interactive lesson</p>\n      <h1>Candlesticks are price stories, not magic shapes.</h1>\n      <p>Move the sliders, inspect 60 patterns, and build a trade plan with risk/reward before you think about entry. The goal is to learn what buyers and sellers are doing inside each candle.</p>\n      <div class=\"mini-metrics\">\n        <div class=\"metric\"><b>4</b><span>prices per candle: open, high, low, close</span></div>\n        <div class=\"metric\"><b>60</b><span>patterns in the explorer</span></div>\n        <div class=\"metric\"><b>1R</b><span>risk unit used for trade planning</span></div>\n      </div>\n    </div>\n    <div class=\"hero-card\">\n      <p class=\"eyebrow\">Mental model</p>\n      <h2>Ask three questions</h2>\n      <p><b>1.</b> Where is the pattern? Trend, support, resistance, or middle of nowhere?</p>\n      <p><b>2.</b> Who won the candle? Buyers, sellers, or no one?</p>\n      <p><b>3.</b> Where are you wrong? If you cannot define invalidation, you do not have a trade plan.</p>\n    </div>\n  </div>\n\n  <div class=\"tabs\">\n    <button class=\"tab active\" data-tab=\"anatomy\">1. Candle anatomy</button>\n    <button class=\"tab\" data-tab=\"explorer\">2. 60-pattern explorer</button>\n    <button class=\"tab\" data-tab=\"trade\">3. Risk/reward lab</button>\n    <button class=\"tab\" data-tab=\"quiz\">4. Quick quiz</button>\n  </div>\n\n  <section class=\"panel active\" id=\"anatomy\">\n    <div class=\"grid\">\n      <div class=\"card\">\n        <h2>Build one candle</h2>\n        <p>Instead of memorizing names, first feel how open, close, high, and low create the story.</p>\n        <div class=\"controls\">\n          <div><label>Open price</label><div class=\"row\"><input id=\"openRange\" type=\"range\" min=\"80\" max=\"120\" value=\"100\"><input id=\"openNum\" type=\"number\" value=\"100\"></div></div>\n          <div><label>Close price</label><div class=\"row\"><input id=\"closeRange\" type=\"range\" min=\"80\" max=\"120\" value=\"108\"><input id=\"closeNum\" type=\"number\" value=\"108\"></div></div>\n          <div><label>Upper wick extra</label><div class=\"row\"><input id=\"upperRange\" type=\"range\" min=\"0\" max=\"20\" value=\"5\"><input id=\"upperNum\" type=\"number\" value=\"5\"></div></div>\n          <div><label>Lower wick extra</label><div class=\"row\"><input id=\"lowerRange\" type=\"range\" min=\"0\" max=\"20\" value=\"7\"><input id=\"lowerNum\" type=\"number\" value=\"7\"></div></div>\n        </div>\n      </div>\n      <div class=\"card\">\n        <svg id=\"singleCandle\" viewBox=\"0 0 360 360\" role=\"img\" aria-label=\"Interactive candlestick\"></svg>\n        <div class=\"result\">\n          <div class=\"metric\"><b id=\"bodyOut\">8</b><span>body size</span></div>\n          <div class=\"metric\"><b id=\"rangeOut\">20</b><span>total range</span></div>\n          <div class=\"metric\"><b id=\"storyOut\">Bullish</b><span>simple story</span></div>\n        </div>\n        <div class=\"callout\" id=\"lessonOut\">A bullish candle means close is above open. The body shows how much buyers won by; the wicks show rejected prices.</div>\n      </div>\n    </div>\n  </section>\n\n  <section class=\"panel\" id=\"explorer\">\n    <div class=\"pattern-layout\">\n      <div class=\"card\">\n        <h2>Choose a pattern</h2>\n        <input id=\"search\" type=\"text\" placeholder=\"Search hammer, doji, engulfing...\" />\n        <div class=\"filters\" id=\"filters\"></div>\n        <div class=\"pattern-list\" id=\"patternList\"></div>\n      </div>\n      <div class=\"card\">\n        <div style=\"display:flex; justify-content:space-between; gap:12px; align-items:flex-start; flex-wrap:wrap;\">\n          <div>\n            <p class=\"eyebrow\" id=\"patternCategory\">Pattern</p>\n            <h2 id=\"patternName\">Hammer</h2>\n          </div>\n          <span class=\"pill\" id=\"patternBias\">Bullish</span>\n        </div>\n        <svg id=\"patternChart\" viewBox=\"0 0 720 360\" role=\"img\" aria-label=\"Pattern chart\"></svg>\n        <div class=\"pattern-facts\">\n          <div class=\"fact\"><b>Context</b><span id=\"patternContext\"></span></div>\n          <div class=\"fact\"><b>Psychology</b><span id=\"patternIdea\"></span></div>\n          <div class=\"fact\"><b>Confirmation</b><span id=\"patternConfirm\"></span></div>\n          <div class=\"fact\"><b>Invalidation</b><span id=\"patternInvalid\"></span></div>\n        </div>\n        <div class=\"callout\"><b>Beginner rule:</b> never trade the name alone. Trade the name + location + confirmation + risk plan.</div>\n      </div>\n    </div>\n  </section>\n\n  <section class=\"panel\" id=\"trade\">\n    <div class=\"grid\">\n      <div class=\"card\">\n        <h2>Build a trade plan</h2>\n        <p>This calculator teaches why a good-looking pattern can still be a bad trade if the stop is too wide or the target is too close.</p>\n        <div class=\"controls\">\n          <div><label>Account size</label><input id=\"account\" type=\"number\" value=\"100000\"></div>\n          <div><label>Risk per trade (%)</label><input id=\"riskPct\" type=\"number\" value=\"1\" step=\"0.25\"></div>\n          <div><label>Entry price</label><input id=\"entry\" type=\"number\" value=\"100\" step=\"0.1\"></div>\n          <div><label>Stop loss price</label><input id=\"stop\" type=\"number\" value=\"96\" step=\"0.1\"></div>\n          <div><label>Target price</label><input id=\"target\" type=\"number\" value=\"110\" step=\"0.1\"></div>\n        </div>\n      </div>\n      <div class=\"card\">\n        <svg id=\"riskChart\" viewBox=\"0 0 720 360\" role=\"img\" aria-label=\"Risk reward chart\"></svg>\n        <div class=\"result\">\n          <div class=\"metric\"><b id=\"riskTk\">1,000</b><span>max money risk</span></div>\n          <div class=\"metric\"><b id=\"qtyOut\">250</b><span>position size</span></div>\n          <div class=\"metric\"><b id=\"rrOut\">2.5R</b><span>reward/risk</span></div>\n        </div>\n        <div class=\"callout\" id=\"tradeLesson\">If you risk 4 per share and target 10 per share, your reward/risk is 2.5R.</div>\n      </div>\n    </div>\n  </section>\n\n  <section class=\"panel\" id=\"quiz\">\n    <div class=\"grid\">\n      <div class=\"card\">\n        <h2>Quick quiz</h2>\n        <p id=\"quizQuestion\"></p>\n        <div id=\"quizOptions\"></div>\n        <div class=\"feedback\" id=\"quizFeedback\"></div>\n        <button class=\"tab active\" id=\"nextQuiz\" style=\"margin-top:14px;\">Next question</button>\n      </div>\n      <div class=\"card\">\n        <svg id=\"quizChart\" viewBox=\"0 0 720 360\" role=\"img\" aria-label=\"Quiz chart\"></svg>\n        <p class=\"small-note\">Do not answer by candle color only. Look at location, wick, body, and confirmation.</p>\n      </div>\n    </div>\n  </section>\n</div>\n<script>\nconst patterns = [{\"name\": \"Marubozu\", \"category\": \"Single candle\", \"bias\": \"Bullish or bearish\", \"context\": \"Strong momentum candle; can continue a trend or start a reversal after exhaustion.\", \"idea\": \"One side controlled almost the entire session. The body is very large and the wicks are tiny or missing.\", \"confirm\": \"Next candle should hold beyond the Marubozu close, ideally with volume or a break of structure.\", \"invalid\": \"Price closes back inside the Marubozu body and removes the momentum message.\", \"candles\": [[96, 97, 94, 95], [95, 105, 95, 104.5], [104.5, 106, 103, 105.5]]}, {\"name\": \"Doji\", \"category\": \"Indecision\", \"bias\": \"Neutral until confirmed\", \"context\": \"Most useful after a strong advance or decline, not in the middle of random sideways noise.\", \"idea\": \"Open and close are almost equal, so neither buyers nor sellers won the candle.\", \"confirm\": \"Wait for price to break above or below the Doji range.\", \"invalid\": \"No follow-through; price keeps chopping around the same range.\", \"candles\": [[100, 104, 98, 103], [103, 106, 100, 103.1], [103, 105, 102, 104]]}, {\"name\": \"Dragonfly Doji\", \"category\": \"Indecision / reversal\", \"bias\": \"Potential bullish reversal\", \"context\": \"Best after a decline or near support.\", \"idea\": \"Sellers pushed price down, but buyers recovered almost everything before the close.\", \"confirm\": \"A later candle closes above the Dragonfly high.\", \"invalid\": \"Price breaks below the long lower wick.\", \"candles\": [[108, 109, 103, 104], [104, 105, 96, 104.8], [105, 108, 104, 107]]}, {\"name\": \"Gravestone Doji\", \"category\": \"Indecision / reversal\", \"bias\": \"Potential bearish reversal\", \"context\": \"Best after an advance or near resistance.\", \"idea\": \"Buyers pushed price up, but sellers erased the move before the close.\", \"confirm\": \"A later candle closes below the Gravestone low.\", \"invalid\": \"Price breaks above the long upper wick.\", \"candles\": [[96, 102, 95, 101], [101, 110, 100.8, 101.1], [101, 102, 97, 98]]}, {\"name\": \"Long Legged Doji\", \"category\": \"Indecision\", \"bias\": \"Neutral / possible reversal\", \"context\": \"Important near support, resistance, or after a very fast move.\", \"idea\": \"Price traveled far above and below the open, but closed near the starting point.\", \"confirm\": \"Trade only after a decisive breakout from the wide Doji range.\", \"invalid\": \"A breakout fails and returns into the middle of the range.\", \"candles\": [[100, 105, 99, 104], [104, 112, 96, 104.2], [104, 105, 101, 102]]}, {\"name\": \"Bullish Spinning Top\", \"category\": \"Indecision\", \"bias\": \"Mild bullish if confirmed\", \"context\": \"Appears when volatility is active but the candle body is small.\", \"idea\": \"Buyers closed slightly higher, but the long wicks show both sides fought hard.\", \"confirm\": \"A close above the spinning top high.\", \"invalid\": \"A close below the low.\", \"candles\": [[102, 103, 98, 99], [99, 104, 96, 100], [100, 103, 99, 102]]}, {\"name\": \"Bearish Spinning Top\", \"category\": \"Indecision\", \"bias\": \"Mild bearish if confirmed\", \"context\": \"More meaningful after an uptrend or near resistance.\", \"idea\": \"Sellers closed slightly lower, but the long wicks show uncertainty.\", \"confirm\": \"A close below the spinning top low.\", \"invalid\": \"A close above the high.\", \"candles\": [[98, 104, 97, 103], [103, 107, 100, 102], [102, 103, 98, 99]]}, {\"name\": \"High-Wave Candlestick\", \"category\": \"Indecision\", \"bias\": \"Neutral warning sign\", \"context\": \"Often appears around emotional news or a battle zone between support and resistance.\", \"idea\": \"Very long upper and lower wicks with a small body show extreme disagreement.\", \"confirm\": \"The next candle must choose direction by closing outside the high-wave range.\", \"invalid\": \"The market remains inside the wide range.\", \"candles\": [[102, 106, 101, 105], [105, 114, 94, 104], [104, 106, 99, 100]]}, {\"name\": \"Long Wicks\", \"category\": \"Single candle clue\", \"bias\": \"Rejection clue, not a full signal alone\", \"context\": \"Useful near clear support or resistance.\", \"idea\": \"A long wick means price tried to go somewhere but was rejected before the close.\", \"confirm\": \"Trade in the rejection direction only after follow-through.\", \"invalid\": \"Price breaks through the wick extreme with strength.\", \"candles\": [[104, 108, 103, 107], [107, 116, 105, 106], [106, 107, 101, 102]]}, {\"name\": \"Pin Bar\", \"category\": \"Single candle reversal\", \"bias\": \"Bullish or bearish depending on wick direction\", \"context\": \"Best at support/resistance or after a stretched move.\", \"idea\": \"One long tail shows rejection; the small body is near the opposite side of the range.\", \"confirm\": \"Entry usually waits for a break of the pin bar nose/body side.\", \"invalid\": \"Price breaks the long-tail extreme.\", \"candles\": [[108, 109, 104, 105], [105, 106, 96, 104.5], [104.5, 108, 104, 107]]}, {\"name\": \"Hammer\", \"category\": \"Bullish reversal\", \"bias\": \"Bullish reversal candidate\", \"context\": \"Appears after a downtrend or at support.\", \"idea\": \"Sellers pushed price down, but buyers lifted it back near the top of the candle.\", \"confirm\": \"A close above the Hammer high or a strong bullish candle after it.\", \"invalid\": \"A close below the Hammer low.\", \"candles\": [[110, 111, 106, 107], [107, 108, 100, 103], [103, 104, 94, 102.5], [102.5, 106, 102, 105]]}, {\"name\": \"Hanging Man\", \"category\": \"Bearish reversal\", \"bias\": \"Bearish warning\", \"context\": \"Looks like a Hammer, but appears after an uptrend.\", \"idea\": \"A strong lower wick warns that sellers finally appeared during an uptrend.\", \"confirm\": \"A later candle closes below the Hanging Man low.\", \"invalid\": \"Price continues above the Hanging Man high.\", \"candles\": [[94, 100, 93, 99], [99, 104, 98, 103], [103, 104, 96, 102.5], [102.5, 103, 98, 99]]}, {\"name\": \"Inverted Hammer\", \"category\": \"Bullish reversal\", \"bias\": \"Bullish reversal candidate\", \"context\": \"Appears after a downtrend.\", \"idea\": \"Buyers tried to push up from a weak market; confirmation tells whether they can continue.\", \"confirm\": \"A close above the inverted hammer high.\", \"invalid\": \"A close below the low.\", \"candles\": [[110, 111, 107, 108], [108, 109, 103, 104], [104, 112, 103, 105], [105, 109, 104, 108]]}, {\"name\": \"Shooting Star\", \"category\": \"Bearish reversal\", \"bias\": \"Bearish reversal candidate\", \"context\": \"Appears after an uptrend or near resistance.\", \"idea\": \"Buyers pushed upward but sellers forced the close back near the low.\", \"confirm\": \"A close below the Shooting Star low.\", \"invalid\": \"A close above the long upper wick.\", \"candles\": [[96, 102, 95, 101], [101, 106, 100, 105], [105, 113, 104, 105.5], [105.5, 106, 100, 101]]}, {\"name\": \"Bullish Engulfing\", \"category\": \"Two-candle reversal\", \"bias\": \"Bullish\", \"context\": \"Appears after a decline.\", \"idea\": \"A large bullish body fully covers the prior bearish body, showing buyers overwhelmed sellers.\", \"confirm\": \"A close above the engulfing candle high or higher low after the pattern.\", \"invalid\": \"Price closes below the engulfing candle low.\", \"candles\": [[109, 110, 105, 106], [106, 107, 101, 102], [101.5, 108, 101, 107.5], [107.5, 110, 106, 109]]}, {\"name\": \"Bearish Engulfing\", \"category\": \"Two-candle reversal\", \"bias\": \"Bearish\", \"context\": \"Appears after a rally.\", \"idea\": \"A large bearish body fully covers the prior bullish body, showing sellers overwhelmed buyers.\", \"confirm\": \"A close below the engulfing candle low.\", \"invalid\": \"Price closes above the engulfing candle high.\", \"candles\": [[96, 102, 95, 101], [101, 104, 100, 103], [103.5, 104, 97, 97.5], [97.5, 99, 94, 95]]}, {\"name\": \"Piercing Line\", \"category\": \"Two-candle reversal\", \"bias\": \"Bullish\", \"context\": \"Appears after a decline.\", \"idea\": \"The second candle opens weak but closes above the midpoint of the previous bearish body.\", \"confirm\": \"A later candle closes above the second candle high.\", \"invalid\": \"Price falls below the pattern low.\", \"candles\": [[108, 109, 104, 105], [105, 106, 98, 99], [98, 104, 97, 103.5], [103.5, 106, 102, 105]]}, {\"name\": \"Dark Cloud Cover\", \"category\": \"Two-candle reversal\", \"bias\": \"Bearish\", \"context\": \"Appears after an advance.\", \"idea\": \"The second candle opens strong but closes below the midpoint of the previous bullish body.\", \"confirm\": \"A later candle closes below the second candle low.\", \"invalid\": \"Price rises above the pattern high.\", \"candles\": [[96, 101, 95, 100], [100, 107, 99, 106], [107, 108, 101, 102], [102, 103, 98, 99]]}, {\"name\": \"Bullish Harami\", \"category\": \"Two-candle reversal\", \"bias\": \"Bullish\", \"context\": \"Appears after a decline.\", \"idea\": \"A small bullish candle sits inside the previous large bearish body, showing selling pressure is shrinking.\", \"confirm\": \"A close above the mother candle high.\", \"invalid\": \"A close below the mother candle low.\", \"candles\": [[108, 110, 104, 105], [105, 106, 98, 99], [100, 103, 99.5, 102.5], [102.5, 105, 101, 104]]}, {\"name\": \"Bearish Harami\", \"category\": \"Two-candle reversal\", \"bias\": \"Bearish\", \"context\": \"Appears after an advance.\", \"idea\": \"A small bearish candle sits inside the previous large bullish body, showing buying pressure is shrinking.\", \"confirm\": \"A close below the mother candle low.\", \"invalid\": \"A close above the mother candle high.\", \"candles\": [[96, 100, 95, 99], [99, 107, 98, 106], [105, 106, 102, 103], [103, 104, 99, 100]]}, {\"name\": \"Tweezer Bottom\", \"category\": \"Two-candle reversal\", \"bias\": \"Bullish\", \"context\": \"Appears after a decline near support.\", \"idea\": \"Two candles reject nearly the same low, suggesting a floor may be forming.\", \"confirm\": \"Price closes above the highs of the tweezer candles.\", \"invalid\": \"Price breaks the matching lows.\", \"candles\": [[109, 110, 104, 105], [105, 106, 99, 100], [100, 104, 99, 103], [103, 106, 102, 105]]}, {\"name\": \"Tweezer Top\", \"category\": \"Two-candle reversal\", \"bias\": \"Bearish\", \"context\": \"Appears after an advance near resistance.\", \"idea\": \"Two candles reject nearly the same high, suggesting a ceiling may be forming.\", \"confirm\": \"Price closes below the lows of the tweezer candles.\", \"invalid\": \"Price breaks above the matching highs.\", \"candles\": [[95, 100, 94, 99], [99, 106, 98, 105], [105, 106, 101, 102], [102, 103, 98, 99]]}, {\"name\": \"Bullish Counterattack\", \"category\": \"Two-candle reversal\", \"bias\": \"Bullish\", \"context\": \"Appears after a decline.\", \"idea\": \"A bearish candle is followed by a bullish candle that closes near the previous close, showing buyers countered the move.\", \"confirm\": \"A strong close above the counterattack candle.\", \"invalid\": \"Price breaks below the pattern low.\", \"candles\": [[108, 109, 105, 106], [106, 107, 99, 100], [96, 101, 95, 100.2], [100.2, 104, 99, 103]]}, {\"name\": \"Bearish Counterattack\", \"category\": \"Two-candle reversal\", \"bias\": \"Bearish\", \"context\": \"Appears after an advance.\", \"idea\": \"A bullish candle is followed by a bearish candle that closes near the previous close, showing sellers countered the move.\", \"confirm\": \"A close below the counterattack candle.\", \"invalid\": \"Price breaks above the pattern high.\", \"candles\": [[96, 101, 95, 100], [100, 107, 99, 106], [110, 111, 105.8, 105.9], [105.9, 106, 101, 102]]}, {\"name\": \"Morning Star\", \"category\": \"Three-candle reversal\", \"bias\": \"Bullish\", \"context\": \"Appears after a downtrend.\", \"idea\": \"A strong bearish candle, then a small pause candle, then a strong bullish candle signals a possible morning after the selloff.\", \"confirm\": \"Third candle closes into or above the first candle's body, followed by higher close.\", \"invalid\": \"Price breaks below the star candle low.\", \"candles\": [[110, 111, 104, 105], [105, 106, 98, 99], [98, 100, 96, 98.5], [99, 106, 98, 105]]}, {\"name\": \"Evening Star\", \"category\": \"Three-candle reversal\", \"bias\": \"Bearish\", \"context\": \"Appears after an uptrend.\", \"idea\": \"A strong bullish candle, then a small pause candle, then a strong bearish candle warns the rally may be ending.\", \"confirm\": \"Third candle closes into or below the first candle's body, followed by lower close.\", \"invalid\": \"Price breaks above the star candle high.\", \"candles\": [[96, 101, 95, 100], [100, 108, 99, 107], [108, 110, 107, 108.3], [107.5, 108, 101, 102]]}, {\"name\": \"Morning Star Doji\", \"category\": \"Three-candle reversal\", \"bias\": \"Bullish\", \"context\": \"Appears after a decline; the middle candle is a Doji.\", \"idea\": \"The downtrend pauses with a Doji, then buyers step in strongly.\", \"confirm\": \"A bullish third candle and follow-through above its high.\", \"invalid\": \"Break below the Doji low.\", \"candles\": [[110, 111, 104, 105], [105, 106, 98, 99], [98, 101, 96, 98.1], [99, 107, 98, 106]]}, {\"name\": \"Evening Star Doji\", \"category\": \"Three-candle reversal\", \"bias\": \"Bearish\", \"context\": \"Appears after a rally; the middle candle is a Doji.\", \"idea\": \"The uptrend pauses with a Doji, then sellers take control.\", \"confirm\": \"A bearish third candle and follow-through below its low.\", \"invalid\": \"Break above the Doji high.\", \"candles\": [[96, 101, 95, 100], [100, 108, 99, 107], [108, 111, 106, 108.1], [107, 108, 100, 101]]}, {\"name\": \"Three White Soldiers\", \"category\": \"Three-candle reversal\", \"bias\": \"Bullish\", \"context\": \"Often appears after a decline or consolidation.\", \"idea\": \"Three strong bullish candles step upward, showing repeated buyer control.\", \"confirm\": \"The three candles close near highs without huge exhausted wicks.\", \"invalid\": \"A sharp reversal candle erases the soldiers.\", \"candles\": [[96, 101, 95, 100], [100, 105, 99, 104], [104, 109, 103, 108], [108, 113, 107, 112]]}, {\"name\": \"Three Black Crows\", \"category\": \"Three-candle reversal\", \"bias\": \"Bearish\", \"context\": \"Often appears after an advance or weak top.\", \"idea\": \"Three strong bearish candles step downward, showing repeated seller control.\", \"confirm\": \"The candles close near lows without huge lower rejection wicks.\", \"invalid\": \"A sharp bullish reversal erases the crows.\", \"candles\": [[112, 113, 108, 109], [109, 110, 104, 105], [105, 106, 100, 101], [101, 102, 96, 97]]}, {\"name\": \"Rising Three\", \"category\": \"Continuation\", \"bias\": \"Bullish continuation\", \"context\": \"Appears inside an existing uptrend.\", \"idea\": \"A big bullish candle is followed by small pullback candles inside its range, then another bullish breakout.\", \"confirm\": \"Final candle closes above the first candle high.\", \"invalid\": \"The small candles break below the first candle low.\", \"candles\": [[96, 105, 95, 104], [104, 105, 101, 102], [102, 104, 100, 101], [101, 103, 100, 102], [102, 108, 101, 107]]}, {\"name\": \"Falling Three\", \"category\": \"Continuation\", \"bias\": \"Bearish continuation\", \"context\": \"Appears inside an existing downtrend.\", \"idea\": \"A big bearish candle is followed by small bounce candles inside its range, then another bearish breakdown.\", \"confirm\": \"Final candle closes below the first candle low.\", \"invalid\": \"The small candles break above the first candle high.\", \"candles\": [[108, 109, 99, 100], [100, 104, 99, 102], [102, 105, 101, 103], [103, 104, 101, 102], [102, 103, 94, 95]]}, {\"name\": \"Tasuki Gap\", \"category\": \"Continuation\", \"bias\": \"Bullish or bearish continuation\", \"context\": \"Appears after a gap in the trend direction.\", \"idea\": \"Price gaps strongly, then partially pulls back but does not close the gap.\", \"confirm\": \"Trend resumes from the unfilled gap area.\", \"invalid\": \"The gap is fully closed with strong opposite momentum.\", \"candles\": [[96, 102, 95, 101], [104, 109, 103, 108], [108, 109, 104, 105], [105, 111, 104, 110]]}, {\"name\": \"Mat Hold\", \"category\": \"Continuation\", \"bias\": \"Bullish continuation most commonly taught\", \"context\": \"Appears in an uptrend after a strong candle and small controlled pullback.\", \"idea\": \"A strong opening candle creates a mat; small candles rest on it; a final bullish candle continues the trend.\", \"confirm\": \"Final candle breaks above the first candle high.\", \"invalid\": \"Pullback candles break deep below the first candle body.\", \"candles\": [[96, 106, 95, 105], [107, 110, 106, 109], [109, 110, 106, 107], [107, 108, 105, 106], [106, 112, 105, 111]]}, {\"name\": \"Bullish Abandoned Baby\", \"category\": \"Three-candle reversal\", \"bias\": \"Bullish\", \"context\": \"Rare pattern after a decline with gaps around the middle Doji.\", \"idea\": \"A selloff gaps down into a Doji, then gaps up, leaving the Doji isolated like an abandoned baby.\", \"confirm\": \"The bullish third candle continues higher.\", \"invalid\": \"Price falls back below the Doji low.\", \"candles\": [[110, 111, 104, 105], [105, 106, 98, 99], [94, 96, 92, 94.1], [99, 106, 98, 105]]}, {\"name\": \"Bearish Abandoned Baby\", \"category\": \"Three-candle reversal\", \"bias\": \"Bearish\", \"context\": \"Rare pattern after a rally with gaps around the middle Doji.\", \"idea\": \"A rally gaps up into a Doji, then gaps down, leaving the Doji isolated.\", \"confirm\": \"The bearish third candle continues lower.\", \"invalid\": \"Price rises back above the Doji high.\", \"candles\": [[96, 101, 95, 100], [100, 108, 99, 107], [112, 114, 111, 112.1], [106, 107, 99, 100]]}, {\"name\": \"Three Outside Up\", \"category\": \"Three-candle reversal\", \"bias\": \"Bullish\", \"context\": \"Bullish Engulfing plus a confirmation candle.\", \"idea\": \"A bullish engulfing pattern forms, then the third candle closes higher.\", \"confirm\": \"Third candle closes above the engulfing candle.\", \"invalid\": \"Price falls below the engulfing candle low.\", \"candles\": [[106, 107, 101, 102], [101, 109, 100, 108], [108, 112, 107, 111]]}, {\"name\": \"Three Outside Down\", \"category\": \"Three-candle reversal\", \"bias\": \"Bearish\", \"context\": \"Bearish Engulfing plus a confirmation candle.\", \"idea\": \"A bearish engulfing pattern forms, then the third candle closes lower.\", \"confirm\": \"Third candle closes below the engulfing candle.\", \"invalid\": \"Price rises above the engulfing candle high.\", \"candles\": [[100, 106, 99, 105], [106, 107, 98, 99], [99, 100, 94, 95]]}, {\"name\": \"Three Inside Up\", \"category\": \"Three-candle reversal\", \"bias\": \"Bullish\", \"context\": \"Bullish Harami plus confirmation.\", \"idea\": \"A small candle forms inside a large bearish body, then the third candle breaks upward.\", \"confirm\": \"Third candle closes above the first candle midpoint or high.\", \"invalid\": \"Price breaks below the first candle low.\", \"candles\": [[108, 109, 99, 100], [101, 104, 100, 103], [103, 108, 102, 107]]}, {\"name\": \"Three Inside Down\", \"category\": \"Three-candle reversal\", \"bias\": \"Bearish\", \"context\": \"Bearish Harami plus confirmation.\", \"idea\": \"A small candle forms inside a large bullish body, then the third candle breaks downward.\", \"confirm\": \"Third candle closes below the first candle midpoint or low.\", \"invalid\": \"Price breaks above the first candle high.\", \"candles\": [[98, 108, 97, 107], [106, 107, 103, 104], [104, 105, 98, 99]]}, {\"name\": \"Bullish Kicker\", \"category\": \"Two-candle reversal\", \"bias\": \"Bullish\", \"context\": \"Sharp sentiment shift, often around news or major support.\", \"idea\": \"A bearish candle is followed by a bullish candle that gaps up and moves strongly.\", \"confirm\": \"Gap holds and price continues higher.\", \"invalid\": \"Price closes back below the gap area.\", \"candles\": [[105, 106, 99, 100], [104, 112, 103, 111], [111, 114, 110, 113]]}, {\"name\": \"Bearish Kicker\", \"category\": \"Two-candle reversal\", \"bias\": \"Bearish\", \"context\": \"Sharp sentiment shift, often around news or major resistance.\", \"idea\": \"A bullish candle is followed by a bearish candle that gaps down and moves strongly.\", \"confirm\": \"Gap holds and price continues lower.\", \"invalid\": \"Price closes back above the gap area.\", \"candles\": [[99, 107, 98, 106], [102, 103, 94, 95], [95, 96, 91, 92]]}, {\"name\": \"Bullish Belt Hold Pattern\", \"category\": \"Single candle reversal\", \"bias\": \"Bullish\", \"context\": \"Often appears after a decline.\", \"idea\": \"Price opens near the low and closes strong, like buyers grabbed the market by the belt.\", \"confirm\": \"Next candle holds above its midpoint or breaks the high.\", \"invalid\": \"Price closes below the candle low.\", \"candles\": [[108, 109, 103, 104], [104, 105, 98, 99], [99, 108, 99, 107]]}, {\"name\": \"Bearish Belt Hold Pattern\", \"category\": \"Single candle reversal\", \"bias\": \"Bearish\", \"context\": \"Often appears after a rally.\", \"idea\": \"Price opens near the high and closes weak, showing sellers controlled the session.\", \"confirm\": \"Next candle holds below its midpoint or breaks the low.\", \"invalid\": \"Price closes above the candle high.\", \"candles\": [[96, 102, 95, 101], [101, 107, 100, 106], [106, 106, 97, 98]]}, {\"name\": \"Doji Star\", \"category\": \"Indecision / reversal\", \"bias\": \"Neutral until confirmed\", \"context\": \"A Doji gaps away from the prior candle after a trend.\", \"idea\": \"Momentum stretches, then suddenly pauses at the extreme.\", \"confirm\": \"A reversal candle in the opposite direction.\", \"invalid\": \"Trend continues and absorbs the Doji.\", \"candles\": [[96, 102, 95, 101], [101, 108, 100, 107], [110, 113, 108, 110.1], [109, 110, 103, 104]]}, {\"name\": \"Bearish Doji Star Pattern\", \"category\": \"Indecision / reversal\", \"bias\": \"Bearish if confirmed\", \"context\": \"A Doji star after an uptrend.\", \"idea\": \"The uptrend gaps higher, but the Doji shows buyers could not extend the move.\", \"confirm\": \"A bearish candle after the Doji closes lower.\", \"invalid\": \"Price breaks above the Doji high.\", \"candles\": [[97, 103, 96, 102], [102, 109, 101, 108], [111, 114, 110, 111.1], [110, 111, 104, 105]]}, {\"name\": \"Matching Low / Matching High\", \"category\": \"Two-candle reversal clue\", \"bias\": \"Matching low bullish; matching high bearish\", \"context\": \"Appears near support or resistance.\", \"idea\": \"Two closes or extremes match, suggesting one level is being defended.\", \"confirm\": \"Break away from the defended level.\", \"invalid\": \"Level breaks decisively.\", \"candles\": [[106, 107, 100, 101], [101, 104, 99, 101], [101, 106, 100, 105]]}, {\"name\": \"Inside Bars\", \"category\": \"Compression / continuation\", \"bias\": \"Neutral until breakout\", \"context\": \"A smaller candle sits inside the range of a larger mother candle.\", \"idea\": \"Volatility compresses; traders wait for expansion.\", \"confirm\": \"Breakout above or below the mother candle range.\", \"invalid\": \"False breakout returns into the mother candle range.\", \"candles\": [[100, 110, 98, 108], [105, 108, 102, 103], [103, 109, 102, 108]]}, {\"name\": \"Three-Line Strike Pattern\", \"category\": \"Continuation / reversal trap\", \"bias\": \"Depends on trend and version\", \"context\": \"Three candles in the trend direction are followed by a large opposite candle.\", \"idea\": \"The fourth candle looks like a reversal, but may be a shakeout if the trend resumes.\", \"confirm\": \"Wait for the next candle; do not guess immediately.\", \"invalid\": \"The fourth candle creates a true structure break.\", \"candles\": [[96, 101, 95, 100], [100, 105, 99, 104], [104, 109, 103, 108], [109, 110, 97, 98]]}, {\"name\": \"Bullish Separating Lines Pattern\", \"category\": \"Continuation\", \"bias\": \"Bullish\", \"context\": \"Appears in an uptrend.\", \"idea\": \"A bearish candle is followed by a bullish candle that opens around the same level and restores the trend.\", \"confirm\": \"Bullish candle closes strong and next candle continues.\", \"invalid\": \"Price closes below the separating candle low.\", \"candles\": [[98, 104, 97, 103], [103, 104, 99, 100], [100, 107, 100, 106]]}, {\"name\": \"Bearish Separating Lines\", \"category\": \"Continuation\", \"bias\": \"Bearish\", \"context\": \"Appears in a downtrend.\", \"idea\": \"A bullish candle is followed by a bearish candle that opens around the same level and restores the downtrend.\", \"confirm\": \"Bearish candle closes weak and next candle continues.\", \"invalid\": \"Price closes above the separating candle high.\", \"candles\": [[108, 109, 102, 103], [103, 107, 102, 106], [106, 106, 98, 99]]}, {\"name\": \"Meeting Lines Pattern\", \"category\": \"Two-candle reversal clue\", \"bias\": \"Bullish or bearish version\", \"context\": \"Appears when a strong opposite candle closes at the prior close.\", \"idea\": \"The market travels in the opposite direction but meets the previous close, creating tension.\", \"confirm\": \"Next candle breaks away from the meeting level.\", \"invalid\": \"Price drifts sideways with no follow-through.\", \"candles\": [[106, 107, 99, 100], [96, 101, 95, 100], [100, 104, 99, 103]]}, {\"name\": \"On-Neck Pattern\", \"category\": \"Bearish continuation\", \"bias\": \"Bearish continuation\", \"context\": \"Appears during a downtrend.\", \"idea\": \"A small bullish candle closes near the prior bearish candle low, but not strongly enough to reverse.\", \"confirm\": \"Next candle breaks below the low area.\", \"invalid\": \"Price closes above the prior bearish candle midpoint.\", \"candles\": [[108, 109, 100, 101], [101, 103, 98, 100.5], [100.5, 101, 94, 95]]}, {\"name\": \"In-Neck Pattern\", \"category\": \"Bearish continuation\", \"bias\": \"Bearish continuation\", \"context\": \"Appears during a downtrend.\", \"idea\": \"A small bullish candle closes slightly into the prior bearish body, but sellers remain in control.\", \"confirm\": \"Continuation below the pattern low.\", \"invalid\": \"A strong bullish close above the prior body midpoint.\", \"candles\": [[108, 109, 100, 101], [101, 104, 99, 102], [102, 103, 95, 96]]}, {\"name\": \"Thrusting Pattern\", \"category\": \"Bearish continuation / weak reversal\", \"bias\": \"Usually bearish continuation if weak\", \"context\": \"Appears in a downtrend after a long bearish candle.\", \"idea\": \"A bullish candle pushes into the prior body but fails to close above the midpoint.\", \"confirm\": \"If it fails at the midpoint and rolls over, bears still control.\", \"invalid\": \"A close above the midpoint converts it into stronger bullish evidence.\", \"candles\": [[108, 109, 100, 101], [99, 105, 98, 104], [104, 105, 97, 98]]}, {\"name\": \"Upside Gap Two Crows Pattern\", \"category\": \"Bearish reversal\", \"bias\": \"Bearish warning\", \"context\": \"Appears after an uptrend with an upside gap.\", \"idea\": \"Two bearish candles appear above the prior bullish candle, warning that the gap may be losing strength.\", \"confirm\": \"Price closes back below the gap/support area.\", \"invalid\": \"Price breaks above the crows and continues higher.\", \"candles\": [[96, 102, 95, 101], [101, 109, 100, 108], [111, 113, 108, 109], [110, 112, 106, 107]]}, {\"name\": \"Tri-Star\", \"category\": \"Indecision / reversal\", \"bias\": \"Potential reversal after extreme trend\", \"context\": \"Rare; three Doji candles around a top or bottom.\", \"idea\": \"Three repeated indecision candles show the trend is exhausted and stuck.\", \"confirm\": \"A strong candle breaks away from the tri-star cluster.\", \"invalid\": \"The trend resumes through the cluster.\", \"candles\": [[100, 104, 96, 100.1], [101, 105, 97, 101.1], [99, 103, 95, 99.1], [99, 103, 98, 102]]}, {\"name\": \"Hikkake Pattern (Bullish/Bearish)\", \"category\": \"False breakout\", \"bias\": \"Bullish or bearish trap\", \"context\": \"Begins with an inside bar, then a false breakout, then reversal.\", \"idea\": \"Traders chase the first breakout; the market snaps back and traps them.\", \"confirm\": \"Price breaks the opposite side of the inside bar setup.\", \"invalid\": \"The first breakout continues instead of failing.\", \"candles\": [[100, 110, 98, 108], [104, 107, 101, 102], [101, 103, 96, 97], [97, 109, 96, 108]]}, {\"name\": \"Ladder Bottom Pattern\", \"category\": \"Bullish reversal\", \"bias\": \"Bullish reversal candidate\", \"context\": \"Appears after several bearish candles when a strong bullish candle appears.\", \"idea\": \"The market climbs out of a stair-step decline after sellers fail to push lower.\", \"confirm\": \"The bullish candle closes above short-term structure.\", \"invalid\": \"Price breaks below the pattern low.\", \"candles\": [[112, 113, 107, 108], [108, 109, 103, 104], [104, 105, 99, 100], [100, 103, 96, 99], [99, 108, 98, 107]]}, {\"name\": \"Concealing Baby Swallow Pattern\", \"category\": \"Bullish reversal\", \"bias\": \"Bullish reversal candidate\", \"context\": \"Rare; appears after a harsh selloff with multiple strong bearish candles.\", \"idea\": \"Sellers appear dominant, but the final structure hints that selling pressure is becoming unsustainable.\", \"confirm\": \"Wait for a later bullish reversal candle; the pattern is too rare to trade alone.\", \"invalid\": \"Price continues to new lows without recovery.\", \"candles\": [[112, 113, 104, 105], [105, 106, 98, 99], [99, 102, 96, 97], [97, 100, 92, 93]]}];\nconst categories = [\"All\", ...Array.from(new Set(patterns.map(p => p.category)))];\nlet selectedPattern = patterns.find(p => p.name === \"Hammer\") || patterns[0];\nlet activeCategory = \"All\";\nlet quizIndex = 0;\nconst quiz = [\n  { q: \"A candle opens at 100, sells down to 90, then closes at 99 near the high after a long downtrend. What is the message?\", answers: [\"Buyers rejected lower prices; possible Hammer\", \"Sellers dominated from open to close\", \"No information because candles never matter\"], correct: 0, candles: [[108,109,103,104],[104,105,98,99],[99,100,90,99]] },\n  { q: \"A Doji appears in the middle of a sideways range. What should a beginner usually do?\", answers: [\"Wait for confirmation; location is weak\", \"Immediately buy\", \"Immediately short\"], correct: 0, candles: [[100,104,98,103],[103,105,101,103.1],[103,105,101,104]] },\n  { q: \"A pattern has a beautiful bullish name, but the stop is 10 points away and the target is 5 points away. What is the problem?\", answers: [\"Reward/risk is poor\", \"The pattern must always work\", \"Stop losses are unnecessary\"], correct: 0, candles: [[96,101,95,100],[100,104,99,103],[103,105,101,104]] },\n  { q: \"A bearish engulfing pattern after a long rally means what?\", answers: [\"Possible seller takeover, but still needs confirmation\", \"Guaranteed crash\", \"Guaranteed continuation higher\"], correct: 0, candles: [[96,102,95,101],[101,104,100,103],[104,105,97,98]] }\n];\nfunction $(id) { return document.getElementById(id); }\nfunction fmt(n) { return Number(n).toLocaleString(undefined, { maximumFractionDigits: 2 }); }\nfunction yScale(v, min, max, top, bottom) { return bottom - ((v - min) / (max - min || 1)) * (bottom - top); }\nfunction drawCandles(svg, candles, opts={}) {\n  const w = opts.w || 720, h = opts.h || 360;\n  const pad = { l: 44, r: 20, t: 28, b: 42 };\n  const vals = candles.flatMap(c => [c[1], c[2]]);\n  const min = Math.min(...vals) - 2, max = Math.max(...vals) + 2;\n  const slot = (w - pad.l - pad.r) / candles.length;\n  let grid = \"\";\n  for (let i=0; i<=4; i++) {\n    const y = pad.t + i * (h-pad.t-pad.b)/4;\n    const price = max - i*(max-min)/4;\n    grid += `<line x1=\"${pad.l}\" x2=\"${w-pad.r}\" y1=\"${y}\" y2=\"${y}\" stroke=\"#e2e8f0\" stroke-width=\"1\"/>`;\n    grid += `<text x=\"8\" y=\"${y+4}\" fill=\"#64748b\" font-size=\"12\">${price.toFixed(0)}</text>`;\n  }\n  let body = `<rect x=\"0\" y=\"0\" width=\"${w}\" height=\"${h}\" rx=\"22\" fill=\"#ffffff\"/><rect x=\"${pad.l}\" y=\"${pad.t}\" width=\"${w-pad.l-pad.r}\" height=\"${h-pad.t-pad.b}\" fill=\"#f8fafc\" rx=\"14\"/>${grid}`;\n  candles.forEach((c, i) => {\n    const [o, hi, lo, cl] = c;\n    const x = pad.l + slot*i + slot/2;\n    const yH = yScale(hi, min, max, pad.t, h-pad.b);\n    const yL = yScale(lo, min, max, pad.t, h-pad.b);\n    const yO = yScale(o, min, max, pad.t, h-pad.b);\n    const yC = yScale(cl, min, max, pad.t, h-pad.b);\n    const bull = cl >= o;\n    const color = Math.abs(cl-o) < 0.2 ? \"#64748b\" : bull ? \"#16a34a\" : \"#dc2626\";\n    const bw = Math.min(48, slot*0.55);\n    const top = Math.min(yO, yC);\n    const bh = Math.max(3, Math.abs(yC-yO));\n    body += `<line x1=\"${x}\" x2=\"${x}\" y1=\"${yH}\" y2=\"${yL}\" stroke=\"${color}\" stroke-width=\"4\" stroke-linecap=\"round\"/>`;\n    body += `<rect x=\"${x-bw/2}\" y=\"${top}\" width=\"${bw}\" height=\"${bh}\" rx=\"5\" fill=\"${color}\"/>`;\n    body += `<text x=\"${x}\" y=\"${h-16}\" text-anchor=\"middle\" fill=\"#64748b\" font-size=\"12\">${i+1}</text>`;\n  });\n  svg.innerHTML = body;\n}\nfunction sync(a,b) {\n  $(a).addEventListener('input', () => { $(b).value = $(a).value; updateAnatomy(); });\n  $(b).addEventListener('input', () => { $(a).value = $(b).value; updateAnatomy(); });\n}\nfunction updateAnatomy() {\n  const o = +$('openNum').value, cl = +$('closeNum').value, up = +$('upperNum').value, lowExtra = +$('lowerNum').value;\n  const hi = Math.max(o, cl) + up;\n  const lo = Math.min(o, cl) - lowExtra;\n  drawCandles($('singleCandle'), [[o,hi,lo,cl]], {w:360,h:360});\n  const body = Math.abs(cl-o); const range = hi-lo; const upper = hi-Math.max(o,cl); const lower = Math.min(o,cl)-lo;\n  $('bodyOut').textContent = fmt(body);\n  $('rangeOut').textContent = fmt(range);\n  const doji = body / (range || 1) < 0.1;\n  const story = doji ? 'Doji / indecision' : cl > o ? 'Bullish' : 'Bearish';\n  $('storyOut').textContent = story;\n  let lesson = doji ? 'Open and close are very close. This shows hesitation. A beginner should wait for the next candle to choose direction.' : cl > o ? 'Close is above open, so buyers won the candle body. Long upper wicks still warn that sellers rejected the highs.' : 'Close is below open, so sellers won the candle body. Long lower wicks still warn that buyers rejected the lows.';\n  if (lower > body*2 && cl >= o) lesson += ' The lower wick is much bigger than the body, so this starts to look like a Hammer-style rejection.';\n  if (upper > body*2 && cl <= o) lesson += ' The upper wick is much bigger than the body, so this starts to look like a Shooting-Star-style rejection.';\n  $('lessonOut').textContent = lesson;\n}\nfunction renderFilters() {\n  $('filters').innerHTML = categories.map(c => `<button class=\"filter ${c===activeCategory?'active':''}\" data-cat=\"${c}\">${c}</button>`).join('');\n  document.querySelectorAll('.filter').forEach(btn => btn.onclick = () => { activeCategory = btn.dataset.cat; renderFilters(); renderPatternList(); });\n}\nfunction renderPatternList() {\n  const q = $('search').value.toLowerCase();\n  const visible = patterns.filter(p => (activeCategory === 'All' || p.category === activeCategory) && p.name.toLowerCase().includes(q));\n  $('patternList').innerHTML = visible.map(p => `<button class=\"pattern-btn ${p.name===selectedPattern.name?'active':''}\" data-name=\"${p.name.replace(/\"/g, '&quot;')}\"><b>${p.name}</b><small>${p.category} • ${p.bias}</small></button>`).join('');\n  document.querySelectorAll('.pattern-btn').forEach(btn => btn.onclick = () => { selectedPattern = patterns.find(p => p.name === btn.dataset.name) || selectedPattern; renderPatternList(); renderSelectedPattern(); });\n}\nfunction renderSelectedPattern() {\n  $('patternName').textContent = selectedPattern.name;\n  $('patternCategory').textContent = selectedPattern.category;\n  $('patternBias').textContent = selectedPattern.bias;\n  $('patternContext').textContent = selectedPattern.context;\n  $('patternIdea').textContent = selectedPattern.idea;\n  $('patternConfirm').textContent = selectedPattern.confirm;\n  $('patternInvalid').textContent = selectedPattern.invalid;\n  $('patternBias').className = 'pill ' + (selectedPattern.bias.toLowerCase().includes('bull') ? 'bull' : selectedPattern.bias.toLowerCase().includes('bear') ? 'bear' : 'blue');\n  drawCandles($('patternChart'), selectedPattern.candles);\n}\nfunction updateTrade() {\n  const account = +$('account').value, riskPct = +$('riskPct').value, entry = +$('entry').value, stop = +$('stop').value, target = +$('target').value;\n  const riskMoney = account * riskPct / 100;\n  const riskPerShare = Math.abs(entry-stop);\n  const rewardPerShare = Math.abs(target-entry);\n  const qty = riskPerShare > 0 ? Math.floor(riskMoney/riskPerShare) : 0;\n  const rr = riskPerShare > 0 ? rewardPerShare/riskPerShare : 0;\n  $('riskTk').textContent = fmt(riskMoney);\n  $('qtyOut').textContent = fmt(qty);\n  $('rrOut').textContent = rr.toFixed(2) + 'R';\n  $('tradeLesson').textContent = `You risk ${fmt(riskPerShare)} per share and aim for ${fmt(rewardPerShare)} per share. That is ${rr.toFixed(2)}R. Position size is based on max money risk, not on confidence.`;\n  drawRiskChart(entry, stop, target);\n}\nfunction drawRiskChart(entry, stop, target) {\n  const svg = $('riskChart'), w=720, h=360, pad={l:60,r:30,t:30,b:50};\n  const min = Math.min(entry,stop,target)-4, max=Math.max(entry,stop,target)+4;\n  const y = v => yScale(v, min, max, pad.t, h-pad.b);\n  const x0=pad.l, x1=w-pad.r;\n  svg.innerHTML = `<rect width=\"${w}\" height=\"${h}\" rx=\"22\" fill=\"#fff\"/><rect x=\"${pad.l}\" y=\"${pad.t}\" width=\"${w-pad.l-pad.r}\" height=\"${h-pad.t-pad.b}\" fill=\"#f8fafc\" rx=\"14\"/>\n  <line x1=\"${x0}\" x2=\"${x1}\" y1=\"${y(target)}\" y2=\"${y(target)}\" stroke=\"#16a34a\" stroke-width=\"4\"/><text x=\"${x0+10}\" y=\"${y(target)-8}\" fill=\"#16a34a\" font-weight=\"800\">Target ${fmt(target)}</text>\n  <line x1=\"${x0}\" x2=\"${x1}\" y1=\"${y(entry)}\" y2=\"${y(entry)}\" stroke=\"#2563eb\" stroke-width=\"4\"/><text x=\"${x0+10}\" y=\"${y(entry)-8}\" fill=\"#2563eb\" font-weight=\"800\">Entry ${fmt(entry)}</text>\n  <line x1=\"${x0}\" x2=\"${x1}\" y1=\"${y(stop)}\" y2=\"${y(stop)}\" stroke=\"#dc2626\" stroke-width=\"4\"/><text x=\"${x0+10}\" y=\"${y(stop)-8}\" fill=\"#dc2626\" font-weight=\"800\">Stop ${fmt(stop)}</text>\n  <path d=\"M ${x0+30} ${y(entry)} C ${x0+180} ${y(entry)-50}, ${x1-180} ${y(target)+50}, ${x1-40} ${y(target)}\" fill=\"none\" stroke=\"#94a3b8\" stroke-dasharray=\"8 8\" stroke-width=\"3\"/>`;\n}\nfunction renderQuiz() {\n  const item = quiz[quizIndex % quiz.length];\n  $('quizQuestion').textContent = item.q;\n  $('quizFeedback').textContent = '';\n  $('quizOptions').innerHTML = item.answers.map((a,i)=>`<button class=\"quiz-option\" data-i=\"${i}\">${a}</button>`).join('');\n  drawCandles($('quizChart'), item.candles);\n  document.querySelectorAll('.quiz-option').forEach(btn => btn.onclick = () => {\n    const i = +btn.dataset.i;\n    document.querySelectorAll('.quiz-option').forEach((b,idx)=>{ b.classList.toggle('correct', idx===item.correct); b.classList.toggle('wrong', idx===i && i!==item.correct); });\n    $('quizFeedback').textContent = i===item.correct ? 'Correct. You are reading context + candle behavior, not just the candle name.' : 'Not quite. Look for location, confirmation, and invalidation before deciding.';\n  });\n}\ndocument.querySelectorAll('.tab[data-tab]').forEach(btn => btn.onclick = () => {\n  document.querySelectorAll('.tab[data-tab]').forEach(b=>b.classList.remove('active'));\n  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));\n  btn.classList.add('active'); $(btn.dataset.tab).classList.add('active');\n});\n['openRange','openNum','closeRange','closeNum','upperRange','upperNum','lowerRange','lowerNum'].forEach(id => $(id).addEventListener('input', updateAnatomy));\nsync('openRange','openNum'); sync('closeRange','closeNum'); sync('upperRange','upperNum'); sync('lowerRange','lowerNum');\n$('search').addEventListener('input', renderPatternList);\n['account','riskPct','entry','stop','target'].forEach(id => $(id).addEventListener('input', updateTrade));\n$('nextQuiz').onclick = () => { quizIndex++; renderQuiz(); };\nrenderFilters(); renderPatternList(); renderSelectedPattern(); updateAnatomy(); updateTrade(); renderQuiz();\n</script>\n</body>\n</html>"
+
+export const CandlestickInteractiveLab = () => (
+  <iframe
+    title="Interactive Candlestick Pattern Lab"
+    srcDoc={CANDLESTICK_LAB_HTML}
+    loading="lazy"
+    sandbox="allow-scripts allow-same-origin"
+    style={{
+      width: "100%",
+      minHeight: "980px",
+      border: "1px solid rgba(15, 23, 42, 0.14)",
+      borderRadius: "28px",
+      background: "#ffffff",
+      boxShadow: "0 24px 70px rgba(15, 23, 42, 0.10)",
+      margin: "2rem 0",
+    }}
+  />
+)
+
+# 60 Essential Candlestick Patterns: Trading Guide for Beginners
+
+Candlestick charts are popular because one candle can show a full price story in a tiny space.
+
+A beginner often looks at a chart and thinks:
+
+```text
+Green candle = good
+Red candle = bad
+Pattern name = trade signal
+```
+
+That is too simple.
+
+A better way to think is:
+
+```text
+A candlestick is a battle report.
+Open  = where the battle started
+High  = how far buyers pushed
+Low   = how far sellers pushed
+Close = who controlled the end of the battle
+```
+
+This article teaches candlesticks from zero. You will learn the candle anatomy, the psychology behind the shapes, 60 common patterns, and how to avoid the biggest beginner mistake: trading a pattern name without context.
+
+> Educational note: This article is for learning. Candlestick patterns are not guaranteed predictions. Always combine charts with risk management, broader research, and position sizing.
+
+---
+
+## The one idea that makes candlesticks easier
+
+Imagine you are watching a football match.
+
+The final score matters, but the story of the match also matters.
+
+A team may win 2–1 after dominating the whole match. Another team may win 2–1 after almost losing and scoring at the last minute.
+
+Both results are 2–1, but the stories are different.
+
+Candlesticks work the same way.
+
+A candle does not only tell you whether price ended higher or lower. It also shows how far price traveled before closing.
+
+```text
+Big body      = one side controlled most of the period
+Small body    = buyers and sellers were close to balanced
+Long wick     = price was rejected from that area
+Tiny wick     = price did not reject much
+Close near high = buyers ended strong
+Close near low  = sellers ended strong
+```
+
+---
+
+## 1. Candle anatomy: open, high, low, close
+
+Every candle is made from four prices.
+
+```text
+Open  = first traded price during the candle period
+High  = highest traded price during the period
+Low   = lowest traded price during the period
+Close = final traded price during the period
+```
+
+If you are looking at a daily chart, one candle shows one day. If you are looking at a 5-minute chart, one candle shows five minutes.
+
+### Bullish candle
+
+A bullish candle closes above its open.
+
+```text
+Close > Open
+```
+
+Example:
+
+```text
+Open  = 100
+High  = 112
+Low   = 96
+Close = 108
+```
+
+The candle is bullish because:
+
+```text
+108 > 100
+```
+
+The body size is:
+
+```text
+Body = Close - Open
+Body = 108 - 100
+Body = 8
+```
+
+### Bearish candle
+
+A bearish candle closes below its open.
+
+```text
+Close < Open
+```
+
+Example:
+
+```text
+Open  = 100
+High  = 105
+Low   = 90
+Close = 94
+```
+
+The candle is bearish because:
+
+```text
+94 < 100
+```
+
+The body size is:
+
+```text
+Body = Open - Close
+Body = 100 - 94
+Body = 6
+```
+
+### Wicks, also called shadows
+
+The wick shows how far price moved beyond the body.
+
+For any candle:
+
+```text
+Upper wick = High - max(Open, Close)
+Lower wick = min(Open, Close) - Low
+Total range = High - Low
+Body size = abs(Close - Open)
+```
+
+Real-life example:
+
+```text
+Open  = 100
+High  = 112
+Low   = 96
+Close = 108
+
+Body size  = abs(108 - 100) = 8
+Upper wick = 112 - max(100,108) = 112 - 108 = 4
+Lower wick = min(100,108) - 96 = 100 - 96 = 4
+Total range = 112 - 96 = 16
+```
+
+The candle went as high as 112 and as low as 96, but finally closed at 108.
+
+That means buyers won the close, but both sides fought during the session.
+
+---
+
+## 2. Interactive candlestick lab
+
+Use this before memorizing the 60 names.
+
+Move the sliders. Notice how the same open and close can feel very different when the wick changes.
+
+<CandlestickInteractiveLab />
+
+---
+
+## 3. The smallest candlestick chart renderer in JavaScript
+
+Below is the simplified idea behind the chart in the interactive lab.
+
+You do not need Chart.js, D3, or Recharts to teach the concept. An SVG candle only needs open, high, low, and close.
+
+```jsx
+function Candle({ open, high, low, close, x, scaleY }) {
+  const bullish = close >= open
+  const color = bullish ? "#16a34a" : "#dc2626"
+
+  const wickTop = scaleY(high)
+  const wickBottom = scaleY(low)
+  const bodyTop = scaleY(Math.max(open, close))
+  const bodyBottom = scaleY(Math.min(open, close))
+  const bodyHeight = Math.max(2, bodyBottom - bodyTop)
+
+  return (
+    <g>
+      <line
+        x1={x}
+        x2={x}
+        y1={wickTop}
+        y2={wickBottom}
+        stroke={color}
+        strokeWidth="3"
+      />
+      <rect
+        x={x - 8}
+        y={bodyTop}
+        width="16"
+        height={bodyHeight}
+        rx="3"
+        fill={color}
+      />
+    </g>
+  )
+}
+```
+
+The important part is not the graphics. The important part is the math:
+
+```text
+Body = abs(Close - Open)
+Range = High - Low
+Upper wick = High - max(Open, Close)
+Lower wick = min(Open, Close) - Low
+```
+
+When you know this math, patterns become easier to understand.
+
+---
+
+## 4. The three questions you should ask before using any pattern
+
+Do not start with the pattern name.
+
+Start with these three questions.
+
+### Question 1: Where did the pattern appear?
+
+A Hammer near support after a downtrend is meaningful.
+
+A Hammer in the middle of a sideways mess is weaker.
+
+```text
+Strong location:
+Downtrend → support → Hammer → confirmation
+
+Weak location:
+Random sideways chart → Hammer-looking candle → no clear level
+```
+
+### Question 2: What is the candle psychology?
+
+Ask who was trapped.
+
+For example, in a Hammer:
+
+```text
+Sellers pushed price down.
+Buyers rejected the low.
+Price closed near the top.
+Late sellers may now be trapped.
+```
+
+In a Shooting Star:
+
+```text
+Buyers pushed price up.
+Sellers rejected the high.
+Price closed near the low.
+Late buyers may now be trapped.
+```
+
+### Question 3: Where are you wrong?
+
+A setup without invalidation is not a trade plan.
+
+Example Hammer setup:
+
+```text
+Entry idea: above Hammer high
+Invalidation: below Hammer low
+Target: next resistance
+```
+
+If the Hammer low breaks, the buyer-rejection story failed.
+
+---
+
+## 5. Pattern categories
+
+The 60 patterns are easier when grouped by job.
+
+```text
+Single-candle patterns
+Two-candle reversal patterns
+Three-candle reversal patterns
+Continuation patterns
+Indecision patterns
+False-breakout patterns
+Rare advanced patterns
+```
+
+Here is the beginner translation:
+
+```text
+Reversal pattern     = trend may be changing
+Continuation pattern = trend may be resting before continuing
+Indecision pattern   = market has not chosen direction yet
+False breakout       = one side may be trapped
+```
+
+---
+
+## 6. Complete 60-pattern cheat sheet
+
+This table is your map. The detailed explanations come after it.
+
+| # | Pattern | Group | Bias | Core idea |
+| --- | --- | --- | --- | --- |
+| 1 | Marubozu | Single candle | Bullish or bearish | One side controlled almost the entire session. The body is very large and the wicks are tiny or missing. |
+| 2 | Doji | Indecision | Neutral until confirmed | Open and close are almost equal, so neither buyers nor sellers won the candle. |
+| 3 | Dragonfly Doji | Indecision / reversal | Potential bullish reversal | Sellers pushed price down, but buyers recovered almost everything before the close. |
+| 4 | Gravestone Doji | Indecision / reversal | Potential bearish reversal | Buyers pushed price up, but sellers erased the move before the close. |
+| 5 | Long Legged Doji | Indecision | Neutral / possible reversal | Price traveled far above and below the open, but closed near the starting point. |
+| 6 | Bullish Spinning Top | Indecision | Mild bullish if confirmed | Buyers closed slightly higher, but the long wicks show both sides fought hard. |
+| 7 | Bearish Spinning Top | Indecision | Mild bearish if confirmed | Sellers closed slightly lower, but the long wicks show uncertainty. |
+| 8 | High-Wave Candlestick | Indecision | Neutral warning sign | Very long upper and lower wicks with a small body show extreme disagreement. |
+| 9 | Long Wicks | Single candle clue | Rejection clue, not a full signal alone | A long wick means price tried to go somewhere but was rejected before the close. |
+| 10 | Pin Bar | Single candle reversal | Bullish or bearish depending on wick direction | One long tail shows rejection; the small body is near the opposite side of the range. |
+| 11 | Hammer | Bullish reversal | Bullish reversal candidate | Sellers pushed price down, but buyers lifted it back near the top of the candle. |
+| 12 | Hanging Man | Bearish reversal | Bearish warning | A strong lower wick warns that sellers finally appeared during an uptrend. |
+| 13 | Inverted Hammer | Bullish reversal | Bullish reversal candidate | Buyers tried to push up from a weak market; confirmation tells whether they can continue. |
+| 14 | Shooting Star | Bearish reversal | Bearish reversal candidate | Buyers pushed upward but sellers forced the close back near the low. |
+| 15 | Bullish Engulfing | Two-candle reversal | Bullish | A large bullish body fully covers the prior bearish body, showing buyers overwhelmed sellers. |
+| 16 | Bearish Engulfing | Two-candle reversal | Bearish | A large bearish body fully covers the prior bullish body, showing sellers overwhelmed buyers. |
+| 17 | Piercing Line | Two-candle reversal | Bullish | The second candle opens weak but closes above the midpoint of the previous bearish body. |
+| 18 | Dark Cloud Cover | Two-candle reversal | Bearish | The second candle opens strong but closes below the midpoint of the previous bullish body. |
+| 19 | Bullish Harami | Two-candle reversal | Bullish | A small bullish candle sits inside the previous large bearish body, showing selling pressure is shrinking. |
+| 20 | Bearish Harami | Two-candle reversal | Bearish | A small bearish candle sits inside the previous large bullish body, showing buying pressure is shrinking. |
+| 21 | Tweezer Bottom | Two-candle reversal | Bullish | Two candles reject nearly the same low, suggesting a floor may be forming. |
+| 22 | Tweezer Top | Two-candle reversal | Bearish | Two candles reject nearly the same high, suggesting a ceiling may be forming. |
+| 23 | Bullish Counterattack | Two-candle reversal | Bullish | A bearish candle is followed by a bullish candle that closes near the previous close, showing buyers countered the move. |
+| 24 | Bearish Counterattack | Two-candle reversal | Bearish | A bullish candle is followed by a bearish candle that closes near the previous close, showing sellers countered the move. |
+| 25 | Morning Star | Three-candle reversal | Bullish | A strong bearish candle, then a small pause candle, then a strong bullish candle signals a possible morning after the selloff. |
+| 26 | Evening Star | Three-candle reversal | Bearish | A strong bullish candle, then a small pause candle, then a strong bearish candle warns the rally may be ending. |
+| 27 | Morning Star Doji | Three-candle reversal | Bullish | The downtrend pauses with a Doji, then buyers step in strongly. |
+| 28 | Evening Star Doji | Three-candle reversal | Bearish | The uptrend pauses with a Doji, then sellers take control. |
+| 29 | Three White Soldiers | Three-candle reversal | Bullish | Three strong bullish candles step upward, showing repeated buyer control. |
+| 30 | Three Black Crows | Three-candle reversal | Bearish | Three strong bearish candles step downward, showing repeated seller control. |
+| 31 | Rising Three | Continuation | Bullish continuation | A big bullish candle is followed by small pullback candles inside its range, then another bullish breakout. |
+| 32 | Falling Three | Continuation | Bearish continuation | A big bearish candle is followed by small bounce candles inside its range, then another bearish breakdown. |
+| 33 | Tasuki Gap | Continuation | Bullish or bearish continuation | Price gaps strongly, then partially pulls back but does not close the gap. |
+| 34 | Mat Hold | Continuation | Bullish continuation most commonly taught | A strong opening candle creates a mat; small candles rest on it; a final bullish candle continues the trend. |
+| 35 | Bullish Abandoned Baby | Three-candle reversal | Bullish | A selloff gaps down into a Doji, then gaps up, leaving the Doji isolated like an abandoned baby. |
+| 36 | Bearish Abandoned Baby | Three-candle reversal | Bearish | A rally gaps up into a Doji, then gaps down, leaving the Doji isolated. |
+| 37 | Three Outside Up | Three-candle reversal | Bullish | A bullish engulfing pattern forms, then the third candle closes higher. |
+| 38 | Three Outside Down | Three-candle reversal | Bearish | A bearish engulfing pattern forms, then the third candle closes lower. |
+| 39 | Three Inside Up | Three-candle reversal | Bullish | A small candle forms inside a large bearish body, then the third candle breaks upward. |
+| 40 | Three Inside Down | Three-candle reversal | Bearish | A small candle forms inside a large bullish body, then the third candle breaks downward. |
+| 41 | Bullish Kicker | Two-candle reversal | Bullish | A bearish candle is followed by a bullish candle that gaps up and moves strongly. |
+| 42 | Bearish Kicker | Two-candle reversal | Bearish | A bullish candle is followed by a bearish candle that gaps down and moves strongly. |
+| 43 | Bullish Belt Hold Pattern | Single candle reversal | Bullish | Price opens near the low and closes strong, like buyers grabbed the market by the belt. |
+| 44 | Bearish Belt Hold Pattern | Single candle reversal | Bearish | Price opens near the high and closes weak, showing sellers controlled the session. |
+| 45 | Doji Star | Indecision / reversal | Neutral until confirmed | Momentum stretches, then suddenly pauses at the extreme. |
+| 46 | Bearish Doji Star Pattern | Indecision / reversal | Bearish if confirmed | The uptrend gaps higher, but the Doji shows buyers could not extend the move. |
+| 47 | Matching Low / Matching High | Two-candle reversal clue | Matching low bullish; matching high bearish | Two closes or extremes match, suggesting one level is being defended. |
+| 48 | Inside Bars | Compression / continuation | Neutral until breakout | Volatility compresses; traders wait for expansion. |
+| 49 | Three-Line Strike Pattern | Continuation / reversal trap | Depends on trend and version | The fourth candle looks like a reversal, but may be a shakeout if the trend resumes. |
+| 50 | Bullish Separating Lines Pattern | Continuation | Bullish | A bearish candle is followed by a bullish candle that opens around the same level and restores the trend. |
+| 51 | Bearish Separating Lines | Continuation | Bearish | A bullish candle is followed by a bearish candle that opens around the same level and restores the downtrend. |
+| 52 | Meeting Lines Pattern | Two-candle reversal clue | Bullish or bearish version | The market travels in the opposite direction but meets the previous close, creating tension. |
+| 53 | On-Neck Pattern | Bearish continuation | Bearish continuation | A small bullish candle closes near the prior bearish candle low, but not strongly enough to reverse. |
+| 54 | In-Neck Pattern | Bearish continuation | Bearish continuation | A small bullish candle closes slightly into the prior bearish body, but sellers remain in control. |
+| 55 | Thrusting Pattern | Bearish continuation / weak reversal | Usually bearish continuation if weak | A bullish candle pushes into the prior body but fails to close above the midpoint. |
+| 56 | Upside Gap Two Crows Pattern | Bearish reversal | Bearish warning | Two bearish candles appear above the prior bullish candle, warning that the gap may be losing strength. |
+| 57 | Tri-Star | Indecision / reversal | Potential reversal after extreme trend | Three repeated indecision candles show the trend is exhausted and stuck. |
+| 58 | Hikkake Pattern (Bullish/Bearish) | False breakout | Bullish or bearish trap | Traders chase the first breakout; the market snaps back and traps them. |
+| 59 | Ladder Bottom Pattern | Bullish reversal | Bullish reversal candidate | The market climbs out of a stair-step decline after sellers fail to push lower. |
+| 60 | Concealing Baby Swallow Pattern | Bullish reversal | Bullish reversal candidate | Sellers appear dominant, but the final structure hints that selling pressure is becoming unsustainable. |
+
+---
+
+## 7. The 60 candlestick patterns explained in beginner language
+
+Use this section like a field guide. For every pattern, look for four things:
+
+```text
+1. What it looks like
+2. What the buyer-seller story is
+3. What confirms it
+4. What invalidates it
+```
+
+
+### 1. Marubozu
+
+**Type:** Single candle  
+**Bias:** Bullish or bearish
+
+**What it looks like:** Strong momentum candle; can continue a trend or start a reversal after exhaustion.
+
+**Buyer-seller story:** One side controlled almost the entire session. The body is very large and the wicks are tiny or missing.
+
+**Real-life example:** Imagine a stock falls from 120 to 100 over several days. Many late sellers become confident. Then this pattern appears near support and the next candle closes higher. The lesson is not ‘buy blindly’; the lesson is that selling pressure may be weakening and buyers may be starting to defend a level.
+
+**Confirmation:** Next candle should hold beyond the Marubozu close, ideally with volume or a break of structure.
+
+**Invalidation:** Price closes back inside the Marubozu body and removes the momentum message.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 2. Doji
+
+**Type:** Indecision  
+**Bias:** Neutral until confirmed
+
+**What it looks like:** Most useful after a strong advance or decline, not in the middle of random sideways noise.
+
+**Buyer-seller story:** Open and close are almost equal, so neither buyers nor sellers won the candle.
+
+**Real-life example:** Imagine price has moved fast and then prints this pattern. The message is uncertainty. A beginner should mark the high and low of the pattern, then wait for price to break one side with conviction.
+
+**Confirmation:** Wait for price to break above or below the Doji range.
+
+**Invalidation:** No follow-through; price keeps chopping around the same range.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 3. Dragonfly Doji
+
+**Type:** Indecision / reversal  
+**Bias:** Potential bullish reversal
+
+**What it looks like:** Best after a decline or near support.
+
+**Buyer-seller story:** Sellers pushed price down, but buyers recovered almost everything before the close.
+
+**Real-life example:** Imagine a stock falls from 120 to 100 over several days. Many late sellers become confident. Then this pattern appears near support and the next candle closes higher. The lesson is not ‘buy blindly’; the lesson is that selling pressure may be weakening and buyers may be starting to defend a level.
+
+**Confirmation:** A later candle closes above the Dragonfly high.
+
+**Invalidation:** Price breaks below the long lower wick.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 4. Gravestone Doji
+
+**Type:** Indecision / reversal  
+**Bias:** Potential bearish reversal
+
+**What it looks like:** Best after an advance or near resistance.
+
+**Buyer-seller story:** Buyers pushed price up, but sellers erased the move before the close.
+
+**Real-life example:** Imagine a stock rises from 80 to 105. Many buyers feel comfortable. Then this pattern appears near resistance and the next candle closes lower. The lesson is not ‘short blindly’; the lesson is that buyers may be losing control and sellers may be defending the higher price area.
+
+**Confirmation:** A later candle closes below the Gravestone low.
+
+**Invalidation:** Price breaks above the long upper wick.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 5. Long Legged Doji
+
+**Type:** Indecision  
+**Bias:** Neutral / possible reversal
+
+**What it looks like:** Important near support, resistance, or after a very fast move.
+
+**Buyer-seller story:** Price traveled far above and below the open, but closed near the starting point.
+
+**Real-life example:** Imagine price has moved fast and then prints this pattern. The message is uncertainty. A beginner should mark the high and low of the pattern, then wait for price to break one side with conviction.
+
+**Confirmation:** Trade only after a decisive breakout from the wide Doji range.
+
+**Invalidation:** A breakout fails and returns into the middle of the range.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 6. Bullish Spinning Top
+
+**Type:** Indecision  
+**Bias:** Mild bullish if confirmed
+
+**What it looks like:** Appears when volatility is active but the candle body is small.
+
+**Buyer-seller story:** Buyers closed slightly higher, but the long wicks show both sides fought hard.
+
+**Real-life example:** Imagine a stock falls from 120 to 100 over several days. Many late sellers become confident. Then this pattern appears near support and the next candle closes higher. The lesson is not ‘buy blindly’; the lesson is that selling pressure may be weakening and buyers may be starting to defend a level.
+
+**Confirmation:** A close above the spinning top high.
+
+**Invalidation:** A close below the low.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 7. Bearish Spinning Top
+
+**Type:** Indecision  
+**Bias:** Mild bearish if confirmed
+
+**What it looks like:** More meaningful after an uptrend or near resistance.
+
+**Buyer-seller story:** Sellers closed slightly lower, but the long wicks show uncertainty.
+
+**Real-life example:** Imagine a stock rises from 80 to 105. Many buyers feel comfortable. Then this pattern appears near resistance and the next candle closes lower. The lesson is not ‘short blindly’; the lesson is that buyers may be losing control and sellers may be defending the higher price area.
+
+**Confirmation:** A close below the spinning top low.
+
+**Invalidation:** A close above the high.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 8. High-Wave Candlestick
+
+**Type:** Indecision  
+**Bias:** Neutral warning sign
+
+**What it looks like:** Often appears around emotional news or a battle zone between support and resistance.
+
+**Buyer-seller story:** Very long upper and lower wicks with a small body show extreme disagreement.
+
+**Real-life example:** Imagine price has moved fast and then prints this pattern. The message is uncertainty. A beginner should mark the high and low of the pattern, then wait for price to break one side with conviction.
+
+**Confirmation:** The next candle must choose direction by closing outside the high-wave range.
+
+**Invalidation:** The market remains inside the wide range.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 9. Long Wicks
+
+**Type:** Single candle clue  
+**Bias:** Rejection clue, not a full signal alone
+
+**What it looks like:** Useful near clear support or resistance.
+
+**Buyer-seller story:** A long wick means price tried to go somewhere but was rejected before the close.
+
+**Real-life example:** Imagine price has moved fast and then prints this pattern. The message is uncertainty. A beginner should mark the high and low of the pattern, then wait for price to break one side with conviction.
+
+**Confirmation:** Trade in the rejection direction only after follow-through.
+
+**Invalidation:** Price breaks through the wick extreme with strength.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 10. Pin Bar
+
+**Type:** Single candle reversal  
+**Bias:** Bullish or bearish depending on wick direction
+
+**What it looks like:** Best at support/resistance or after a stretched move.
+
+**Buyer-seller story:** One long tail shows rejection; the small body is near the opposite side of the range.
+
+**Real-life example:** Imagine a stock falls from 120 to 100 over several days. Many late sellers become confident. Then this pattern appears near support and the next candle closes higher. The lesson is not ‘buy blindly’; the lesson is that selling pressure may be weakening and buyers may be starting to defend a level.
+
+**Confirmation:** Entry usually waits for a break of the pin bar nose/body side.
+
+**Invalidation:** Price breaks the long-tail extreme.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 11. Hammer
+
+**Type:** Bullish reversal  
+**Bias:** Bullish reversal candidate
+
+**What it looks like:** Appears after a downtrend or at support.
+
+**Buyer-seller story:** Sellers pushed price down, but buyers lifted it back near the top of the candle.
+
+**Real-life example:** Imagine a stock falls from 120 to 100 over several days. Many late sellers become confident. Then this pattern appears near support and the next candle closes higher. The lesson is not ‘buy blindly’; the lesson is that selling pressure may be weakening and buyers may be starting to defend a level.
+
+**Confirmation:** A close above the Hammer high or a strong bullish candle after it.
+
+**Invalidation:** A close below the Hammer low.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 12. Hanging Man
+
+**Type:** Bearish reversal  
+**Bias:** Bearish warning
+
+**What it looks like:** Looks like a Hammer, but appears after an uptrend.
+
+**Buyer-seller story:** A strong lower wick warns that sellers finally appeared during an uptrend.
+
+**Real-life example:** Imagine a stock rises from 80 to 105. Many buyers feel comfortable. Then this pattern appears near resistance and the next candle closes lower. The lesson is not ‘short blindly’; the lesson is that buyers may be losing control and sellers may be defending the higher price area.
+
+**Confirmation:** A later candle closes below the Hanging Man low.
+
+**Invalidation:** Price continues above the Hanging Man high.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 13. Inverted Hammer
+
+**Type:** Bullish reversal  
+**Bias:** Bullish reversal candidate
+
+**What it looks like:** Appears after a downtrend.
+
+**Buyer-seller story:** Buyers tried to push up from a weak market; confirmation tells whether they can continue.
+
+**Real-life example:** Imagine a stock falls from 120 to 100 over several days. Many late sellers become confident. Then this pattern appears near support and the next candle closes higher. The lesson is not ‘buy blindly’; the lesson is that selling pressure may be weakening and buyers may be starting to defend a level.
+
+**Confirmation:** A close above the inverted hammer high.
+
+**Invalidation:** A close below the low.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 14. Shooting Star
+
+**Type:** Bearish reversal  
+**Bias:** Bearish reversal candidate
+
+**What it looks like:** Appears after an uptrend or near resistance.
+
+**Buyer-seller story:** Buyers pushed upward but sellers forced the close back near the low.
+
+**Real-life example:** Imagine a stock rises from 80 to 105. Many buyers feel comfortable. Then this pattern appears near resistance and the next candle closes lower. The lesson is not ‘short blindly’; the lesson is that buyers may be losing control and sellers may be defending the higher price area.
+
+**Confirmation:** A close below the Shooting Star low.
+
+**Invalidation:** A close above the long upper wick.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 15. Bullish Engulfing
+
+**Type:** Two-candle reversal  
+**Bias:** Bullish
+
+**What it looks like:** Appears after a decline.
+
+**Buyer-seller story:** A large bullish body fully covers the prior bearish body, showing buyers overwhelmed sellers.
+
+**Real-life example:** Imagine a stock falls from 120 to 100 over several days. Many late sellers become confident. Then this pattern appears near support and the next candle closes higher. The lesson is not ‘buy blindly’; the lesson is that selling pressure may be weakening and buyers may be starting to defend a level.
+
+**Confirmation:** A close above the engulfing candle high or higher low after the pattern.
+
+**Invalidation:** Price closes below the engulfing candle low.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 16. Bearish Engulfing
+
+**Type:** Two-candle reversal  
+**Bias:** Bearish
+
+**What it looks like:** Appears after a rally.
+
+**Buyer-seller story:** A large bearish body fully covers the prior bullish body, showing sellers overwhelmed buyers.
+
+**Real-life example:** Imagine a stock rises from 80 to 105. Many buyers feel comfortable. Then this pattern appears near resistance and the next candle closes lower. The lesson is not ‘short blindly’; the lesson is that buyers may be losing control and sellers may be defending the higher price area.
+
+**Confirmation:** A close below the engulfing candle low.
+
+**Invalidation:** Price closes above the engulfing candle high.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 17. Piercing Line
+
+**Type:** Two-candle reversal  
+**Bias:** Bullish
+
+**What it looks like:** Appears after a decline.
+
+**Buyer-seller story:** The second candle opens weak but closes above the midpoint of the previous bearish body.
+
+**Real-life example:** Imagine a stock falls from 120 to 100 over several days. Many late sellers become confident. Then this pattern appears near support and the next candle closes higher. The lesson is not ‘buy blindly’; the lesson is that selling pressure may be weakening and buyers may be starting to defend a level.
+
+**Confirmation:** A later candle closes above the second candle high.
+
+**Invalidation:** Price falls below the pattern low.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 18. Dark Cloud Cover
+
+**Type:** Two-candle reversal  
+**Bias:** Bearish
+
+**What it looks like:** Appears after an advance.
+
+**Buyer-seller story:** The second candle opens strong but closes below the midpoint of the previous bullish body.
+
+**Real-life example:** Imagine a stock rises from 80 to 105. Many buyers feel comfortable. Then this pattern appears near resistance and the next candle closes lower. The lesson is not ‘short blindly’; the lesson is that buyers may be losing control and sellers may be defending the higher price area.
+
+**Confirmation:** A later candle closes below the second candle low.
+
+**Invalidation:** Price rises above the pattern high.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 19. Bullish Harami
+
+**Type:** Two-candle reversal  
+**Bias:** Bullish
+
+**What it looks like:** Appears after a decline.
+
+**Buyer-seller story:** A small bullish candle sits inside the previous large bearish body, showing selling pressure is shrinking.
+
+**Real-life example:** Imagine a stock falls from 120 to 100 over several days. Many late sellers become confident. Then this pattern appears near support and the next candle closes higher. The lesson is not ‘buy blindly’; the lesson is that selling pressure may be weakening and buyers may be starting to defend a level.
+
+**Confirmation:** A close above the mother candle high.
+
+**Invalidation:** A close below the mother candle low.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 20. Bearish Harami
+
+**Type:** Two-candle reversal  
+**Bias:** Bearish
+
+**What it looks like:** Appears after an advance.
+
+**Buyer-seller story:** A small bearish candle sits inside the previous large bullish body, showing buying pressure is shrinking.
+
+**Real-life example:** Imagine a stock rises from 80 to 105. Many buyers feel comfortable. Then this pattern appears near resistance and the next candle closes lower. The lesson is not ‘short blindly’; the lesson is that buyers may be losing control and sellers may be defending the higher price area.
+
+**Confirmation:** A close below the mother candle low.
+
+**Invalidation:** A close above the mother candle high.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 21. Tweezer Bottom
+
+**Type:** Two-candle reversal  
+**Bias:** Bullish
+
+**What it looks like:** Appears after a decline near support.
+
+**Buyer-seller story:** Two candles reject nearly the same low, suggesting a floor may be forming.
+
+**Real-life example:** Imagine a stock falls from 120 to 100 over several days. Many late sellers become confident. Then this pattern appears near support and the next candle closes higher. The lesson is not ‘buy blindly’; the lesson is that selling pressure may be weakening and buyers may be starting to defend a level.
+
+**Confirmation:** Price closes above the highs of the tweezer candles.
+
+**Invalidation:** Price breaks the matching lows.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 22. Tweezer Top
+
+**Type:** Two-candle reversal  
+**Bias:** Bearish
+
+**What it looks like:** Appears after an advance near resistance.
+
+**Buyer-seller story:** Two candles reject nearly the same high, suggesting a ceiling may be forming.
+
+**Real-life example:** Imagine a stock rises from 80 to 105. Many buyers feel comfortable. Then this pattern appears near resistance and the next candle closes lower. The lesson is not ‘short blindly’; the lesson is that buyers may be losing control and sellers may be defending the higher price area.
+
+**Confirmation:** Price closes below the lows of the tweezer candles.
+
+**Invalidation:** Price breaks above the matching highs.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 23. Bullish Counterattack
+
+**Type:** Two-candle reversal  
+**Bias:** Bullish
+
+**What it looks like:** Appears after a decline.
+
+**Buyer-seller story:** A bearish candle is followed by a bullish candle that closes near the previous close, showing buyers countered the move.
+
+**Real-life example:** Imagine a stock falls from 120 to 100 over several days. Many late sellers become confident. Then this pattern appears near support and the next candle closes higher. The lesson is not ‘buy blindly’; the lesson is that selling pressure may be weakening and buyers may be starting to defend a level.
+
+**Confirmation:** A strong close above the counterattack candle.
+
+**Invalidation:** Price breaks below the pattern low.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 24. Bearish Counterattack
+
+**Type:** Two-candle reversal  
+**Bias:** Bearish
+
+**What it looks like:** Appears after an advance.
+
+**Buyer-seller story:** A bullish candle is followed by a bearish candle that closes near the previous close, showing sellers countered the move.
+
+**Real-life example:** Imagine a stock rises from 80 to 105. Many buyers feel comfortable. Then this pattern appears near resistance and the next candle closes lower. The lesson is not ‘short blindly’; the lesson is that buyers may be losing control and sellers may be defending the higher price area.
+
+**Confirmation:** A close below the counterattack candle.
+
+**Invalidation:** Price breaks above the pattern high.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 25. Morning Star
+
+**Type:** Three-candle reversal  
+**Bias:** Bullish
+
+**What it looks like:** Appears after a downtrend.
+
+**Buyer-seller story:** A strong bearish candle, then a small pause candle, then a strong bullish candle signals a possible morning after the selloff.
+
+**Real-life example:** Imagine a stock falls from 120 to 100 over several days. Many late sellers become confident. Then this pattern appears near support and the next candle closes higher. The lesson is not ‘buy blindly’; the lesson is that selling pressure may be weakening and buyers may be starting to defend a level.
+
+**Confirmation:** Third candle closes into or above the first candle's body, followed by higher close.
+
+**Invalidation:** Price breaks below the star candle low.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 26. Evening Star
+
+**Type:** Three-candle reversal  
+**Bias:** Bearish
+
+**What it looks like:** Appears after an uptrend.
+
+**Buyer-seller story:** A strong bullish candle, then a small pause candle, then a strong bearish candle warns the rally may be ending.
+
+**Real-life example:** Imagine a stock rises from 80 to 105. Many buyers feel comfortable. Then this pattern appears near resistance and the next candle closes lower. The lesson is not ‘short blindly’; the lesson is that buyers may be losing control and sellers may be defending the higher price area.
+
+**Confirmation:** Third candle closes into or below the first candle's body, followed by lower close.
+
+**Invalidation:** Price breaks above the star candle high.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 27. Morning Star Doji
+
+**Type:** Three-candle reversal  
+**Bias:** Bullish
+
+**What it looks like:** Appears after a decline; the middle candle is a Doji.
+
+**Buyer-seller story:** The downtrend pauses with a Doji, then buyers step in strongly.
+
+**Real-life example:** Imagine a stock falls from 120 to 100 over several days. Many late sellers become confident. Then this pattern appears near support and the next candle closes higher. The lesson is not ‘buy blindly’; the lesson is that selling pressure may be weakening and buyers may be starting to defend a level.
+
+**Confirmation:** A bullish third candle and follow-through above its high.
+
+**Invalidation:** Break below the Doji low.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 28. Evening Star Doji
+
+**Type:** Three-candle reversal  
+**Bias:** Bearish
+
+**What it looks like:** Appears after a rally; the middle candle is a Doji.
+
+**Buyer-seller story:** The uptrend pauses with a Doji, then sellers take control.
+
+**Real-life example:** Imagine a stock rises from 80 to 105. Many buyers feel comfortable. Then this pattern appears near resistance and the next candle closes lower. The lesson is not ‘short blindly’; the lesson is that buyers may be losing control and sellers may be defending the higher price area.
+
+**Confirmation:** A bearish third candle and follow-through below its low.
+
+**Invalidation:** Break above the Doji high.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 29. Three White Soldiers
+
+**Type:** Three-candle reversal  
+**Bias:** Bullish
+
+**What it looks like:** Often appears after a decline or consolidation.
+
+**Buyer-seller story:** Three strong bullish candles step upward, showing repeated buyer control.
+
+**Real-life example:** Imagine a stock falls from 120 to 100 over several days. Many late sellers become confident. Then this pattern appears near support and the next candle closes higher. The lesson is not ‘buy blindly’; the lesson is that selling pressure may be weakening and buyers may be starting to defend a level.
+
+**Confirmation:** The three candles close near highs without huge exhausted wicks.
+
+**Invalidation:** A sharp reversal candle erases the soldiers.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 30. Three Black Crows
+
+**Type:** Three-candle reversal  
+**Bias:** Bearish
+
+**What it looks like:** Often appears after an advance or weak top.
+
+**Buyer-seller story:** Three strong bearish candles step downward, showing repeated seller control.
+
+**Real-life example:** Imagine a stock rises from 80 to 105. Many buyers feel comfortable. Then this pattern appears near resistance and the next candle closes lower. The lesson is not ‘short blindly’; the lesson is that buyers may be losing control and sellers may be defending the higher price area.
+
+**Confirmation:** The candles close near lows without huge lower rejection wicks.
+
+**Invalidation:** A sharp bullish reversal erases the crows.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 31. Rising Three
+
+**Type:** Continuation  
+**Bias:** Bullish continuation
+
+**What it looks like:** Appears inside an existing uptrend.
+
+**Buyer-seller story:** A big bullish candle is followed by small pullback candles inside its range, then another bullish breakout.
+
+**Real-life example:** Imagine a stock falls from 120 to 100 over several days. Many late sellers become confident. Then this pattern appears near support and the next candle closes higher. The lesson is not ‘buy blindly’; the lesson is that selling pressure may be weakening and buyers may be starting to defend a level.
+
+**Confirmation:** Final candle closes above the first candle high.
+
+**Invalidation:** The small candles break below the first candle low.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 32. Falling Three
+
+**Type:** Continuation  
+**Bias:** Bearish continuation
+
+**What it looks like:** Appears inside an existing downtrend.
+
+**Buyer-seller story:** A big bearish candle is followed by small bounce candles inside its range, then another bearish breakdown.
+
+**Real-life example:** Imagine a stock rises from 80 to 105. Many buyers feel comfortable. Then this pattern appears near resistance and the next candle closes lower. The lesson is not ‘short blindly’; the lesson is that buyers may be losing control and sellers may be defending the higher price area.
+
+**Confirmation:** Final candle closes below the first candle low.
+
+**Invalidation:** The small candles break above the first candle high.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 33. Tasuki Gap
+
+**Type:** Continuation  
+**Bias:** Bullish or bearish continuation
+
+**What it looks like:** Appears after a gap in the trend direction.
+
+**Buyer-seller story:** Price gaps strongly, then partially pulls back but does not close the gap.
+
+**Real-life example:** Imagine a stock falls from 120 to 100 over several days. Many late sellers become confident. Then this pattern appears near support and the next candle closes higher. The lesson is not ‘buy blindly’; the lesson is that selling pressure may be weakening and buyers may be starting to defend a level.
+
+**Confirmation:** Trend resumes from the unfilled gap area.
+
+**Invalidation:** The gap is fully closed with strong opposite momentum.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 34. Mat Hold
+
+**Type:** Continuation  
+**Bias:** Bullish continuation most commonly taught
+
+**What it looks like:** Appears in an uptrend after a strong candle and small controlled pullback.
+
+**Buyer-seller story:** A strong opening candle creates a mat; small candles rest on it; a final bullish candle continues the trend.
+
+**Real-life example:** Imagine a stock falls from 120 to 100 over several days. Many late sellers become confident. Then this pattern appears near support and the next candle closes higher. The lesson is not ‘buy blindly’; the lesson is that selling pressure may be weakening and buyers may be starting to defend a level.
+
+**Confirmation:** Final candle breaks above the first candle high.
+
+**Invalidation:** Pullback candles break deep below the first candle body.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 35. Bullish Abandoned Baby
+
+**Type:** Three-candle reversal  
+**Bias:** Bullish
+
+**What it looks like:** Rare pattern after a decline with gaps around the middle Doji.
+
+**Buyer-seller story:** A selloff gaps down into a Doji, then gaps up, leaving the Doji isolated like an abandoned baby.
+
+**Real-life example:** Imagine a stock falls from 120 to 100 over several days. Many late sellers become confident. Then this pattern appears near support and the next candle closes higher. The lesson is not ‘buy blindly’; the lesson is that selling pressure may be weakening and buyers may be starting to defend a level.
+
+**Confirmation:** The bullish third candle continues higher.
+
+**Invalidation:** Price falls back below the Doji low.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 36. Bearish Abandoned Baby
+
+**Type:** Three-candle reversal  
+**Bias:** Bearish
+
+**What it looks like:** Rare pattern after a rally with gaps around the middle Doji.
+
+**Buyer-seller story:** A rally gaps up into a Doji, then gaps down, leaving the Doji isolated.
+
+**Real-life example:** Imagine a stock rises from 80 to 105. Many buyers feel comfortable. Then this pattern appears near resistance and the next candle closes lower. The lesson is not ‘short blindly’; the lesson is that buyers may be losing control and sellers may be defending the higher price area.
+
+**Confirmation:** The bearish third candle continues lower.
+
+**Invalidation:** Price rises back above the Doji high.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 37. Three Outside Up
+
+**Type:** Three-candle reversal  
+**Bias:** Bullish
+
+**What it looks like:** Bullish Engulfing plus a confirmation candle.
+
+**Buyer-seller story:** A bullish engulfing pattern forms, then the third candle closes higher.
+
+**Real-life example:** Imagine a stock falls from 120 to 100 over several days. Many late sellers become confident. Then this pattern appears near support and the next candle closes higher. The lesson is not ‘buy blindly’; the lesson is that selling pressure may be weakening and buyers may be starting to defend a level.
+
+**Confirmation:** Third candle closes above the engulfing candle.
+
+**Invalidation:** Price falls below the engulfing candle low.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 38. Three Outside Down
+
+**Type:** Three-candle reversal  
+**Bias:** Bearish
+
+**What it looks like:** Bearish Engulfing plus a confirmation candle.
+
+**Buyer-seller story:** A bearish engulfing pattern forms, then the third candle closes lower.
+
+**Real-life example:** Imagine a stock rises from 80 to 105. Many buyers feel comfortable. Then this pattern appears near resistance and the next candle closes lower. The lesson is not ‘short blindly’; the lesson is that buyers may be losing control and sellers may be defending the higher price area.
+
+**Confirmation:** Third candle closes below the engulfing candle.
+
+**Invalidation:** Price rises above the engulfing candle high.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 39. Three Inside Up
+
+**Type:** Three-candle reversal  
+**Bias:** Bullish
+
+**What it looks like:** Bullish Harami plus confirmation.
+
+**Buyer-seller story:** A small candle forms inside a large bearish body, then the third candle breaks upward.
+
+**Real-life example:** Imagine a stock falls from 120 to 100 over several days. Many late sellers become confident. Then this pattern appears near support and the next candle closes higher. The lesson is not ‘buy blindly’; the lesson is that selling pressure may be weakening and buyers may be starting to defend a level.
+
+**Confirmation:** Third candle closes above the first candle midpoint or high.
+
+**Invalidation:** Price breaks below the first candle low.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 40. Three Inside Down
+
+**Type:** Three-candle reversal  
+**Bias:** Bearish
+
+**What it looks like:** Bearish Harami plus confirmation.
+
+**Buyer-seller story:** A small candle forms inside a large bullish body, then the third candle breaks downward.
+
+**Real-life example:** Imagine a stock rises from 80 to 105. Many buyers feel comfortable. Then this pattern appears near resistance and the next candle closes lower. The lesson is not ‘short blindly’; the lesson is that buyers may be losing control and sellers may be defending the higher price area.
+
+**Confirmation:** Third candle closes below the first candle midpoint or low.
+
+**Invalidation:** Price breaks above the first candle high.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 41. Bullish Kicker
+
+**Type:** Two-candle reversal  
+**Bias:** Bullish
+
+**What it looks like:** Sharp sentiment shift, often around news or major support.
+
+**Buyer-seller story:** A bearish candle is followed by a bullish candle that gaps up and moves strongly.
+
+**Real-life example:** Imagine a stock falls from 120 to 100 over several days. Many late sellers become confident. Then this pattern appears near support and the next candle closes higher. The lesson is not ‘buy blindly’; the lesson is that selling pressure may be weakening and buyers may be starting to defend a level.
+
+**Confirmation:** Gap holds and price continues higher.
+
+**Invalidation:** Price closes back below the gap area.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 42. Bearish Kicker
+
+**Type:** Two-candle reversal  
+**Bias:** Bearish
+
+**What it looks like:** Sharp sentiment shift, often around news or major resistance.
+
+**Buyer-seller story:** A bullish candle is followed by a bearish candle that gaps down and moves strongly.
+
+**Real-life example:** Imagine a stock rises from 80 to 105. Many buyers feel comfortable. Then this pattern appears near resistance and the next candle closes lower. The lesson is not ‘short blindly’; the lesson is that buyers may be losing control and sellers may be defending the higher price area.
+
+**Confirmation:** Gap holds and price continues lower.
+
+**Invalidation:** Price closes back above the gap area.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 43. Bullish Belt Hold Pattern
+
+**Type:** Single candle reversal  
+**Bias:** Bullish
+
+**What it looks like:** Often appears after a decline.
+
+**Buyer-seller story:** Price opens near the low and closes strong, like buyers grabbed the market by the belt.
+
+**Real-life example:** Imagine a stock falls from 120 to 100 over several days. Many late sellers become confident. Then this pattern appears near support and the next candle closes higher. The lesson is not ‘buy blindly’; the lesson is that selling pressure may be weakening and buyers may be starting to defend a level.
+
+**Confirmation:** Next candle holds above its midpoint or breaks the high.
+
+**Invalidation:** Price closes below the candle low.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 44. Bearish Belt Hold Pattern
+
+**Type:** Single candle reversal  
+**Bias:** Bearish
+
+**What it looks like:** Often appears after a rally.
+
+**Buyer-seller story:** Price opens near the high and closes weak, showing sellers controlled the session.
+
+**Real-life example:** Imagine a stock rises from 80 to 105. Many buyers feel comfortable. Then this pattern appears near resistance and the next candle closes lower. The lesson is not ‘short blindly’; the lesson is that buyers may be losing control and sellers may be defending the higher price area.
+
+**Confirmation:** Next candle holds below its midpoint or breaks the low.
+
+**Invalidation:** Price closes above the candle high.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 45. Doji Star
+
+**Type:** Indecision / reversal  
+**Bias:** Neutral until confirmed
+
+**What it looks like:** A Doji gaps away from the prior candle after a trend.
+
+**Buyer-seller story:** Momentum stretches, then suddenly pauses at the extreme.
+
+**Real-life example:** Imagine price has moved fast and then prints this pattern. The message is uncertainty. A beginner should mark the high and low of the pattern, then wait for price to break one side with conviction.
+
+**Confirmation:** A reversal candle in the opposite direction.
+
+**Invalidation:** Trend continues and absorbs the Doji.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 46. Bearish Doji Star Pattern
+
+**Type:** Indecision / reversal  
+**Bias:** Bearish if confirmed
+
+**What it looks like:** A Doji star after an uptrend.
+
+**Buyer-seller story:** The uptrend gaps higher, but the Doji shows buyers could not extend the move.
+
+**Real-life example:** Imagine a stock rises from 80 to 105. Many buyers feel comfortable. Then this pattern appears near resistance and the next candle closes lower. The lesson is not ‘short blindly’; the lesson is that buyers may be losing control and sellers may be defending the higher price area.
+
+**Confirmation:** A bearish candle after the Doji closes lower.
+
+**Invalidation:** Price breaks above the Doji high.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 47. Matching Low / Matching High
+
+**Type:** Two-candle reversal clue  
+**Bias:** Matching low bullish; matching high bearish
+
+**What it looks like:** Appears near support or resistance.
+
+**Buyer-seller story:** Two closes or extremes match, suggesting one level is being defended.
+
+**Real-life example:** Imagine a stock falls from 120 to 100 over several days. Many late sellers become confident. Then this pattern appears near support and the next candle closes higher. The lesson is not ‘buy blindly’; the lesson is that selling pressure may be weakening and buyers may be starting to defend a level.
+
+**Confirmation:** Break away from the defended level.
+
+**Invalidation:** Level breaks decisively.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 48. Inside Bars
+
+**Type:** Compression / continuation  
+**Bias:** Neutral until breakout
+
+**What it looks like:** A smaller candle sits inside the range of a larger mother candle.
+
+**Buyer-seller story:** Volatility compresses; traders wait for expansion.
+
+**Real-life example:** Imagine price is already trending. The market pauses, but the pause does not break the trend structure. If price then breaks in the original trend direction, the pattern says momentum may be continuing rather than reversing.
+
+**Confirmation:** Breakout above or below the mother candle range.
+
+**Invalidation:** False breakout returns into the mother candle range.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 49. Three-Line Strike Pattern
+
+**Type:** Continuation / reversal trap  
+**Bias:** Depends on trend and version
+
+**What it looks like:** Three candles in the trend direction are followed by a large opposite candle.
+
+**Buyer-seller story:** The fourth candle looks like a reversal, but may be a shakeout if the trend resumes.
+
+**Real-life example:** Imagine price is already trending. The market pauses, but the pause does not break the trend structure. If price then breaks in the original trend direction, the pattern says momentum may be continuing rather than reversing.
+
+**Confirmation:** Wait for the next candle; do not guess immediately.
+
+**Invalidation:** The fourth candle creates a true structure break.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 50. Bullish Separating Lines Pattern
+
+**Type:** Continuation  
+**Bias:** Bullish
+
+**What it looks like:** Appears in an uptrend.
+
+**Buyer-seller story:** A bearish candle is followed by a bullish candle that opens around the same level and restores the trend.
+
+**Real-life example:** Imagine a stock falls from 120 to 100 over several days. Many late sellers become confident. Then this pattern appears near support and the next candle closes higher. The lesson is not ‘buy blindly’; the lesson is that selling pressure may be weakening and buyers may be starting to defend a level.
+
+**Confirmation:** Bullish candle closes strong and next candle continues.
+
+**Invalidation:** Price closes below the separating candle low.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 51. Bearish Separating Lines
+
+**Type:** Continuation  
+**Bias:** Bearish
+
+**What it looks like:** Appears in a downtrend.
+
+**Buyer-seller story:** A bullish candle is followed by a bearish candle that opens around the same level and restores the downtrend.
+
+**Real-life example:** Imagine a stock rises from 80 to 105. Many buyers feel comfortable. Then this pattern appears near resistance and the next candle closes lower. The lesson is not ‘short blindly’; the lesson is that buyers may be losing control and sellers may be defending the higher price area.
+
+**Confirmation:** Bearish candle closes weak and next candle continues.
+
+**Invalidation:** Price closes above the separating candle high.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 52. Meeting Lines Pattern
+
+**Type:** Two-candle reversal clue  
+**Bias:** Bullish or bearish version
+
+**What it looks like:** Appears when a strong opposite candle closes at the prior close.
+
+**Buyer-seller story:** The market travels in the opposite direction but meets the previous close, creating tension.
+
+**Real-life example:** Imagine a stock falls from 120 to 100 over several days. Many late sellers become confident. Then this pattern appears near support and the next candle closes higher. The lesson is not ‘buy blindly’; the lesson is that selling pressure may be weakening and buyers may be starting to defend a level.
+
+**Confirmation:** Next candle breaks away from the meeting level.
+
+**Invalidation:** Price drifts sideways with no follow-through.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 53. On-Neck Pattern
+
+**Type:** Bearish continuation  
+**Bias:** Bearish continuation
+
+**What it looks like:** Appears during a downtrend.
+
+**Buyer-seller story:** A small bullish candle closes near the prior bearish candle low, but not strongly enough to reverse.
+
+**Real-life example:** Imagine a stock rises from 80 to 105. Many buyers feel comfortable. Then this pattern appears near resistance and the next candle closes lower. The lesson is not ‘short blindly’; the lesson is that buyers may be losing control and sellers may be defending the higher price area.
+
+**Confirmation:** Next candle breaks below the low area.
+
+**Invalidation:** Price closes above the prior bearish candle midpoint.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 54. In-Neck Pattern
+
+**Type:** Bearish continuation  
+**Bias:** Bearish continuation
+
+**What it looks like:** Appears during a downtrend.
+
+**Buyer-seller story:** A small bullish candle closes slightly into the prior bearish body, but sellers remain in control.
+
+**Real-life example:** Imagine a stock rises from 80 to 105. Many buyers feel comfortable. Then this pattern appears near resistance and the next candle closes lower. The lesson is not ‘short blindly’; the lesson is that buyers may be losing control and sellers may be defending the higher price area.
+
+**Confirmation:** Continuation below the pattern low.
+
+**Invalidation:** A strong bullish close above the prior body midpoint.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 55. Thrusting Pattern
+
+**Type:** Bearish continuation / weak reversal  
+**Bias:** Usually bearish continuation if weak
+
+**What it looks like:** Appears in a downtrend after a long bearish candle.
+
+**Buyer-seller story:** A bullish candle pushes into the prior body but fails to close above the midpoint.
+
+**Real-life example:** Imagine a stock rises from 80 to 105. Many buyers feel comfortable. Then this pattern appears near resistance and the next candle closes lower. The lesson is not ‘short blindly’; the lesson is that buyers may be losing control and sellers may be defending the higher price area.
+
+**Confirmation:** If it fails at the midpoint and rolls over, bears still control.
+
+**Invalidation:** A close above the midpoint converts it into stronger bullish evidence.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 56. Upside Gap Two Crows Pattern
+
+**Type:** Bearish reversal  
+**Bias:** Bearish warning
+
+**What it looks like:** Appears after an uptrend with an upside gap.
+
+**Buyer-seller story:** Two bearish candles appear above the prior bullish candle, warning that the gap may be losing strength.
+
+**Real-life example:** Imagine a stock rises from 80 to 105. Many buyers feel comfortable. Then this pattern appears near resistance and the next candle closes lower. The lesson is not ‘short blindly’; the lesson is that buyers may be losing control and sellers may be defending the higher price area.
+
+**Confirmation:** Price closes back below the gap/support area.
+
+**Invalidation:** Price breaks above the crows and continues higher.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 57. Tri-Star
+
+**Type:** Indecision / reversal  
+**Bias:** Potential reversal after extreme trend
+
+**What it looks like:** Rare; three Doji candles around a top or bottom.
+
+**Buyer-seller story:** Three repeated indecision candles show the trend is exhausted and stuck.
+
+**Real-life example:** Imagine price has moved fast and then prints this pattern. The message is uncertainty. A beginner should mark the high and low of the pattern, then wait for price to break one side with conviction.
+
+**Confirmation:** A strong candle breaks away from the tri-star cluster.
+
+**Invalidation:** The trend resumes through the cluster.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 58. Hikkake Pattern (Bullish/Bearish)
+
+**Type:** False breakout  
+**Bias:** Bullish or bearish trap
+
+**What it looks like:** Begins with an inside bar, then a false breakout, then reversal.
+
+**Buyer-seller story:** Traders chase the first breakout; the market snaps back and traps them.
+
+**Real-life example:** Imagine a stock falls from 120 to 100 over several days. Many late sellers become confident. Then this pattern appears near support and the next candle closes higher. The lesson is not ‘buy blindly’; the lesson is that selling pressure may be weakening and buyers may be starting to defend a level.
+
+**Confirmation:** Price breaks the opposite side of the inside bar setup.
+
+**Invalidation:** The first breakout continues instead of failing.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 59. Ladder Bottom Pattern
+
+**Type:** Bullish reversal  
+**Bias:** Bullish reversal candidate
+
+**What it looks like:** Appears after several bearish candles when a strong bullish candle appears.
+
+**Buyer-seller story:** The market climbs out of a stair-step decline after sellers fail to push lower.
+
+**Real-life example:** Imagine a stock falls from 120 to 100 over several days. Many late sellers become confident. Then this pattern appears near support and the next candle closes higher. The lesson is not ‘buy blindly’; the lesson is that selling pressure may be weakening and buyers may be starting to defend a level.
+
+**Confirmation:** The bullish candle closes above short-term structure.
+
+**Invalidation:** Price breaks below the pattern low.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+### 60. Concealing Baby Swallow Pattern
+
+**Type:** Bullish reversal  
+**Bias:** Bullish reversal candidate
+
+**What it looks like:** Rare; appears after a harsh selloff with multiple strong bearish candles.
+
+**Buyer-seller story:** Sellers appear dominant, but the final structure hints that selling pressure is becoming unsustainable.
+
+**Real-life example:** Imagine a stock falls from 120 to 100 over several days. Many late sellers become confident. Then this pattern appears near support and the next candle closes higher. The lesson is not ‘buy blindly’; the lesson is that selling pressure may be weakening and buyers may be starting to defend a level.
+
+**Confirmation:** Wait for a later bullish reversal candle; the pattern is too rare to trade alone.
+
+**Invalidation:** Price continues to new lows without recovery.
+
+**Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+
+---
+
+## 8. How to trade candlesticks without fooling yourself
+
+Candlestick patterns are useful, but they are also easy to misuse.
+
+A beginner usually makes this mistake:
+
+```text
+I saw a Hammer.
+Therefore price must go up.
+```
+
+A professional-style thought process is different:
+
+```text
+Price is in a downtrend.
+Price reached support.
+A Hammer appeared.
+The next candle closed above the Hammer high.
+My entry, stop, and target create at least 2R reward/risk.
+If price breaks the Hammer low, my idea is wrong.
+```
+
+The pattern is only one part of the decision.
+
+---
+
+## 9. Confirmation: the candle after the candle
+
+Many candlestick patterns need confirmation.
+
+Confirmation means price does something after the pattern that supports the idea.
+
+Example: Hammer
+
+```text
+Pattern: Hammer near support
+Confirmation: next candle closes above Hammer high
+Invalidation: price closes below Hammer low
+```
+
+Example: Shooting Star
+
+```text
+Pattern: Shooting Star near resistance
+Confirmation: next candle closes below Shooting Star low
+Invalidation: price closes above Shooting Star high
+```
+
+Example: Doji
+
+```text
+Pattern: Doji after big move
+Confirmation: price breaks the Doji range
+Invalidation: no breakout, price remains choppy
+```
+
+Think of confirmation as asking:
+
+```text
+Did the market agree with the pattern story?
+```
+
+---
+
+## 10. Support and resistance make patterns stronger
+
+A candle pattern becomes more meaningful when it appears at a place where traders already care.
+
+### Support
+
+Support is a price area where buyers have previously stepped in.
+
+Example:
+
+```text
+Stock falls to 100 three times.
+Each time it bounces.
+100 becomes a support area.
+```
+
+If a Hammer appears at 100, it matters more than a Hammer in the middle of nowhere.
+
+### Resistance
+
+Resistance is a price area where sellers have previously stepped in.
+
+Example:
+
+```text
+Stock rises to 150 three times.
+Each time it falls.
+150 becomes a resistance area.
+```
+
+If a Shooting Star appears at 150, it matters more.
+
+---
+
+## 11. Volume: did many people participate?
+
+Volume shows how much trading happened.
+
+A reversal pattern with high volume can be more interesting because it means many participants were involved.
+
+Example:
+
+```text
+Average volume = 1,000,000 shares
+Bullish Engulfing volume = 2,500,000 shares
+```
+
+This says the reversal was not quiet. Many traders participated.
+
+But volume still does not guarantee success. It only adds evidence.
+
+---
+
+## 12. Timeframe: the same pattern can mean different things
+
+A pattern on a 5-minute chart may matter for minutes or hours.
+
+A pattern on a weekly chart may matter for weeks or months.
+
+```text
+5-minute Hammer  = short-term clue
+Daily Hammer     = stronger clue
+Weekly Hammer    = bigger market structure clue
+```
+
+A beginner should not mix timeframes randomly.
+
+Bad example:
+
+```text
+I saw a bullish 5-minute candle, so I will hold for 3 months.
+```
+
+Better example:
+
+```text
+I use the daily chart for trend.
+I use the 1-hour chart for entry.
+I use the stop level from the setup.
+```
+
+---
+
+## 13. Risk/reward: a good pattern can still be a bad trade
+
+Suppose you find a beautiful Bullish Engulfing pattern.
+
+Your plan:
+
+```text
+Entry = 100
+Stop = 90
+Target = 105
+```
+
+Risk per share:
+
+```text
+Risk = Entry - Stop
+Risk = 100 - 90
+Risk = 10
+```
+
+Reward per share:
+
+```text
+Reward = Target - Entry
+Reward = 105 - 100
+Reward = 5
+```
+
+Reward/risk:
+
+```text
+Reward/risk = Reward ÷ Risk
+Reward/risk = 5 ÷ 10
+Reward/risk = 0.5R
+```
+
+That is weak. You are risking 10 to make 5.
+
+Now compare:
+
+```text
+Entry = 100
+Stop = 96
+Target = 110
+```
+
+```text
+Risk = 100 - 96 = 4
+Reward = 110 - 100 = 10
+Reward/risk = 10 ÷ 4 = 2.5R
+```
+
+This is better because you are risking 1 unit to aim for 2.5 units.
+
+---
+
+## 14. A simple candlestick scanning logic
+
+A beginner can use simple rules to scan candles, but these rules are not perfect. Different traders use different thresholds.
+
+```js
+function candleParts(candle) {
+  const { open, high, low, close } = candle
+  const body = Math.abs(close - open)
+  const range = high - low
+  const upperWick = high - Math.max(open, close)
+  const lowerWick = Math.min(open, close) - low
+
+  return { body, range, upperWick, lowerWick }
+}
+
+function isDoji(candle) {
+  const { body, range } = candleParts(candle)
+  return range > 0 && body / range <= 0.1
+}
+
+function isHammer(candle) {
+  const { body, range, upperWick, lowerWick } = candleParts(candle)
+  return (
+    range > 0 &&
+    lowerWick >= body * 2 &&
+    upperWick <= body * 0.5 &&
+    body / range <= 0.35
+  )
+}
+
+function isBullishEngulfing(previous, current) {
+  const previousBearish = previous.close < previous.open
+  const currentBullish = current.close > current.open
+
+  const currentBodyEngulfsPreviousBody =
+    current.open < previous.close &&
+    current.close > previous.open
+
+  return previousBearish && currentBullish && currentBodyEngulfsPreviousBody
+}
+```
+
+Important: this code only detects shape. It does not know trend, support, resistance, news, liquidity, or risk/reward.
+
+So a scanner can say:
+
+```text
+This looks like a Hammer.
+```
+
+But your brain must ask:
+
+```text
+Is this Hammer in a useful location?
+Is there confirmation?
+Where is my stop?
+Is the reward worth the risk?
+```
+
+---
+
+## 15. Beginner practice routine
+
+Do this for 30 days.
+
+```text
+Day 1–5: Learn candle anatomy only.
+Day 6–10: Learn Doji, Hammer, Shooting Star, Engulfing.
+Day 11–15: Add Morning Star, Evening Star, Harami, Piercing Line, Dark Cloud.
+Day 16–20: Add continuation patterns.
+Day 21–25: Mark support/resistance and trend before pattern names.
+Day 26–30: Journal 20 examples with entry, stop, target, and result.
+```
+
+Your journal should look like this:
+
+```text
+Pattern: Bullish Engulfing
+Trend before pattern: Downtrend
+Location: Daily support around 100
+Confirmation: Next candle closed above high
+Entry: 106
+Stop: 98
+Target: 122
+Reward/risk: 2R
+Result: +2R or stopped out
+Lesson: Was the setup clean or forced?
+```
+
+---
+
+## 16. Common beginner mistakes
+
+### Mistake 1: memorizing names without understanding psychology
+
+The name is less important than the story.
+
+```text
+Hammer = rejection of lower prices
+Shooting Star = rejection of higher prices
+Doji = indecision
+Engulfing = one side overwhelms the previous candle
+```
+
+### Mistake 2: ignoring trend
+
+A bullish pattern against a powerful downtrend is weaker unless it appears at major support and confirms.
+
+### Mistake 3: entering before confirmation
+
+Many patterns fail. Confirmation reduces false signals, although it can also make entry later.
+
+### Mistake 4: using no stop loss
+
+Without invalidation, you are guessing.
+
+### Mistake 5: thinking rare patterns are automatically powerful
+
+Rare names sound exciting, but common clean patterns at good locations are often easier for beginners.
+
+---
+
+## 17. The best 12 patterns for beginners to learn first
+
+You do not need all 60 on day one.
+
+Start with these:
+
+```text
+1. Doji
+2. Dragonfly Doji
+3. Gravestone Doji
+4. Hammer
+5. Shooting Star
+6. Bullish Engulfing
+7. Bearish Engulfing
+8. Piercing Line
+9. Dark Cloud Cover
+10. Morning Star
+11. Evening Star
+12. Rising Three / Falling Three
+```
+
+Why these first?
+
+Because they teach the most useful market stories:
+
+```text
+Indecision
+Rejection
+Buyer takeover
+Seller takeover
+Trend pause
+Trend continuation
+```
+
+---
+
+## 18. Final mental model
+
+Candlestick patterns are not magic.
+
+They are a language for reading price behavior.
+
+A beginner should translate every pattern into a simple sentence.
+
+```text
+Doji:
+The market is undecided.
+
+Hammer:
+Sellers pushed down, but buyers rejected the low.
+
+Shooting Star:
+Buyers pushed up, but sellers rejected the high.
+
+Bullish Engulfing:
+Buyers overwhelmed the previous selling candle.
+
+Bearish Engulfing:
+Sellers overwhelmed the previous buying candle.
+
+Rising Three:
+The uptrend rested, then continued.
+
+Falling Three:
+The downtrend rested, then continued.
+```
+
+The strongest beginner formula is:
+
+```text
+Good candlestick setup = pattern + location + confirmation + risk plan
+```
+
+If one part is missing, be careful.
+
+```text
+Pattern only = weak
+Pattern + support/resistance = better
+Pattern + support/resistance + confirmation = stronger
+Pattern + support/resistance + confirmation + good reward/risk = trade plan
+```
+
+That is how you use candlestick patterns like a trader, not like a gambler.

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BookmarkButton } from "./BookmarkButton";
 import {
   getAllPosts,
   getLearningChapters,
@@ -289,9 +290,7 @@ function TutorialCard({ chapter }: { chapter: LearningChapter }) {
           <span>{chapter.formattedDate}</span>
           <span className="text-[#adc0b2]">•</span>
           <span>{chapter.readingTime} min read</span>
-          <button aria-label="Save tutorial" className="ml-auto text-[#6c7d8a] transition hover:text-[#15924c]">
-            <BookmarkIcon />
-          </button>
+          <BookmarkButton slug={chapter.slug} className="ml-auto" />
         </div>
       </div>
     </article>
@@ -406,7 +405,7 @@ function AuthorBadge({ name, compact = false }: { name: string; compact?: boolea
   return (
     <span className="inline-flex items-center gap-2 text-[13px] font-semibold text-[#253444]">
       <span className={`${compact ? "h-7 w-7" : "h-8 w-8"} overflow-hidden rounded-full bg-[#eaf5ef]`}>
-        <img src="/img/finance/avatar-investor.png" alt="" className="h-full w-full object-cover" />
+        <img src="/img/profile/avatar.png" alt="" className="h-full w-full object-cover" />
       </span>
       {name}
     </span>
@@ -522,14 +521,6 @@ function ChapterIcon() {
       <path d="M8 8h8" />
       <path d="M8 12h8" />
       <path d="M8 16h5" />
-    </svg>
-  );
-}
-
-function BookmarkIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M6 4h12v16l-6-4-6 4V4Z" />
     </svg>
   );
 }
