@@ -2,6 +2,13 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { compileMdx } from "../../_lib/mdx";
 import { getAllPosts, getPost } from "../../_lib/posts";
+import { EquationChart } from "../../_components/EquationCharts";
+import { GaltonBoard } from "../../_components/GaltonBoard";
+
+const blogMdxComponents = {
+  EquationChart,
+  GaltonBoard,
+};
 
 const postImages: Record<string, string> = {
   "understanding-transformer-attention": "/img/finance/bull-market.png",
@@ -10,6 +17,7 @@ const postImages: Record<string, string> = {
   "why-self-supervised-learning-works": "/img/finance/emergency-fund.png",
   "understanding-interest-rates": "/img/finance/interest-rates.png",
   "crypto-investing-for-beginners": "/img/finance/crypto-bitcoin.png",
+  "the-equation-that-beat-wall-street": "/img/finance/trading-candles.png",
 };
 
 const fallbackImages = [
@@ -99,7 +107,7 @@ export default async function BlogPostPage({
           </div>
 
           <article className="prose-post mt-8 rounded-[34px] border border-[#dfe9e1] bg-white/92 px-6 py-7 shadow-[0_20px_60px_rgba(15,23,42,0.04)] md:px-10 md:py-10">
-            <MDX />
+            <MDX components={blogMdxComponents} />
           </article>
         </article>
 
