@@ -1,0 +1,2500 @@
+---
+title: "Bond Investing for Complete Beginners"
+description: "A beginner-friendly, story-driven guide to bonds, coupons, clean price, dirty price, YTM, duration, risks, and portfolio use — with real-life examples and interactive calculators."
+date: "2026-06-07"
+category: "Fixed Income"
+readingTime: 34
+tags: ["Bonds", "Fixed Income", "Investing", "Beginner Finance", "Portfolio"]
+---
+
+export const BondCashFlowTimeline = () => (
+  <figure style={{ margin: "2rem 0", padding: "1rem", border: "1px solid rgba(148,163,184,.35)", borderRadius: "20px", background: "linear-gradient(180deg, rgba(15,23,42,.04), rgba(15,23,42,.015))" }}>
+    <svg viewBox="0 0 900 360" role="img" aria-label="Bond cash flow timeline showing annual coupon payments and final principal repayment" style={{ width: "100%", height: "auto" }}>
+      <rect x="20" y="20" width="860" height="320" rx="22" fill="rgba(59,130,246,.06)" />
+      <text x="50" y="62" fontSize="28" fontWeight="800" fill="currentColor">Rahim Restaurant Bond: cash flow map</text>
+      <text x="50" y="94" fontSize="16" fill="currentColor" opacity=".74">You lend 100,000 today. Rahim pays 10,000 every year, then returns 100,000 at maturity.</text>
+
+      <line x1="95" y1="245" x2="810" y2="245" stroke="currentColor" strokeWidth="4" opacity=".35" />
+      {[0,1,2,3,4,5].map((year, index) => {
+        const x = 95 + index * 143;
+        const label = year === 0 ? "Today" : "Year " + year;
+        const amount = year === 0 ? "-100,000" : year === 5 ? "+110,000" : "+10,000";
+        const sub = year === 0 ? "You invest" : year === 5 ? "Coupon + principal" : "Coupon";
+        return (
+          <g key={year}>
+            <circle cx={x} cy="245" r="14" fill={year === 0 ? "#ef4444" : year === 5 ? "#16a34a" : "#3b82f6"} />
+            <text x={x} y="282" textAnchor="middle" fontSize="15" fontWeight="700" fill="currentColor">{label}</text>
+            <text x={x} y={year === 0 ? "170" : "155"} textAnchor="middle" fontSize="19" fontWeight="800" fill={year === 0 ? "#ef4444" : "#16a34a"}>{amount}</text>
+            <text x={x} y={year === 0 ? "193" : "178"} textAnchor="middle" fontSize="13" fill="currentColor" opacity=".7">{sub}</text>
+            {year > 0 && <line x1={x} y1="231" x2={x} y2={year === 5 ? "188" : "190"} stroke="currentColor" strokeWidth="2" opacity=".28" />}
+            {year === 0 && <line x1={x} y1="231" x2={x} y2="202" stroke="currentColor" strokeWidth="2" opacity=".28" />}
+          </g>
+        );
+      })}
+
+      <rect x="50" y="305" width="800" height="1" fill="currentColor" opacity=".16" />
+      <text x="50" y="326" fontSize="14" fill="currentColor" opacity=".76">Beginner idea: a bond is a promise to pay scheduled cash flows in the future.</text>
+    </svg>
+    <figcaption style={{ fontSize: ".92rem", opacity: ".78", marginTop: ".75rem" }}>
+      Code chart: the bond is easier to understand when you draw the money moving across time.
+    </figcaption>
+  </figure>
+);
+
+export const BondPriceSeeSaw = () => (
+  <figure style={{ margin: "2rem 0", padding: "1rem", border: "1px solid rgba(148,163,184,.35)", borderRadius: "20px", background: "linear-gradient(180deg, rgba(245,158,11,.08), rgba(245,158,11,.015))" }}>
+    <svg viewBox="0 0 900 380" role="img" aria-label="Bond price and market interest rate see-saw" style={{ width: "100%", height: "auto" }}>
+      <rect x="20" y="20" width="860" height="340" rx="22" fill="rgba(245,158,11,.07)" />
+      <text x="50" y="65" fontSize="28" fontWeight="800" fill="currentColor">The bond price see-saw</text>
+      <text x="50" y="98" fontSize="16" fill="currentColor" opacity=".74">When new market rates rise, old fixed-coupon bonds usually need a lower price to compete.</text>
+
+      <line x1="210" y1="235" x2="690" y2="150" stroke="currentColor" strokeWidth="18" strokeLinecap="round" opacity=".78" />
+      <polygon points="450,205 400,315 500,315" fill="currentColor" opacity=".22" />
+      <circle cx="450" cy="205" r="18" fill="#0f172a" opacity=".65" />
+
+      <g>
+        <rect x="110" y="220" width="210" height="70" rx="18" fill="#fee2e2" />
+        <text x="215" y="250" textAnchor="middle" fontSize="19" fontWeight="800" fill="#b91c1c">Market rates ↑</text>
+        <text x="215" y="274" textAnchor="middle" fontSize="14" fill="#7f1d1d">New bonds pay more</text>
+      </g>
+
+      <g>
+        <rect x="580" y="103" width="210" height="70" rx="18" fill="#dcfce7" />
+        <text x="685" y="133" textAnchor="middle" fontSize="19" fontWeight="800" fill="#15803d">Old bond price ↓</text>
+        <text x="685" y="157" textAnchor="middle" fontSize="14" fill="#14532d">Price adjusts to match yield</text>
+      </g>
+
+      <g>
+        <rect x="110" y="107" width="210" height="70" rx="18" fill="#dbeafe" />
+        <text x="215" y="137" textAnchor="middle" fontSize="19" fontWeight="800" fill="#1d4ed8">Market rates ↓</text>
+        <text x="215" y="161" textAnchor="middle" fontSize="14" fill="#1e3a8a">Your old coupon looks better</text>
+      </g>
+
+      <g>
+        <rect x="580" y="220" width="210" height="70" rx="18" fill="#fef3c7" />
+        <text x="685" y="250" textAnchor="middle" fontSize="19" fontWeight="800" fill="#92400e">Old bond price ↑</text>
+        <text x="685" y="274" textAnchor="middle" fontSize="14" fill="#78350f">Investors may pay premium</text>
+      </g>
+
+      <text x="450" y="342" textAnchor="middle" fontSize="15" fill="currentColor" opacity=".78">Core rule: market interest rates and existing bond prices usually move in opposite directions.</text>
+    </svg>
+  </figure>
+);
+
+export const BondRiskMap = () => (
+  <figure style={{ margin: "2rem 0", padding: "1rem", border: "1px solid rgba(148,163,184,.35)", borderRadius: "20px", background: "linear-gradient(180deg, rgba(16,185,129,.07), rgba(16,185,129,.015))" }}>
+    <svg viewBox="0 0 900 360" role="img" aria-label="Bond risk map" style={{ width: "100%", height: "auto" }}>
+      <rect x="20" y="20" width="860" height="320" rx="22" fill="rgba(16,185,129,.06)" />
+      <text x="50" y="64" fontSize="28" fontWeight="800" fill="currentColor">Bond risk map</text>
+      <text x="50" y="96" fontSize="16" fill="currentColor" opacity=".74">Bonds are usually steadier than stocks, but they are not magic and they are not risk-free.</text>
+      {[
+        ["Default risk", "Issuer cannot pay", "Ask: can the borrower survive?", "#ef4444", 70, 135],
+        ["Rate risk", "Rates rise, price falls", "Ask: what is the duration?", "#f59e0b", 330, 135],
+        ["Inflation risk", "Buying power falls", "Ask: is real return positive?", "#3b82f6", 590, 135],
+        ["Liquidity risk", "Hard to sell quickly", "Ask: are there active buyers?", "#8b5cf6", 200, 245],
+        ["Reinvestment risk", "Future coupons earn less", "Ask: can I reinvest at similar rates?", "#10b981", 480, 245]
+      ].map((item) => (
+        <g key={item[0]}>
+          <rect x={item[4]} y={item[5]} width="240" height="80" rx="18" fill={item[3]} opacity=".14" />
+          <circle cx={Number(item[4]) + 22} cy={Number(item[5]) + 25} r="9" fill={item[3]} />
+          <text x={Number(item[4]) + 42} y={Number(item[5]) + 30} fontSize="17" fontWeight="800" fill="currentColor">{item[0]}</text>
+          <text x={Number(item[4]) + 22} y={Number(item[5]) + 54} fontSize="13" fill="currentColor" opacity=".76">{item[1]}</text>
+          <text x={Number(item[4]) + 22} y={Number(item[5]) + 72} fontSize="12" fill="currentColor" opacity=".62">{item[2]}</text>
+        </g>
+      ))}
+    </svg>
+  </figure>
+);
+
+export const BOND_INTERACTIVE_LAB_HTML = String.raw`<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Bond Interactive Lab</title>
+<style>
+  :root {
+    --bg: #0b1220;
+    --panel: #111827;
+    --panel-2: #172033;
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+    --line: rgba(255,255,255,.12);
+    --accent: #38bdf8;
+    --good: #34d399;
+    --warn: #fbbf24;
+    --bad: #fb7185;
+    --purple: #a78bfa;
+    --white: #ffffff;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+  body { padding: 18px; }
+  .lab { max-width: 1180px; margin: 0 auto; }
+  .hero { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(280px, .65fr); gap: 16px; align-items: stretch; }
+  .card { background: linear-gradient(180deg, rgba(255,255,255,.075), rgba(255,255,255,.035)); border: 1px solid var(--line); border-radius: 22px; padding: 18px; box-shadow: 0 20px 45px rgba(0,0,0,.23); }
+  h1 { font-size: clamp(24px, 4vw, 40px); line-height: 1.02; margin: 0 0 10px; letter-spacing: -.04em; }
+  h2 { font-size: 19px; margin: 0 0 12px; letter-spacing: -.02em; }
+  h3 { font-size: 15px; margin: 14px 0 8px; color: var(--white); }
+  p { color: var(--muted); line-height: 1.55; margin: 0; }
+  .pill { display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(56,189,248,.3); color: #bae6fd; background: rgba(56,189,248,.08); border-radius: 999px; padding: 6px 10px; font-size: 12px; font-weight: 800; margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: 16px; margin-top: 16px; }
+  .controls { display: grid; gap: 12px; }
+  label { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; color: #cbd5e1; margin-bottom: 6px; }
+  label b { color: #f8fafc; font-variant-numeric: tabular-nums; }
+  input[type="range"] { width: 100%; accent-color: var(--accent); }
+  .selectrow { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  select, input[type="number"] { width: 100%; background: rgba(0,0,0,.24); color: var(--text); border: 1px solid var(--line); border-radius: 12px; padding: 9px 10px; outline: none; }
+  .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .stat { min-height: 78px; padding: 12px; border-radius: 16px; background: rgba(0,0,0,.2); border: 1px solid var(--line); }
+  .stat span { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 6px; }
+  .stat strong { display: block; font-size: 22px; letter-spacing: -.03em; font-variant-numeric: tabular-nums; color: #f8fafc; }
+  .stat.good strong { color: var(--good); }
+  .stat.bad strong { color: var(--bad); }
+  .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+  button { border: 1px solid var(--line); background: rgba(255,255,255,.06); color: var(--text); border-radius: 999px; padding: 9px 12px; font-weight: 800; cursor: pointer; }
+  button.active { background: rgba(56,189,248,.18); border-color: rgba(56,189,248,.5); color: #e0f2fe; }
+  .chart { width: 100%; min-height: 360px; border-radius: 18px; background: rgba(0,0,0,.16); border: 1px solid var(--line); overflow: hidden; }
+  svg { width: 100%; height: 100%; min-height: 360px; display: block; }
+  .formula { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; background: rgba(0,0,0,.22); border: 1px solid var(--line); border-radius: 14px; padding: 12px; color: #dbeafe; font-size: 13px; line-height: 1.55; white-space: pre-wrap; }
+  .note { margin-top: 12px; padding: 12px; border-radius: 16px; background: rgba(16,185,129,.08); border: 1px solid rgba(52,211,153,.22); color: #d1fae5; font-size: 13px; line-height: 1.5; }
+  .quiz { display: grid; gap: 8px; }
+  .choice { width: 100%; text-align: left; border-radius: 14px; padding: 12px; }
+  .choice.correct { border-color: rgba(52,211,153,.6); background: rgba(52,211,153,.14); }
+  .choice.wrong { border-color: rgba(251,113,133,.6); background: rgba(251,113,133,.12); }
+  .answer { color: #f8fafc; margin-top: 10px; min-height: 42px; line-height: 1.45; }
+  @media (max-width: 900px) { .hero, .grid { grid-template-columns: 1fr; } .stats { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px) { body { padding: 10px; } .stats { grid-template-columns: 1fr; } .selectrow { grid-template-columns: 1fr; } .card { padding: 14px; border-radius: 18px; } }
+</style>
+</head>
+<body>
+<div class="lab">
+  <section class="hero">
+    <div class="card">
+      <div class="pill">Interactive Bond Lab</div>
+      <h1>Move the sliders. Watch the bond change.</h1>
+      <p>This lab turns the article formulas into touchable examples. Change coupon, price, maturity, and market yield to see coupon income, clean value, dirty value, approximate YTM, and interest-rate sensitivity.</p>
+    </div>
+    <div class="card">
+      <h2>Beginner mental model</h2>
+      <div class="formula">Bond = loan
+Coupon = interest income
+Face value = principal
+Maturity = final repayment date
+YTM = estimated annual return if held to maturity</div>
+    </div>
+  </section>
+
+  <section class="grid">
+    <aside class="card controls">
+      <h2>Bond inputs</h2>
+      <div>
+        <label for="face">Face value per bond <b id="faceLabel">Tk 1,000</b></label>
+        <input id="face" type="range" min="100" max="10000" step="100" value="1000" />
+      </div>
+      <div>
+        <label for="qty">Quantity <b id="qtyLabel">50 bonds</b></label>
+        <input id="qty" type="range" min="1" max="200" step="1" value="50" />
+      </div>
+      <div>
+        <label for="coupon">Coupon rate <b id="couponLabel">8.50%</b></label>
+        <input id="coupon" type="range" min="0" max="20" step="0.05" value="8.5" />
+      </div>
+      <div>
+        <label for="years">Years to maturity <b id="yearsLabel">5 years</b></label>
+        <input id="years" type="range" min="1" max="30" step="1" value="5" />
+      </div>
+      <div>
+        <label for="clean">Current clean price <b id="cleanLabel">98.75</b></label>
+        <input id="clean" type="range" min="60" max="140" step="0.05" value="98.75" />
+      </div>
+      <div>
+        <label for="purchase">Your purchase price <b id="purchaseLabel">97.50</b></label>
+        <input id="purchase" type="range" min="60" max="140" step="0.05" value="97.5" />
+      </div>
+      <div>
+        <label for="accrued">Accrued interest amount <b id="accruedLabel">Tk 2,125</b></label>
+        <input id="accrued" type="range" min="0" max="10000" step="25" value="2125" />
+      </div>
+      <div class="selectrow">
+        <div>
+          <label for="payfreq">Coupon payments</label>
+          <select id="payfreq">
+            <option value="1">Once per year</option>
+            <option value="2" selected>Twice per year</option>
+            <option value="4">Quarterly</option>
+          </select>
+        </div>
+        <div>
+          <label for="marketYield">Market yield</label>
+          <input id="marketYield" type="number" min="0" max="30" step="0.1" value="10" />
+        </div>
+      </div>
+      <div>
+        <label for="rateShock">Rate change for duration test <b id="shockLabel">+1.00%</b></label>
+        <input id="rateShock" type="range" min="-5" max="5" step="0.1" value="1" />
+      </div>
+    </aside>
+
+    <main class="card">
+      <div class="stats">
+        <div class="stat"><span>Total face value</span><strong id="totalFace">Tk 50,000</strong></div>
+        <div class="stat good"><span>Annual coupon income</span><strong id="annualCoupon">Tk 4,250</strong></div>
+        <div class="stat"><span>Each coupon payment</span><strong id="couponPayment">Tk 2,125</strong></div>
+        <div class="stat"><span>Clean market value</span><strong id="cleanValue">Tk 49,375</strong></div>
+        <div class="stat"><span>Dirty value</span><strong id="dirtyValue">Tk 51,500</strong></div>
+        <div class="stat" id="glCard"><span>Capital gain/loss</span><strong id="capitalGl">Tk 625</strong></div>
+        <div class="stat"><span>Approx. YTM</span><strong id="ytm">8.96%</strong></div>
+        <div class="stat"><span>Model price at market yield</span><strong id="modelPrice">94.31</strong></div>
+        <div class="stat"><span>Modified duration</span><strong id="duration">4.22y</strong></div>
+      </div>
+
+      <div class="tabs">
+        <button id="tabCash" class="active" type="button">Cash-flow chart</button>
+        <button id="tabYield" type="button">Price vs yield</button>
+        <button id="tabDuration" type="button">Duration test</button>
+        <button id="tabQuiz" type="button">Mini quiz</button>
+      </div>
+
+      <div class="chart" id="chart"></div>
+      <div class="note" id="explain">A coupon bond has repeated interest payments plus principal repayment at the end. The final year is usually the biggest cash flow because it includes the last coupon and the principal.</div>
+    </main>
+  </section>
+</div>
+
+<script>
+(function () {
+  var ids = ["face", "qty", "coupon", "years", "clean", "purchase", "accrued", "payfreq", "marketYield", "rateShock"];
+  var els = {};
+  ids.forEach(function (id) { els[id] = document.getElementById(id); });
+  var labels = {
+    face: document.getElementById("faceLabel"), qty: document.getElementById("qtyLabel"), coupon: document.getElementById("couponLabel"), years: document.getElementById("yearsLabel"), clean: document.getElementById("cleanLabel"), purchase: document.getElementById("purchaseLabel"), accrued: document.getElementById("accruedLabel"), shock: document.getElementById("shockLabel")
+  };
+  var stats = {
+    totalFace: document.getElementById("totalFace"), annualCoupon: document.getElementById("annualCoupon"), couponPayment: document.getElementById("couponPayment"), cleanValue: document.getElementById("cleanValue"), dirtyValue: document.getElementById("dirtyValue"), capitalGl: document.getElementById("capitalGl"), ytm: document.getElementById("ytm"), modelPrice: document.getElementById("modelPrice"), duration: document.getElementById("duration"), glCard: document.getElementById("glCard")
+  };
+  var chart = document.getElementById("chart");
+  var explain = document.getElementById("explain");
+  var activeTab = "cash";
+  function num(id) { return Number(els[id].value); }
+  function money(x) { var sign = x < 0 ? "-" : ""; return sign + "Tk " + Math.abs(x).toLocaleString("en-US", { maximumFractionDigits: 0 }); }
+  function pct(x) { return x.toFixed(2).replace(/\.00$/, "") + "%"; }
+  function bondPricePct(couponPct, yieldPct, years) {
+    var c = couponPct;
+    var y = yieldPct / 100;
+    if (Math.abs(y) < 0.000001) return c * years + 100;
+    return c * (1 - Math.pow(1 + y, -years)) / y + 100 / Math.pow(1 + y, years);
+  }
+  function modifiedDuration(couponPct, yieldPct, years) {
+    var y = yieldPct / 100;
+    var price = bondPricePct(couponPct, yieldPct, years);
+    if (price <= 0) return 0;
+    var weighted = 0;
+    for (var t = 1; t <= years; t++) {
+      var cf = couponPct + (t === years ? 100 : 0);
+      weighted += t * cf / Math.pow(1 + y, t);
+    }
+    var macaulay = weighted / price;
+    return macaulay / (1 + y);
+  }
+  function getState() {
+    var face = num("face");
+    var qty = num("qty");
+    var coupon = num("coupon");
+    var years = num("years");
+    var clean = num("clean");
+    var purchase = num("purchase");
+    var accrued = num("accrued");
+    var payfreq = num("payfreq");
+    var marketYield = Number(els.marketYield.value || 0);
+    var shock = num("rateShock");
+    var totalFace = face * qty;
+    var annualCoupon = totalFace * coupon / 100;
+    var couponPayment = annualCoupon / payfreq;
+    var cleanValue = totalFace * clean / 100;
+    var dirtyValue = cleanValue + accrued;
+    var purchaseValue = totalFace * purchase / 100;
+    var capitalGl = cleanValue - purchaseValue;
+    var approxYtm = ((coupon + (100 - clean) / years) / ((100 + clean) / 2)) * 100;
+    var modelPrice = bondPricePct(coupon, marketYield, years);
+    var duration = modifiedDuration(coupon, marketYield, years);
+    return { face: face, qty: qty, coupon: coupon, years: years, clean: clean, purchase: purchase, accrued: accrued, payfreq: payfreq, marketYield: marketYield, shock: shock, totalFace: totalFace, annualCoupon: annualCoupon, couponPayment: couponPayment, cleanValue: cleanValue, dirtyValue: dirtyValue, purchaseValue: purchaseValue, capitalGl: capitalGl, approxYtm: approxYtm, modelPrice: modelPrice, duration: duration };
+  }
+  function updateLabels(s) {
+    labels.face.textContent = money(s.face);
+    labels.qty.textContent = s.qty + " bonds";
+    labels.coupon.textContent = pct(s.coupon);
+    labels.years.textContent = s.years + (s.years === 1 ? " year" : " years");
+    labels.clean.textContent = s.clean.toFixed(2);
+    labels.purchase.textContent = s.purchase.toFixed(2);
+    labels.accrued.textContent = money(s.accrued);
+    labels.shock.textContent = (s.shock >= 0 ? "+" : "") + s.shock.toFixed(2) + "%";
+  }
+  function updateStats(s) {
+    stats.totalFace.textContent = money(s.totalFace);
+    stats.annualCoupon.textContent = money(s.annualCoupon);
+    stats.couponPayment.textContent = money(s.couponPayment);
+    stats.cleanValue.textContent = money(s.cleanValue);
+    stats.dirtyValue.textContent = money(s.dirtyValue);
+    stats.capitalGl.textContent = money(s.capitalGl);
+    stats.ytm.textContent = pct(s.approxYtm);
+    stats.modelPrice.textContent = s.modelPrice.toFixed(2);
+    stats.duration.textContent = s.duration.toFixed(2) + "y";
+    stats.glCard.className = "stat " + (s.capitalGl >= 0 ? "good" : "bad");
+  }
+  function svgWrap(inner) {
+    chart.innerHTML = '<svg viewBox="0 0 900 390" aria-hidden="false">' + inner + '</svg>';
+  }
+  function drawCash(s) {
+    var maxCash = s.face * s.qty + s.annualCoupon;
+    var bars = "";
+    for (var i = 1; i <= s.years; i++) {
+      var cf = s.annualCoupon + (i === s.years ? s.totalFace : 0);
+      var h = Math.max(8, cf / maxCash * 235);
+      var x = 80 + (i - 1) * (760 / Math.max(1, s.years));
+      var w = Math.min(46, 620 / Math.max(1, s.years));
+      bars += '<rect x="' + x + '" y="' + (315 - h) + '" width="' + w + '" height="' + h + '" rx="8" fill="' + (i === s.years ? '#34d399' : '#38bdf8') + '" opacity=".9" />';
+      bars += '<text x="' + (x + w / 2) + '" y="340" text-anchor="middle" font-size="12" fill="#cbd5e1">Y' + i + '</text>';
+      bars += '<text x="' + (x + w / 2) + '" y="' + (300 - h) + '" text-anchor="middle" font-size="11" fill="#f8fafc">' + (cf >= 100000 ? Math.round(cf / 1000) + 'k' : Math.round(cf).toLocaleString('en-US')) + '</text>';
+    }
+    svgWrap('<text x="40" y="45" font-size="24" font-weight="800" fill="#f8fafc">Cash-flow chart</text><text x="40" y="72" font-size="14" fill="#9ca3af">Each bar is money you receive. The last bar includes principal repayment.</text><line x1="55" y1="315" x2="850" y2="315" stroke="rgba(255,255,255,.25)" />' + bars + '<rect x="620" y="38" width="230" height="70" rx="16" fill="rgba(255,255,255,.06)"/><circle cx="645" cy="64" r="7" fill="#38bdf8"/><text x="660" y="69" font-size="13" fill="#cbd5e1">Coupon payments</text><circle cx="645" cy="91" r="7" fill="#34d399"/><text x="660" y="96" font-size="13" fill="#cbd5e1">Final coupon + principal</text>');
+    explain.textContent = "A normal coupon bond pays repeated interest. At maturity, the final cash flow is larger because it includes the last coupon plus the original principal.";
+  }
+  function drawYield(s) {
+    var points = [];
+    var minP = Infinity, maxP = -Infinity;
+    for (var y = 1; y <= 20; y += 0.25) {
+      var p = bondPricePct(s.coupon, y, s.years);
+      points.push({ y: y, p: p });
+      minP = Math.min(minP, p); maxP = Math.max(maxP, p);
+    }
+    var pad = 30;
+    minP -= pad; maxP += pad;
+    function X(y) { return 70 + (y - 1) / 19 * 760; }
+    function Y(p) { return 320 - (p - minP) / (maxP - minP) * 240; }
+    var d = points.map(function (pt, i) { return (i === 0 ? 'M' : 'L') + X(pt.y).toFixed(1) + ' ' + Y(pt.p).toFixed(1); }).join(' ');
+    var myX = X(Math.max(1, Math.min(20, s.marketYield)));
+    var myY = Y(s.modelPrice);
+    svgWrap('<text x="40" y="45" font-size="24" font-weight="800" fill="#f8fafc">Price vs market yield</text><text x="40" y="72" font-size="14" fill="#9ca3af">Same coupon, same maturity. Only the market yield changes.</text><line x1="70" y1="320" x2="830" y2="320" stroke="rgba(255,255,255,.25)"/><line x1="70" y1="80" x2="70" y2="320" stroke="rgba(255,255,255,.25)"/><path d="' + d + '" fill="none" stroke="#38bdf8" stroke-width="5" stroke-linecap="round"/><line x1="' + myX + '" y1="80" x2="' + myX + '" y2="320" stroke="#fbbf24" stroke-dasharray="8 8"/><circle cx="' + myX + '" cy="' + myY + '" r="8" fill="#fbbf24"/><text x="' + (myX + 12) + '" y="' + (myY - 12) + '" font-size="13" fill="#fef3c7">Yield ' + pct(s.marketYield) + ', price ' + s.modelPrice.toFixed(2) + '</text><text x="70" y="350" font-size="12" fill="#9ca3af">1% yield</text><text x="775" y="350" font-size="12" fill="#9ca3af">20% yield</text><text x="18" y="90" font-size="12" fill="#9ca3af">High price</text><text x="18" y="318" font-size="12" fill="#9ca3af">Low price</text>');
+    explain.textContent = "This curve slopes downward because a higher market yield discounts future cash flows more heavily. That usually means a lower bond price.";
+  }
+  function drawDuration(s) {
+    var newYield = Math.max(0.01, s.marketYield + s.shock);
+    var oldPrice = bondPricePct(s.coupon, s.marketYield, s.years);
+    var newPrice = bondPricePct(s.coupon, newYield, s.years);
+    var actualMove = (newPrice - oldPrice) / oldPrice * 100;
+    var estimateMove = -s.duration * (s.shock / 100) * 100;
+    function bar(x, val, color, label) {
+      var base = 210;
+      var scale = 12;
+      var h = Math.min(130, Math.abs(val) * scale);
+      var y = val >= 0 ? base - h : base;
+      return '<rect x="' + x + '" y="' + y + '" width="140" height="' + h + '" rx="14" fill="' + color + '"/><text x="' + (x + 70) + '" y="' + (val >= 0 ? y - 12 : y + h + 24) + '" text-anchor="middle" font-size="18" font-weight="800" fill="#f8fafc">' + (val >= 0 ? '+' : '') + val.toFixed(2) + '%</text><text x="' + (x + 70) + '" y="330" text-anchor="middle" font-size="14" fill="#cbd5e1">' + label + '</text>';
+    }
+    svgWrap('<text x="40" y="45" font-size="24" font-weight="800" fill="#f8fafc">Duration test</text><text x="40" y="72" font-size="14" fill="#9ca3af">Duration gives a quick estimate of price movement when interest rates change.</text><line x1="110" y1="210" x2="790" y2="210" stroke="rgba(255,255,255,.25)"/><text x="110" y="195" font-size="12" fill="#9ca3af">Price change = 0%</text>' + bar(260, estimateMove, '#a78bfa', 'Duration estimate') + bar(510, actualMove, '#38bdf8', 'Pricing formula') + '<rect x="70" y="92" width="760" height="58" rx="16" fill="rgba(255,255,255,.06)"/><text x="90" y="126" font-size="15" fill="#dbeafe">Market yield moves from ' + pct(s.marketYield) + ' to ' + pct(newYield) + '. Modified duration is about ' + s.duration.toFixed(2) + ' years.</text>');
+    explain.textContent = "Duration is an estimate, not a perfect rule. It is most useful for small rate changes. For large changes, the full bond-pricing formula is more accurate.";
+  }
+  function drawQuiz() {
+    chart.innerHTML = '<div style="padding:20px"><h2>Mini quiz: predict before checking</h2><p>Rahim issued an old bond with an 8% coupon. New similar bonds now pay 11%. What usually happens to the old bond price?</p><div class="quiz"><button class="choice" data-answer="wrong">The old bond price usually rises</button><button class="choice" data-answer="correct">The old bond price usually falls</button><button class="choice" data-answer="wrong">The old bond price must stay exactly 100</button></div><div class="answer" id="answer"></div></div>';
+    var answer = document.getElementById("answer");
+    Array.prototype.forEach.call(chart.querySelectorAll(".choice"), function (btn) {
+      btn.addEventListener("click", function () {
+        Array.prototype.forEach.call(chart.querySelectorAll(".choice"), function (b) { b.classList.remove("correct", "wrong"); });
+        if (btn.getAttribute("data-answer") === "correct") {
+          btn.classList.add("correct");
+          answer.textContent = "Correct. If new bonds pay 11%, Rahim's old 8% coupon is less attractive. The old bond usually needs a lower price so its yield can compete.";
+        } else {
+          btn.classList.add("wrong");
+          answer.textContent = "Not quite. A bond's coupon is fixed, but its market price can move. Higher new market rates usually push old fixed-coupon bond prices down.";
+        }
+      });
+    });
+    explain.textContent = "The quiz tests the most important beginner rule: rates up, old bond prices down. Rates down, old bond prices up.";
+  }
+  function redraw() {
+    var s = getState();
+    updateLabels(s); updateStats(s);
+    if (activeTab === "cash") drawCash(s);
+    if (activeTab === "yield") drawYield(s);
+    if (activeTab === "duration") drawDuration(s);
+    if (activeTab === "quiz") drawQuiz();
+  }
+  ids.forEach(function (id) { els[id].addEventListener("input", redraw); els[id].addEventListener("change", redraw); });
+  function setTab(tab) {
+    activeTab = tab;
+    ["Cash", "Yield", "Duration", "Quiz"].forEach(function (name) { document.getElementById("tab" + name).classList.remove("active"); });
+    document.getElementById("tab" + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add("active");
+    redraw();
+  }
+  document.getElementById("tabCash").addEventListener("click", function () { setTab("cash"); });
+  document.getElementById("tabYield").addEventListener("click", function () { setTab("yield"); });
+  document.getElementById("tabDuration").addEventListener("click", function () { setTab("duration"); });
+  document.getElementById("tabQuiz").addEventListener("click", function () { setTab("quiz"); });
+  redraw();
+})();
+</script>
+</body>
+</html>`;
+
+export const BondInteractiveLab = () => (
+  <iframe
+    title="Interactive bond calculator and chart lab"
+    srcDoc={BOND_INTERACTIVE_LAB_HTML}
+    sandbox="allow-scripts"
+    loading="lazy"
+    style={{ width: "100%", minHeight: "860px", border: "1px solid rgba(148,163,184,.35)", borderRadius: "24px", background: "#0b1220", margin: "2rem 0" }}
+  />
+);
+
+# Bonds for Complete Beginners
+
+Imagine your friend **Rahim** owns a small restaurant.
+
+One day Rahim says:
+
+> “I want to open a second branch, but I need **100,000 taka**. I do not want to sell part of my business. Can you lend me money? I will pay you interest every year, and after 5 years I will return your full money.”
+
+You agree.
+
+You give Rahim **100,000**.
+
+Rahim promises:
+
+```text
+Loan amount: 100,000
+Interest rate: 10% per year
+Time: 5 years
+Interest payment: 10,000 per year
+Principal repayment after 5 years: 100,000
+```
+
+This is the basic idea of a **bond**.
+
+A bond is a formal version of this loan. When you buy a bond, you are not buying ownership. You are lending money.
+
+<BondCashFlowTimeline />
+
+Before we go deeper, keep this simple sentence in your mind:
+
+> **A bond is a loan with a schedule.**
+
+The schedule says who borrowed the money, how much interest they will pay, when they will pay it, and when they will return the principal.
+
+This article is educational only. It is not personal financial advice.
+
+---
+
+## 1. What is a bond?
+
+A **bond** is a loan given by investors to an organization.
+
+The borrower can be a government, bank, company, corporation, or municipality.
+
+The lender is you, the investor.
+
+So when you buy a bond:
+
+```text
+You = lender
+Bond issuer = borrower
+Coupon = interest
+Maturity = loan ending date
+Face value = principal amount
+```
+
+Real-life example:
+
+```text
+You buy a government bond.
+The government borrows money from you.
+The government pays you interest.
+At maturity, the government returns your principal.
+```
+
+The easiest way to understand bonds is to compare them with normal loans.
+
+When a bank gives a home loan, the bank is the lender and the homeowner is the borrower.
+
+When you buy a bond, you are acting like the lender.
+
+The bond issuer is the borrower.
+
+---
+
+## 2. Rahim’s Restaurant Bond
+
+Rahim wants to raise money for his second restaurant.
+
+He creates a bond:
+
+```text
+Bond name: Rahim Restaurant Bond
+Face value: 1,000 per bond
+Coupon rate: 10%
+Maturity: 5 years
+```
+
+This means each bond has a principal value of **1,000**.
+
+You buy **100 bonds**.
+
+Math:
+
+```text
+Total investment = 100 bonds × 1,000
+                 = 100,000
+```
+
+Rahim pays 10% interest every year.
+
+```text
+Annual coupon income = 100,000 × 10%
+                     = 100,000 × 0.10
+                     = 10,000
+```
+
+So every year, you receive **10,000**.
+
+After 5 years, Rahim returns your original **100,000**.
+
+Your cash flow looks like this:
+
+```text
+Year 0: You pay 100,000
+Year 1: You receive 10,000 interest
+Year 2: You receive 10,000 interest
+Year 3: You receive 10,000 interest
+Year 4: You receive 10,000 interest
+Year 5: You receive 10,000 interest + 100,000 principal
+```
+
+Total received:
+
+```text
+Interest received = 10,000 × 5
+                  = 50,000
+
+Principal returned = 100,000
+
+Total received = 150,000
+```
+
+Your profit is:
+
+```text
+Profit = Total received - Original investment
+       = 150,000 - 100,000
+       = 50,000
+```
+
+That is how a simple bond works if you hold it until maturity and the issuer pays everything promised.
+
+<details>
+<summary><strong>Pause and predict:</strong> If Rahim pays 8% instead of 10%, how much interest do you receive per year on 100,000?</summary>
+
+```text
+Annual interest = 100,000 × 8%
+                = 100,000 × 0.08
+                = 8,000
+```
+
+You receive **8,000 per year**.
+
+</details>
+
+---
+
+## 3. Bond vs stock
+
+This is very important.
+
+When you buy a **stock**, you become part-owner of a company.
+
+When you buy a **bond**, you become a lender.
+
+```text
+Stock = ownership
+Bond = loan
+```
+
+If Rahim sells you shares of his restaurant, you own part of the restaurant.
+
+If Rahim sells you bonds, you do not own the restaurant. He simply owes you money.
+
+| Question | Stock investor | Bond investor |
+|---|---|---|
+| What do you own? | Part of the business | A promise to repay debt |
+| Main goal | Company growth and rising share price | Interest income and principal repayment |
+| Return source | Dividends and price gains | Coupon income and possible price gains |
+| Risk style | Usually higher | Usually lower than stocks, but not zero |
+| Best mental model | Business ownership | Lending money |
+
+A stock investor thinks:
+
+```text
+I hope the company grows and share price increases.
+```
+
+A bond investor thinks:
+
+```text
+I want regular interest and my principal back safely.
+```
+
+Stocks usually have higher risk and higher possible return.
+
+Bonds usually have lower risk and more predictable income.
+
+But “usually” is important. A weak company bond can be much riskier than a strong company stock. You always need to look at the issuer.
+
+---
+
+## 4. Main bond keywords
+
+Bond language feels difficult at first because finance uses special words for simple ideas. Let’s translate them.
+
+### Face value
+
+**Face value** is the principal amount of the bond.
+
+Example:
+
+```text
+Face value = 1,000
+```
+
+This means one bond has a principal value of 1,000.
+
+If you buy 50 bonds:
+
+```text
+Total face value = 50 × 1,000
+                 = 50,000
+```
+
+At maturity, you usually get back the face value if the issuer does not default.
+
+So if you hold until maturity:
+
+```text
+Principal repayment = 50,000
+```
+
+Real-life meaning:
+
+> Face value is the amount the borrower promises to repay at the end.
+
+---
+
+### Coupon rate
+
+**Coupon rate** is the interest rate of the bond.
+
+Example:
+
+```text
+Face value = 1,000
+Coupon rate = 8.50%
+```
+
+Interest per bond per year:
+
+```text
+Annual coupon = 1,000 × 8.50%
+              = 1,000 × 0.085
+              = 85
+```
+
+If you own 50 bonds:
+
+```text
+Annual coupon = 85 × 50
+              = 4,250
+```
+
+So coupon means **bond interest income**.
+
+Real-life meaning:
+
+> Coupon is like the rent your money earns while it is lent out.
+
+---
+
+### Maturity
+
+**Maturity** is the date when the bond ends.
+
+Example:
+
+```text
+Maturity = 15-Dec-2029
+```
+
+At maturity, the borrower returns the principal.
+
+If you own:
+
+```text
+50 bonds
+Face value = 1,000
+```
+
+Then at maturity:
+
+```text
+You receive = 50 × 1,000
+            = 50,000
+```
+
+Maturity is like the loan return date.
+
+A 1-year bond is a short loan.
+
+A 10-year bond is a long loan.
+
+Longer loans usually have more uncertainty.
+
+---
+
+### Issuer
+
+**Issuer** means the organization that borrows money by selling the bond.
+
+Examples:
+
+```text
+Government
+Bank
+Company
+Corporation
+Municipality
+```
+
+If the government issues a bond, it is a **government bond**.
+
+If a company issues a bond, it is a **corporate bond**.
+
+The issuer is important because the bond is only as strong as the borrower.
+
+Before buying any bond, ask:
+
+```text
+Who owes me the money?
+Can they really pay me back?
+```
+
+---
+
+## 5. Types of bonds
+
+### Government bonds
+
+A government bond is issued by the government.
+
+Examples:
+
+```text
+Bangladesh Government Treasury Bond
+US Treasury Bond
+```
+
+Government bonds are usually considered safer than corporate bonds because governments often have stronger ability to collect taxes, manage budgets, and support public debt.
+
+But safer does not mean risk-free.
+
+Government bonds can still have inflation risk, interest-rate risk, and currency risk.
+
+---
+
+### Corporate bonds
+
+A corporate bond is issued by a company.
+
+Examples:
+
+```text
+Bank bond
+Power company bond
+Telecom company bond
+Manufacturing company bond
+```
+
+Corporate bonds usually pay higher coupon than government bonds because companies are usually riskier than governments.
+
+Simple idea:
+
+```text
+More safety = lower return
+More risk = higher return
+```
+
+But a high coupon is not automatically good.
+
+A high coupon may be the market’s warning sign:
+
+> “This borrower is risky, so investors demand extra return.”
+
+---
+
+### Other beginner categories
+
+You may also hear these names:
+
+| Bond type | Simple meaning |
+|---|---|
+| Treasury bond | Bond issued by a national government |
+| Municipal bond | Bond issued by a city, state, or local government |
+| Investment-grade bond | Bond from a borrower considered relatively stronger |
+| High-yield bond | Bond from a riskier borrower; sometimes called junk bond |
+| Zero-coupon bond | Bond that pays no regular coupon but is sold at a discount |
+| Floating-rate bond | Coupon changes with a reference interest rate |
+
+For beginners, do not try to memorize every bond type on day one.
+
+Start with the main question:
+
+```text
+Who borrowed the money, how much will they pay, and when will they repay principal?
+```
+
+---
+
+## 6. How bond income works
+
+Suppose you buy this bond:
+
+```text
+Face value = 1,000
+Quantity = 20
+Coupon = 9.25%
+```
+
+First find total face value:
+
+```text
+Total face value = Face value × Quantity
+                 = 1,000 × 20
+                 = 20,000
+```
+
+Now calculate yearly coupon income:
+
+```text
+Annual coupon income = Total face value × Coupon rate
+                     = 20,000 × 9.25%
+                     = 20,000 × 0.0925
+                     = 1,850
+```
+
+So you earn **1,850 per year**.
+
+If coupon is paid twice per year:
+
+```text
+Each payment = 1,850 ÷ 2
+             = 925
+```
+
+If coupon is paid every 6 months, you receive **925 every 6 months**.
+
+The formula is:
+
+```text
+Annual coupon income = Face value × Quantity × Coupon rate
+```
+
+Example:
+
+```text
+1,000 × 20 × 9.25%
+= 1,850
+```
+
+<details>
+<summary><strong>Try it:</strong> You own 70 bonds. Each bond has face value 1,000 and coupon 7%. What is annual coupon income?</summary>
+
+```text
+Total face value = 70 × 1,000
+                 = 70,000
+
+Annual coupon income = 70,000 × 7%
+                     = 70,000 × 0.07
+                     = 4,900
+```
+
+You receive **4,900 per year**.
+
+</details>
+
+---
+
+## 7. Interactive Bond Lab
+
+Use this lab before continuing. It makes the formulas visible.
+
+Move the sliders and watch the values change.
+
+<BondInteractiveLab />
+
+What to notice:
+
+```text
+Higher coupon → higher annual income
+Higher quantity → higher total face value
+Clean price below 100 → bond trades at discount
+Clean price above 100 → bond trades at premium
+Higher market yield → lower model price
+Longer maturity → usually higher duration
+```
+
+This is the same logic used in bond dashboards, portfolio apps, and fixed-income trading screens. The professional version looks more complicated, but the beginner foundation is the same.
+
+---
+
+## 8. Bond price is not always 1,000
+
+Many beginners think:
+
+> “If face value is 1,000, bond price must always be 1,000.”
+
+Not true.
+
+Bond price changes in the market.
+
+A bond can trade at:
+
+```text
+Below face value
+At face value
+Above face value
+```
+
+Bond prices are often shown as a percentage of **100**.
+
+Example:
+
+```text
+Clean price = 98.75
+Face value = 1,000
+```
+
+This means:
+
+```text
+Market price = 98.75% of 1,000
+             = 0.9875 × 1,000
+             = 987.50
+```
+
+So one bond costs **987.50**, not 1,000.
+
+If clean price is 101.20:
+
+```text
+Market price = 101.20% of 1,000
+             = 1.0120 × 1,000
+             = 1,012
+```
+
+So the bond is trading above face value.
+
+The clean price quote is like a shortcut.
+
+```text
+98.75 means 98.75% of face value
+101.20 means 101.20% of face value
+```
+
+---
+
+## 9. Discount, par, and premium
+
+### Discount bond
+
+A bond trades at a **discount** when price is below 100.
+
+Example:
+
+```text
+Clean price = 98.75
+Face value = 1,000
+```
+
+Price:
+
+```text
+Price = 98.75% × 1,000
+      = 987.50
+```
+
+You pay **987.50** now, but at maturity you may receive **1,000**.
+
+That extra **12.50** is a capital gain if held to maturity and the issuer pays.
+
+Beginner meaning:
+
+> Discount bond = you buy the bond for less than the principal repayment amount.
+
+---
+
+### Par bond
+
+A bond trades at **par** when price is 100.
+
+Example:
+
+```text
+Clean price = 100.00
+Face value = 1,000
+Price = 1,000
+```
+
+You pay exactly face value.
+
+Beginner meaning:
+
+> Par bond = the bond price equals the principal amount.
+
+---
+
+### Premium bond
+
+A bond trades at a **premium** when price is above 100.
+
+Example:
+
+```text
+Clean price = 101.20
+Face value = 1,000
+```
+
+Price:
+
+```text
+Price = 101.20% × 1,000
+      = 1,012
+```
+
+You pay more than face value.
+
+Why would someone pay more?
+
+Because the coupon may be attractive compared with current market rates.
+
+Imagine old bond coupon is 12%, but new bonds only pay 8%. Investors may be willing to pay extra for the old higher coupon.
+
+---
+
+## 10. Clean price and dirty price
+
+This is one of the most confusing beginner topics.
+
+A bond has two prices:
+
+```text
+Clean price
+Dirty price
+```
+
+### Clean price
+
+Clean price is the quoted bond price without accrued interest.
+
+Example:
+
+```text
+Clean price = 98.75
+```
+
+This is the market quote.
+
+When people talk about bond price, they often mean clean price.
+
+---
+
+### Accrued interest
+
+Accrued interest is interest already earned since the last coupon date but not yet paid.
+
+Imagine Rahim’s bond pays interest every 6 months.
+
+```text
+Last coupon date = January 1
+Next coupon date = July 1
+You buy the bond = April 1
+```
+
+The seller held the bond from January 1 to April 1.
+
+So the seller earned about 3 months of interest.
+
+But the next coupon payment on July 1 will go to the new buyer.
+
+To be fair, the buyer pays the seller for the interest already earned.
+
+That unpaid earned interest is called **accrued interest**.
+
+---
+
+### Dirty price
+
+Dirty price is the actual price including accrued interest.
+
+Formula:
+
+```text
+Dirty price = Clean price + Accrued interest portion
+```
+
+Example:
+
+```text
+Clean price = 98.75
+Accrued interest portion = 2.12
+
+Dirty price = 98.75 + 2.12
+            = 100.87
+```
+
+So:
+
+```text
+Clean price = quoted price
+Dirty price = actual settlement price
+```
+
+For beginners, remember:
+
+```text
+You see clean price.
+You pay dirty price.
+```
+
+Real-life analogy:
+
+> Clean price is the menu price. Dirty price is the final bill after adding the earned interest that belongs to the seller.
+
+---
+
+## 11. Bond value calculation
+
+Suppose:
+
+```text
+Dirty price = 100.87
+Face value = 1,000
+Quantity = 50
+```
+
+First calculate total face value:
+
+```text
+Total face value = 1,000 × 50
+                 = 50,000
+```
+
+Now calculate dirty value:
+
+```text
+Dirty value = 100.87% × 50,000
+            = 1.0087 × 50,000
+            = 50,435
+```
+
+So the bond’s current value is **50,435**.
+
+This is why bond dashboards often use dirty value. It is closer to the actual settlement value.
+
+But your clean market value would be:
+
+```text
+Clean value = 98.75% × 50,000
+            = 0.9875 × 50,000
+            = 49,375
+```
+
+And accrued interest would explain the difference between clean value and dirty value.
+
+---
+
+## 12. Capital gain and capital loss in bonds
+
+A bond can make money in two ways:
+
+```text
+1. Coupon income
+2. Capital gain
+```
+
+Coupon income is interest.
+
+Capital gain is price profit.
+
+Example:
+
+```text
+You bought bond at 97.50
+Current clean price = 98.75
+```
+
+Gain:
+
+```text
+Price gain = 98.75 - 97.50
+           = 1.25
+```
+
+Because bond price is quoted per 100, this means **1.25%**.
+
+If total face value is 50,000:
+
+```text
+Capital gain = 1.25% × 50,000
+             = 0.0125 × 50,000
+             = 625
+```
+
+So your bond has a capital gain of **625**.
+
+If price falls below your purchase price, then you have a capital loss.
+
+Example:
+
+```text
+Bought at 100
+Current price = 97
+```
+
+Capital loss:
+
+```text
+Capital loss = 3% of face value
+```
+
+If face value is 50,000:
+
+```text
+Capital loss = 3% × 50,000
+             = 1,500
+```
+
+---
+
+## 13. Yield to maturity, or YTM
+
+**YTM** means **Yield to Maturity**.
+
+It is the expected yearly return if you hold the bond until maturity and all payments happen as promised.
+
+YTM considers:
+
+```text
+Coupon income
+Current price
+Face value repayment
+Time until maturity
+```
+
+Coupon rate and YTM are not the same.
+
+### Coupon rate
+
+Coupon rate is fixed.
+
+Example:
+
+```text
+Coupon = 8.50%
+```
+
+This tells how much interest the bond pays based on face value.
+
+### YTM
+
+YTM changes when bond price changes.
+
+Example:
+
+```text
+Coupon = 8.50%
+Bond price = 98.75
+YTM = around 8.6% to 9.0%, depending on maturity and payment timing
+```
+
+Why can YTM be higher than coupon?
+
+Because you buy below face value.
+
+You pay **987.50** for a bond that may return **1,000** at maturity. That extra gain increases your return.
+
+Simple rule:
+
+```text
+If bond price < 100, YTM is usually higher than coupon.
+If bond price = 100, YTM is close to coupon.
+If bond price > 100, YTM is usually lower than coupon.
+```
+
+Approximate YTM formula for beginners:
+
+```text
+Approx. YTM =
+Annual coupon + yearly gain/loss toward face value
+--------------------------------------------------
+Average of current price and face value
+```
+
+Example:
+
+```text
+Face value = 1,000
+Current price = 950
+Coupon = 80 per year
+Years to maturity = 5
+```
+
+Step 1: find yearly gain toward face value.
+
+```text
+Gain at maturity = 1,000 - 950
+                 = 50
+
+Yearly gain = 50 ÷ 5
+            = 10
+```
+
+Step 2: add annual coupon.
+
+```text
+Annual coupon + yearly gain = 80 + 10
+                            = 90
+```
+
+Step 3: divide by average price.
+
+```text
+Average price = (950 + 1,000) ÷ 2
+              = 975
+
+Approx. YTM = 90 ÷ 975
+            = 9.23%
+```
+
+So the bond pays an 8% coupon, but your approximate YTM is about **9.23%** because you bought it below face value.
+
+---
+
+## 14. Why bond price changes
+
+Bond price changes mainly because of interest rates and risk.
+
+### Interest-rate effect
+
+Suppose Rahim issued an old bond:
+
+```text
+Old bond coupon = 8%
+```
+
+Later, new bonds come to market:
+
+```text
+New bond coupon = 10%
+```
+
+Now investors prefer the new 10% bond.
+
+So the old 8% bond becomes less attractive.
+
+To sell the old 8% bond, its price must fall.
+
+That price fall makes its effective yield more attractive.
+
+Simple rule:
+
+```text
+Interest rates go up → old bond prices go down
+Interest rates go down → old bond prices go up
+```
+
+<BondPriceSeeSaw />
+
+### Credit-risk effect
+
+Bond prices also change if investors become more worried about the issuer.
+
+Example:
+
+Rahim’s restaurant sales are strong. People trust Rahim. His bond price may stay stable or rise.
+
+But if Rahim’s restaurant starts losing money, investors worry that Rahim may not pay. His bond price may fall.
+
+So bond prices move because of two big forces:
+
+```text
+Market interest rates
+Issuer safety
+```
+
+---
+
+## 15. Bond pricing formula, explained simply
+
+A bond is worth the present value of its future cash flows.
+
+That sounds complicated, so translate it:
+
+> A bond’s fair price is today’s value of all future coupons plus today’s value of the final principal repayment.
+
+Formula idea:
+
+```text
+Bond price = Present value of coupons + Present value of principal
+```
+
+Present value means future money adjusted back to today.
+
+If the required return is high, future money is worth less today.
+
+If the required return is low, future money is worth more today.
+
+Simple present value formula:
+
+```text
+Present value = Future cash flow ÷ (1 + market yield)^year
+```
+
+Example:
+
+```text
+Future cash flow = 10,000
+Market yield = 10%
+Year = 1
+
+Present value = 10,000 ÷ (1 + 0.10)^1
+              = 10,000 ÷ 1.10
+              = 9,090.91
+```
+
+Why is 10,000 next year worth only 9,090.91 today?
+
+Because if you invest 9,090.91 today at 10%, it becomes about 10,000 after one year.
+
+```text
+9,090.91 × 1.10 = 10,000
+```
+
+That is the heart of bond pricing.
+
+---
+
+## 16. Duration
+
+**Duration** measures how sensitive a bond is to interest-rate changes.
+
+Example:
+
+```text
+Modified duration = 2.8 years
+```
+
+Simple meaning:
+
+```text
+If interest rates rise by 1%, bond price may fall about 2.8%.
+If interest rates fall by 1%, bond price may rise about 2.8%.
+```
+
+Duration is not exactly maturity, but they are related.
+
+Longer maturity bonds usually have higher duration.
+
+Higher duration means higher interest-rate risk.
+
+Example:
+
+```text
+Short bond duration = less price movement
+Long bond duration = more price movement
+```
+
+Duration estimate formula:
+
+```text
+Approx. price change % = -Modified duration × Interest rate change
+```
+
+Example:
+
+```text
+Modified duration = 4
+Interest rates rise = 1%
+
+Approx. price change = -4 × 1%
+                     = -4%
+```
+
+If your bond value is 50,000:
+
+```text
+Estimated loss = 4% × 50,000
+               = 2,000
+```
+
+So the value may fall by about **2,000**.
+
+Beginner warning:
+
+> Duration is an estimate. It is most useful for small rate changes. It is not a perfect prediction.
+
+---
+
+## 17. Bond risks beginners should know
+
+Many beginners think bonds are completely safe.
+
+Bonds are usually safer than stocks, but they still have risks.
+
+<BondRiskMap />
+
+### Default risk
+
+Default risk means the issuer may fail to pay interest or principal.
+
+Example:
+
+```text
+Rahim’s restaurant business fails.
+Rahim cannot pay coupon.
+Rahim cannot return principal.
+```
+
+That is default risk.
+
+Government bonds usually have lower default risk than corporate bonds.
+
+Corporate bonds usually have higher default risk.
+
+But every issuer must be judged carefully.
+
+---
+
+### Interest-rate risk
+
+If market interest rates rise, your bond price may fall.
+
+Example:
+
+```text
+You hold 8% bond.
+Market offers new 10% bond.
+Your 8% bond becomes less attractive.
+Price falls.
+```
+
+This matters most if you sell before maturity.
+
+If you hold to maturity and the issuer does not default, you may still receive face value at the end.
+
+But your bond’s market value can move along the way.
+
+---
+
+### Liquidity risk
+
+Liquidity means how easily you can sell.
+
+If many buyers exist, the bond is liquid.
+
+If few buyers exist, the bond is illiquid.
+
+Illiquid bonds may be difficult to sell quickly at a good price.
+
+Real-life analogy:
+
+> A popular phone model is easy to resell. A rare item with few buyers may need a discount. Bonds can work the same way.
+
+---
+
+### Inflation risk
+
+Inflation reduces purchasing power.
+
+Example:
+
+```text
+Your bond pays 8%.
+Inflation is 10%.
+```
+
+Your simple real return idea:
+
+```text
+Real return ≈ Bond return - Inflation
+Real return ≈ 8% - 10%
+Real return ≈ -2%
+```
+
+You earned money, but your buying power decreased.
+
+Real-life example:
+
+If your coupon income buys 100 kg of rice today but only 90 kg next year, inflation has reduced your purchasing power.
+
+---
+
+### Reinvestment risk
+
+If your bond pays coupon, you may need to reinvest that coupon.
+
+If future rates are lower, you may not be able to reinvest at the same return.
+
+Example:
+
+```text
+Your bond pays 10%.
+Later market rate falls to 6%.
+Your coupon money can only be reinvested at 6%.
+```
+
+That is reinvestment risk.
+
+This is one reason YTM is an estimate. It often assumes coupons can be reinvested at the same yield, which may not happen in real life.
+
+---
+
+## 18. Why people buy bonds
+
+People buy bonds for several reasons.
+
+### Regular income
+
+Bonds can provide predictable coupon income.
+
+Example:
+
+```text
+You invest 100,000 in a 10% coupon bond.
+You may receive 10,000 per year.
+```
+
+This is useful for people who want cash flow.
+
+Examples:
+
+```text
+Retired person seeking income
+Investor balancing stock risk
+Institution matching future payments
+Business parking funds for a known date
+```
+
+---
+
+### Lower volatility than stocks
+
+Stock prices can move sharply.
+
+Bond prices usually move less, especially high-quality short-term bonds.
+
+So bonds can make a portfolio more stable.
+
+But this depends on bond quality and duration.
+
+A long-term risky corporate bond can still be volatile.
+
+---
+
+### Diversification
+
+If you own only stocks, your portfolio may be very risky.
+
+If you own both stocks and bonds, risk can be more balanced.
+
+Example:
+
+```text
+Equity = growth
+Bond = income/stability
+Cash = flexibility
+```
+
+Bonds are not meant to make every portfolio risk-free.
+
+They are meant to add a different return source and risk profile.
+
+---
+
+### Principal return at maturity
+
+If the issuer does not default, bonds return face value at maturity.
+
+This makes bonds easier to plan around than stocks.
+
+Example:
+
+```text
+Goal: pay university fee in 3 years
+Possible tool: high-quality bond maturing around that date
+```
+
+The maturity date can help match your investment with a future need.
+
+---
+
+## 19. How to read your bond dashboard
+
+A bond dashboard may show columns like:
+
+```text
+ISIN / Name
+Type
+Clean price
+Face value
+Coupon%
+Maturity
+Qty units
+Avg purchase
+Accrued int.
+Dirty value
+YTM%
+Coupon income
+Capital G/L
+Holding%
+```
+
+Let’s explain using one example.
+
+Suppose your bond row says:
+
+```text
+Bond: BD001GVT26
+Type: Treasury
+Clean price: 98.75
+Face value: 1,000
+Coupon: 8.50%
+Maturity: 15-Dec-2029
+Qty: 50
+Avg purchase: 97.50
+Accrued interest: 2,125
+Dirty value: 50,435
+YTM: 8.62%
+Coupon income: 4,250
+Capital G/L: +625
+```
+
+Meaning:
+
+You own 50 units of a government treasury bond.
+
+Each bond has face value 1,000.
+
+```text
+Total face value = 50 × 1,000
+                 = 50,000
+```
+
+The coupon is 8.50%.
+
+```text
+Annual coupon = 50,000 × 8.50%
+              = 4,250
+```
+
+You bought around 97.50.
+
+```text
+Purchase value = 97.50% × 50,000
+               = 48,750
+```
+
+Now clean price is 98.75.
+
+```text
+Current clean value = 98.75% × 50,000
+                    = 49,375
+```
+
+Capital gain:
+
+```text
+Capital gain = 49,375 - 48,750
+             = 625
+```
+
+Accrued interest is 2,125.
+
+So a simple dirty value estimate is:
+
+```text
+Dirty value = Clean value + Accrued interest
+            = 49,375 + 2,125
+            = 51,500
+```
+
+But your dashboard may use a dirty price of about 100.87:
+
+```text
+Dirty value = 100.87% × 50,000
+            = 50,435
+```
+
+The exact number can depend on settlement date, day-count convention, coupon schedule, rounding, taxes, and platform methodology.
+
+The beginner lesson is:
+
+```text
+Clean price shows market price.
+Accrued interest shows unpaid earned coupon.
+Dirty value shows a more realistic settlement value.
+```
+
+---
+
+## 20. A full real-life bond story
+
+Let’s continue Rahim’s story.
+
+Rahim opens his second restaurant. He issues 100 bonds.
+
+```text
+Total money Rahim wants = 100,000
+Face value per bond = 1,000
+Number of bonds = 100
+Coupon = 10%
+Maturity = 5 years
+```
+
+You buy all 100 bonds.
+
+Rahim receives:
+
+```text
+100 × 1,000 = 100,000
+```
+
+Every year Rahim pays:
+
+```text
+100,000 × 10% = 10,000
+```
+
+Now after 2 years, interest rates in the market change.
+
+New restaurant bonds now pay 12%.
+
+Your bond pays only 10%.
+
+A new investor says:
+
+> “Why should I buy your 10% bond when new bonds pay 12%?”
+
+So if you want to sell your bond before maturity, you may need to sell it at a lower price.
+
+Maybe your bond price falls to 95.
+
+That means:
+
+```text
+Market price = 95% of 100,000
+             = 95,000
+```
+
+If you sell now:
+
+```text
+Capital loss = 95,000 - 100,000
+             = -5,000
+```
+
+But if you do not sell and Rahim does not default, you still receive coupons and principal at maturity.
+
+Now imagine the opposite case.
+
+Market rates fall to 7%.
+
+Your bond pays 10%.
+
+Now your bond is attractive.
+
+People want your bond because it pays more than new bonds.
+
+Your bond price may rise to 106.
+
+```text
+Market price = 106% of 100,000
+             = 106,000
+```
+
+If you sell now:
+
+```text
+Capital gain = 106,000 - 100,000
+             = 6,000
+```
+
+So bond price moves even though coupon is fixed.
+
+The coupon stays 10%, but market value changes.
+
+---
+
+## 21. Bond return if held to maturity
+
+Suppose you buy a bond at face value:
+
+```text
+Investment = 100,000
+Coupon = 10%
+Maturity = 5 years
+```
+
+You receive:
+
+```text
+Yearly coupon = 10,000
+Total coupon over 5 years = 50,000
+Principal at maturity = 100,000
+```
+
+Total received:
+
+```text
+150,000
+```
+
+Profit:
+
+```text
+50,000
+```
+
+This is simple.
+
+Now suppose you buy the same bond at discount:
+
+```text
+Face value = 100,000
+Purchase price = 95,000
+Coupon = 10%
+Maturity = 5 years
+```
+
+Coupon is still based on face value:
+
+```text
+Annual coupon = 100,000 × 10%
+              = 10,000
+```
+
+At maturity you receive:
+
+```text
+Principal = 100,000
+```
+
+You paid only 95,000 but receive 100,000 at maturity.
+
+Extra capital gain:
+
+```text
+100,000 - 95,000 = 5,000
+```
+
+Total coupon:
+
+```text
+10,000 × 5 = 50,000
+```
+
+Total profit:
+
+```text
+Coupon profit + Capital gain
+= 50,000 + 5,000
+= 55,000
+```
+
+This is why buying below face value increases your yield.
+
+---
+
+## 22. Bond return if sold before maturity
+
+If you sell before maturity, your return depends on market price.
+
+Example:
+
+```text
+You bought bond for 100,000
+You received coupon for 2 years
+Coupon = 10,000 per year
+Total coupon received = 20,000
+You sell bond for 95,000
+```
+
+Total received:
+
+```text
+Coupon received + Sale price
+= 20,000 + 95,000
+= 115,000
+```
+
+Profit:
+
+```text
+115,000 - 100,000
+= 15,000
+```
+
+Even though you sold at a capital loss of 5,000, coupon income made total return positive.
+
+Now another example:
+
+```text
+You bought bond for 100,000
+You received coupon for 1 year = 10,000
+You sell bond for 85,000
+```
+
+Total received:
+
+```text
+10,000 + 85,000 = 95,000
+```
+
+Profit/loss:
+
+```text
+95,000 - 100,000 = -5,000
+```
+
+So selling early can create a loss if price falls too much.
+
+---
+
+## 23. Beginner mental model: bond as rental income
+
+Think of a bond like a rental property, but instead of rent, you receive coupon.
+
+Suppose you buy an apartment for 100,000 and rent it for 10,000 per year.
+
+```text
+Apartment price = 100,000
+Annual rent = 10,000
+Rental yield = 10%
+```
+
+Bond is similar:
+
+```text
+Bond face value = 100,000
+Annual coupon = 10,000
+Coupon rate = 10%
+```
+
+But there is one big difference.
+
+Apartment price can rise or fall.
+
+Bond price can also rise or fall.
+
+But if you hold a good bond until maturity, the issuer should return the face value.
+
+A rental property does not have a fixed maturity date when someone must buy it back from you at face value.
+
+That is why bond maturity is powerful for planning.
+
+---
+
+## 24. The most important formulas
+
+Here is your beginner formula sheet.
+
+### Total face value
+
+```text
+Total face value = Face value × Quantity
+```
+
+Example:
+
+```text
+1,000 × 50 = 50,000
+```
+
+Real-life meaning:
+
+> This is the total principal amount behind your bond position.
+
+---
+
+### Annual coupon income
+
+```text
+Annual coupon income = Total face value × Coupon rate
+```
+
+Example:
+
+```text
+50,000 × 8.50% = 4,250
+```
+
+Real-life meaning:
+
+> This is the interest income you expect in one year before taxes and fees.
+
+---
+
+### Coupon payment amount
+
+```text
+Each coupon payment = Annual coupon income ÷ Number of payments per year
+```
+
+Example:
+
+```text
+Annual coupon = 4,250
+Payments per year = 2
+
+Each payment = 4,250 ÷ 2
+             = 2,125
+```
+
+Real-life meaning:
+
+> If the bond pays every 6 months, you receive half the annual coupon each time.
+
+---
+
+### Clean market value
+
+```text
+Clean value = Clean price% × Total face value
+```
+
+Example:
+
+```text
+98.75% × 50,000 = 49,375
+```
+
+Real-life meaning:
+
+> This is the market value before accrued interest.
+
+---
+
+### Dirty value
+
+```text
+Dirty value = Dirty price% × Total face value
+```
+
+Example:
+
+```text
+100.87% × 50,000 = 50,435
+```
+
+Or:
+
+```text
+Dirty value = Clean value + Accrued interest
+```
+
+Real-life meaning:
+
+> This is closer to what changes hands at settlement.
+
+---
+
+### Capital gain/loss
+
+```text
+Capital G/L = Current clean value - Purchase value
+```
+
+Example:
+
+```text
+Current clean value = 49,375
+Purchase value = 48,750
+
+Capital G/L = 49,375 - 48,750
+            = 625
+```
+
+Real-life meaning:
+
+> This is your price profit or loss before considering coupons.
+
+---
+
+### Total bond gain
+
+```text
+Total bond gain = Coupon income + Capital gain/loss
+```
+
+Example:
+
+```text
+Coupon income = 4,250
+Capital gain = 625
+
+Total gain = 4,875
+```
+
+Real-life meaning:
+
+> This combines income and price movement.
+
+---
+
+### Real return approximation
+
+```text
+Real return ≈ Bond return - Inflation
+```
+
+Example:
+
+```text
+Bond return = 8%
+Inflation = 10%
+
+Real return ≈ -2%
+```
+
+Real-life meaning:
+
+> You may earn money but still lose buying power if inflation is higher.
+
+---
+
+### Duration estimate
+
+```text
+Approx. price change % = -Modified duration × Interest rate change
+```
+
+Example:
+
+```text
+Modified duration = 3
+Rates rise = 1%
+
+Approx. price change = -3 × 1%
+                     = -3%
+```
+
+Real-life meaning:
+
+> Duration helps estimate interest-rate risk.
+
+---
+
+## 25. Common beginner mistakes
+
+### Mistake 1: Thinking coupon equals total return
+
+Coupon is not always total return.
+
+Total return includes:
+
+```text
+Coupon income
+Capital gain/loss
+Accrued interest
+Taxes/fees if any
+```
+
+A bond with an 8% coupon can produce more or less than 8% depending on purchase price and sale price.
+
+---
+
+### Mistake 2: Thinking bonds cannot lose money
+
+Bonds can lose money if:
+
+```text
+You sell before maturity at a lower price
+Issuer defaults
+Inflation is higher than coupon
+Interest rates rise sharply
+Fees/taxes reduce return
+```
+
+Bonds are usually calmer than stocks, but not risk-free.
+
+---
+
+### Mistake 3: Ignoring maturity
+
+A 1-year bond and a 10-year bond are very different.
+
+Longer maturity usually means more price risk.
+
+If rates rise, the long bond usually moves more.
+
+---
+
+### Mistake 4: Ignoring issuer quality
+
+A high coupon may look attractive.
+
+But ask:
+
+```text
+Can the issuer really pay?
+Is the company strong?
+Is the government reliable?
+Why is the coupon high?
+```
+
+Higher coupon often means higher risk.
+
+---
+
+### Mistake 5: Confusing clean price and dirty price
+
+A beginner may see:
+
+```text
+Clean price = 98.75
+```
+
+And think that is the full amount paid.
+
+But actual settlement may include accrued interest.
+
+Remember:
+
+```text
+Clean price = quote
+Dirty price = quote + accrued interest
+```
+
+---
+
+## 26. Simple checklist before buying a bond
+
+Before buying a bond, ask:
+
+```text
+Who is the issuer?
+Is it government or corporate?
+What is the coupon rate?
+What is the maturity date?
+What is the current clean price?
+What is the dirty price or accrued interest?
+What is the YTM?
+How often does it pay coupon?
+Can I sell it easily?
+What happens if interest rates rise?
+What is the default risk?
+What is the inflation risk?
+Does this bond match my goal date?
+```
+
+For complete beginners, these five are most important:
+
+```text
+Issuer
+Coupon
+Maturity
+Price
+YTM
+```
+
+If you understand those five, most bond dashboards become less scary.
+
+---
+
+## 27. How to think like a careful bond investor
+
+A careful bond investor does not only ask:
+
+```text
+How much coupon will I get?
+```
+
+A careful bond investor asks:
+
+```text
+Who is paying me?
+When will I get my money back?
+What price am I paying today?
+What yield am I actually earning?
+What can go wrong?
+```
+
+This mindset protects you from chasing high coupons without understanding risk.
+
+A bond is a promise.
+
+Your job is to understand the promise and judge whether the borrower can keep it.
+
+---
+
+## 28. Final simple summary
+
+A bond is a loan.
+
+You give money to an issuer.
+
+The issuer pays you interest.
+
+At maturity, the issuer returns your principal.
+
+The main bond terms are:
+
+```text
+Face value = principal amount
+Coupon = interest rate
+Maturity = ending date
+Clean price = quoted market price
+Dirty price = price including accrued interest
+YTM = expected return if held to maturity
+Capital gain/loss = price profit or loss
+Duration = interest-rate sensitivity
+```
+
+The easiest formula:
+
+```text
+Annual coupon income = Face value × Quantity × Coupon%
+```
+
+Example:
+
+```text
+1,000 × 50 × 8.50%
+= 4,250
+```
+
+The easiest story:
+
+```text
+You lend Rahim 100,000.
+Rahim pays you 10,000 every year.
+After 5 years, Rahim returns 100,000.
+That is a bond.
+```
+
+The safest beginner mindset:
+
+```text
+Do not only look at high coupon.
+Look at issuer safety, maturity, price, YTM, duration, and risk.
+```
+
+Bonds are not magic.
+
+They are structured loans.
+
+Once you understand that, all bond terms become easier.
