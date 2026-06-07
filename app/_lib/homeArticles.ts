@@ -20,6 +20,7 @@ type RankedArticle = HomeArticle & {
 
 const AUTHOR_NAME = "Md Shahidul Islam";
 const AUTHOR_AVATAR = "/img/profile/profile_picture.png";
+const FEATURED_POST_SLUG = "bond-investing-for-beginners";
 
 const postImages: Record<string, string> = {
   "60-essential-candlestick-patterns-trading-guide-for-beginners": "/img/finance/trading-candles.png",
@@ -69,6 +70,8 @@ export function buildHomeArticles(posts: Post[]): HomeArticle[] {
       };
     })
     .sort((a, b) => {
+      if (a.slug === FEATURED_POST_SLUG && b.slug !== FEATURED_POST_SLUG) return -1;
+      if (b.slug === FEATURED_POST_SLUG && a.slug !== FEATURED_POST_SLUG) return 1;
       if (a.isDemo !== b.isDemo) return a.isDemo ? 1 : -1;
       if (b.detailScore !== a.detailScore) return b.detailScore - a.detailScore;
       return a.title.localeCompare(b.title);

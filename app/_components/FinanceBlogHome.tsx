@@ -47,10 +47,10 @@ const categories: Array<{ label: string; icon: IconName }> = [
 const AUTHOR_AVATAR = "/img/profile/profile_picture.png";
 
 const readerAvatars = [
-  AUTHOR_AVATAR,
-  "/img/profile/avatar-sm.png",
-  "/img/profile/avatar.png",
-  AUTHOR_AVATAR,
+  "/img/profile/readers/reader-1.svg",
+  "/img/profile/readers/reader-2.svg",
+  "/img/profile/readers/reader-3.svg",
+  "/img/profile/readers/reader-4.svg",
 ];
 
 const topics: Topic[] = [
@@ -196,11 +196,11 @@ function Hero({
             Chapter-wise Learning
           </Link>
           <div className="flex items-center gap-3 text-[14px] font-bold text-[#07101f]">
-            <span>Join 25,000+ readers</span>
+            <span>Join 10+ readers</span>
             <div className="flex -space-x-2">
-              {readerAvatars.map((avatar) => (
+              {readerAvatars.map((avatar, index) => (
                 <span key={avatar} className="h-8 w-8 overflow-hidden rounded-full border-2 border-white bg-[#e9f5ee]">
-                  <img src={avatar} alt="" className="h-full w-full object-cover" />
+                  <img src={avatar} alt={`Reader ${index + 1}`} className="h-full w-full object-cover" />
                 </span>
               ))}
               <span className="grid h-8 w-8 place-items-center rounded-full border-2 border-white bg-[#17a65a] text-[16px] font-bold leading-none text-white">
