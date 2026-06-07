@@ -2,19 +2,8 @@
 
 import { FormEvent, useMemo, useState } from "react";
 import Link from "next/link";
+import type { HomeArticle } from "../_lib/homeArticles";
 import { BookmarkButton } from "./BookmarkButton";
-
-type Article = {
-  title: string;
-  description: string;
-  href: string;
-  image: string;
-  author: string;
-  avatar: string;
-  date: string;
-  readTime: string;
-  category: string;
-};
 
 type Topic = {
   label: string;
@@ -41,6 +30,7 @@ type IconName =
 
 type FinanceBlogHomeProps = {
   query?: string;
+  articles?: HomeArticle[];
 };
 
 const categories: Array<{ label: string; icon: IconName }> = [
@@ -54,102 +44,13 @@ const categories: Array<{ label: string; icon: IconName }> = [
   { label: "More", icon: "more" },
 ];
 
+const AUTHOR_AVATAR = "/img/profile/profile_picture.png";
+
 const readerAvatars = [
-  "/img/finance/avatar-investor.png",
+  AUTHOR_AVATAR,
   "/img/profile/avatar-sm.png",
   "/img/profile/avatar.png",
-  "/img/profile/profile_picture.png",
-];
-
-const latestArticles: Article[] = [
-  {
-    title: "How to Build a Diversified Portfolio",
-    description: "A step-by-step guide to diversify your investments and manage risk effectively.",
-    href: "/blog/bond-investing-for-beginners",
-    image: "/img/finance/diversified-portfolio.png",
-    author: "Priya Sharma",
-    avatar: "/img/profile/avatar-sm.png",
-    date: "May 10, 2024",
-    readTime: "5 min read",
-    category: "Investing",
-  },
-  {
-    title: "Swing Trading Strategies That Work",
-    description: "Simple and proven swing trading strategies for consistent returns.",
-    href: "/learning/candlestick-reading-live-chart",
-    image: "/img/finance/trading-candles.png",
-    author: "Arjun Patel",
-    avatar: "/img/profile/avatar.png",
-    date: "May 8, 2024",
-    readTime: "7 min read",
-    category: "Trading",
-  },
-  {
-    title: "Emergency Fund: Why It's Your First Investment",
-    description: "Why an emergency fund is crucial and how to build one step by step.",
-    href: "/learning/personal-finance-budgeting",
-    image: "/img/finance/emergency-fund.png",
-    author: "Neha Verma",
-    avatar: "/img/profile/avatar-sm.png",
-    date: "May 6, 2024",
-    readTime: "4 min read",
-    category: "Personal Finance",
-  },
-  {
-    title: "Understanding Interest Rates and Their Impact",
-    description: "How interest rates influence markets, stocks, and the economy.",
-    href: "/blog/understanding-interest-rates",
-    image: "/img/finance/interest-rates.png",
-    author: "Vikram Iyer",
-    avatar: "/img/profile/avatar.png",
-    date: "May 4, 2024",
-    readTime: "6 min read",
-    category: "Economy",
-  },
-  {
-    title: "Crypto Investing for Beginners",
-    description: "Everything you need to know before investing in cryptocurrencies.",
-    href: "/blog/crypto-investing-for-beginners",
-    image: "/img/finance/crypto-bitcoin.png",
-    author: "Ananya Rao",
-    avatar: "/img/profile/avatar-sm.png",
-    date: "May 2, 2024",
-    readTime: "6 min read",
-    category: "Crypto",
-  },
-];
-
-const popularPosts = [
-  {
-    title: "Best Blue-Chip Stocks to Buy in 2024",
-    date: "May 1, 2024",
-    image: "/img/finance/bull-market.png",
-    href: "/blog/the-equation-that-beat-wall-street",
-  },
-  {
-    title: "Dollar Cost Averaging Explained",
-    date: "Apr 28, 2024",
-    image: "/img/finance/compounding.png",
-    href: "/learning/introduction-to-investing",
-  },
-  {
-    title: "How Inflation Affects Your Investments",
-    date: "Apr 25, 2024",
-    image: "/img/finance/interest-rates.png",
-    href: "/blog/understanding-interest-rates",
-  },
-  {
-    title: "VTI vs SPY: Which ETF Is Better?",
-    date: "Apr 22, 2024",
-    image: "/img/finance/etf-comparison.png",
-    href: "/blog/bond-investing-for-beginners",
-  },
-  {
-    title: "The Power of Compounding",
-    date: "Apr 20, 2024",
-    image: "/img/finance/compounding.png",
-    href: "/learning/basics-of-finance",
-  },
+  AUTHOR_AVATAR,
 ];
 
 const topics: Topic[] = [
@@ -186,14 +87,16 @@ const valueProps = [
   },
 ];
 
-export function FinanceBlogHome({ query }: FinanceBlogHomeProps) {
+export function FinanceBlogHome({ query, articles = [] }: FinanceBlogHomeProps) {
   const [activeCategory, setActiveCategory] = useState("All Articles");
   const [search, setSearch] = useState(query ?? "");
   const [subscribed, setSubscribed] = useState(false);
+  const featuredArticle = articles[0];
+  const articleRows = articles.slice(1);
 
   const visibleArticles = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();
-    return latestArticles.filter((article) => {
+    return articleRows.filter((article) => {
       const categoryMatch = activeCategory === "All Articles" || activeCategory === "More" || article.category === activeCategory;
       const searchMatch =
         !normalizedSearch ||
@@ -202,7 +105,7 @@ export function FinanceBlogHome({ query }: FinanceBlogHomeProps) {
         );
       return categoryMatch && searchMatch;
     });
-  }, [activeCategory, search]);
+  }, [activeCategory, articleRows, search]);
 
   function handleSubscribe(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -214,11 +117,11 @@ export function FinanceBlogHome({ query }: FinanceBlogHomeProps) {
       <Hero search={search} setSearch={setSearch} />
       <CategoryTabs activeCategory={activeCategory} setActiveCategory={setActiveCategory} />
 
-      <div className="mt-8 grid gap-7 lg:grid-cols-[minmax(0,1fr)_320px]">
+      <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
         <main className="min-w-0">
           <section>
             <h2 className="text-[18px] font-extrabold tracking-[-0.02em] text-[#07101f]">Featured Article</h2>
-            <FeaturedArticle />
+            {featuredArticle ? <FeaturedArticle article={featuredArticle} /> : <EmptyArticleState />}
           </section>
 
           <section id="latest-articles" className="mt-7">
@@ -245,7 +148,7 @@ export function FinanceBlogHome({ query }: FinanceBlogHomeProps) {
         </main>
 
         <aside className="space-y-5">
-          <PopularPosts />
+          <PopularPosts articles={articles.slice(0, 5)} />
           <SubscribeCard onSubmit={handleSubscribe} subscribed={subscribed} />
           <ExploreTopics />
         </aside>
@@ -268,10 +171,13 @@ function Hero({
     <section className="grid min-h-[340px] items-center gap-8 py-9 lg:grid-cols-[0.97fr_1.03fr] lg:py-11">
       <div>
         <p className="text-[12px] font-extrabold uppercase tracking-[0.12em] text-[#0f9650]">Finance Blog</p>
-        <h1 className="mt-4 max-w-[560px] text-[46px] font-extrabold leading-[1.08] tracking-[-0.055em] text-[#07101f] md:text-[54px]">
+        <h1 className="mt-4 max-w-[620px] text-[44px] font-extrabold leading-[1.08] tracking-[-0.055em] text-[#07101f] md:text-[50px]">
           Insights. Analysis.
           <br />
-          <span className="text-[#159b50]">Smarter</span> Decisions.
+          <span className="whitespace-nowrap">
+            <span className="text-[#159b50]">Smarter</span>{" "}
+            Decisions.
+          </span>
         </h1>
         <p className="mt-6 max-w-[510px] text-[16px] leading-7 text-[#263244]">
           Actionable insights on investing, trading, personal finance, and market trends to help you grow your wealth.
@@ -282,6 +188,12 @@ function Hero({
             className="inline-flex h-11 items-center justify-center rounded-[5px] bg-[#169b52] px-7 text-[14px] font-bold text-white shadow-[0_14px_24px_rgba(22,155,82,0.22)] transition hover:-translate-y-0.5 hover:bg-[#118746]"
           >
             Start Reading
+          </Link>
+          <Link
+            href="/learning"
+            className="inline-flex h-11 items-center justify-center rounded-[5px] border border-[#cfe3d8] bg-white px-6 text-[14px] font-bold text-[#0f8f49] shadow-sm transition hover:-translate-y-0.5 hover:border-[#9fd7b4] hover:bg-[#f4fbf7]"
+          >
+            Chapter-wise Learning
           </Link>
           <div className="flex items-center gap-3 text-[14px] font-bold text-[#07101f]">
             <span>Join 25,000+ readers</span>
@@ -330,7 +242,7 @@ function CategoryTabs({
   setActiveCategory: (category: string) => void;
 }) {
   return (
-    <div className="flex min-h-[57px] flex-wrap items-center gap-2 rounded-[9px] border border-[#e0e8e4] bg-white px-4 py-2 shadow-[0_8px_20px_rgba(15,23,42,0.035)]">
+    <div className="flex min-h-[57px] flex-nowrap items-center gap-1 overflow-x-auto rounded-[9px] border border-[#e0e8e4] bg-white px-4 py-2 shadow-[0_8px_20px_rgba(15,23,42,0.035)]">
       {categories.map((category) => {
         const active = activeCategory === category.label;
         return (
@@ -338,7 +250,7 @@ function CategoryTabs({
             key={category.label}
             type="button"
             onClick={() => setActiveCategory(category.label)}
-            className={`relative inline-flex h-10 items-center gap-2 rounded-[8px] px-3 text-[13px] font-semibold transition ${
+            className={`relative inline-flex h-10 shrink-0 items-center gap-2 rounded-[8px] px-2.5 text-[13px] font-semibold transition ${
               active ? "bg-[#edf9f2] text-[#0f8f49]" : "text-[#263244] hover:bg-[#f6faf8] hover:text-[#0f8f49]"
             }`}
           >
@@ -353,39 +265,47 @@ function CategoryTabs({
   );
 }
 
-function FeaturedArticle() {
+function FeaturedArticle({ article }: { article: HomeArticle }) {
   return (
-    <article className="mt-2 grid overflow-hidden rounded-[10px] border border-[#e1e8e4] bg-white p-3 shadow-[0_5px_18px_rgba(15,23,42,0.025)] md:grid-cols-[320px_minmax(0,1fr)]">
-      <Link href="/blog/the-equation-that-beat-wall-street" className="overflow-hidden rounded-[8px] bg-[#06140e]">
-        <img src="/img/finance/bull-market.png" alt="" className="h-full min-h-[210px] w-full object-cover" />
+    <article className="mt-2 grid overflow-hidden rounded-[10px] border border-[#e1e8e4] bg-white p-3 shadow-[0_5px_18px_rgba(15,23,42,0.025)] md:grid-cols-[292px_minmax(0,1fr)]">
+      <Link href={article.href} className="overflow-hidden rounded-[8px] bg-[#06140e]">
+        <img src={article.image} alt="" className="h-[210px] w-full object-cover" />
       </Link>
       <div className="flex min-w-0 flex-col justify-center px-5 py-4">
         <span className="w-fit rounded-full bg-[#dff7e8] px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.08em] text-[#169b52]">
           Featured
         </span>
         <Link
-          href="/blog/the-equation-that-beat-wall-street"
-          className="mt-4 max-w-[460px] text-[22px] font-extrabold leading-[1.25] tracking-[-0.025em] text-[#07101f] transition hover:text-[#13944b]"
+          href={article.href}
+          className="mt-4 max-w-[360px] text-[20px] font-extrabold leading-[1.25] tracking-[-0.025em] text-[#07101f] transition hover:text-[#13944b]"
         >
-          AI Revolution in Investing: Opportunities and Risks in 2024
+          {article.title}
         </Link>
         <p className="mt-3 max-w-[560px] text-[14px] leading-6 text-[#45556a]">
-          How artificial intelligence is transforming the investment landscape and what it means for your portfolio.
+          {article.description}
         </p>
         <div className="mt-5 flex items-center gap-3 text-[12px] text-[#66788a]">
-          <AuthorAvatar src="/img/finance/avatar-investor.png" />
+          <AuthorAvatar src={article.avatar} />
           <div>
-            <div className="font-bold text-[#1c2938]">Rahul Mehta</div>
-            <div>May 12, 2024 <span className="mx-2 text-[#a3b0bd]">•</span> 6 min read</div>
+            <div className="font-bold text-[#1c2938]">{article.author}</div>
+            <div>{article.date} <span className="mx-2 text-[#a3b0bd]">•</span> {article.readTime}</div>
           </div>
-          <BookmarkButton slug="ai-revolution-investing" className="ml-auto" />
+          <BookmarkButton slug={article.slug} className="ml-auto" />
         </div>
       </div>
     </article>
   );
 }
 
-function ArticleRow({ article }: { article: Article }) {
+function EmptyArticleState() {
+  return (
+    <div className="mt-2 rounded-[10px] border border-[#e1e8e4] bg-white px-5 py-8 text-center text-[14px] font-semibold text-[#64748b]">
+      No posts are available yet.
+    </div>
+  );
+}
+
+function ArticleRow({ article }: { article: HomeArticle }) {
   return (
     <article className="grid min-h-[130px] overflow-hidden rounded-[10px] border border-[#e2e9e5] bg-white p-0 shadow-[0_4px_14px_rgba(15,23,42,0.02)] md:grid-cols-[210px_minmax(0,1fr)]">
       <Link href={article.href} className="m-3 overflow-hidden rounded-[7px] bg-[#08140f]">
@@ -402,29 +322,29 @@ function ArticleRow({ article }: { article: Article }) {
           <span>{article.date}</span>
           <span className="text-[#a3b0bd]">•</span>
           <span>{article.readTime}</span>
-          <BookmarkButton slug={article.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")} className="ml-auto" />
+          <BookmarkButton slug={article.slug} className="ml-auto" />
         </div>
       </div>
     </article>
   );
 }
 
-function PopularPosts() {
+function PopularPosts({ articles }: { articles: HomeArticle[] }) {
   return (
     <section className="rounded-[10px] border border-[#e0e8e4] bg-white p-5 shadow-[0_5px_18px_rgba(15,23,42,0.025)]">
       <h2 className="text-[18px] font-extrabold tracking-[-0.02em] text-[#07101f]">Popular Posts</h2>
       <div className="mt-4 space-y-4">
-        {popularPosts.map((post) => (
-          <Link key={post.title} href={post.href} className="grid grid-cols-[20px_58px_minmax(0,1fr)] items-center gap-3 rounded-[8px] transition hover:bg-[#f7fbf8]">
+        {articles.map((article) => (
+          <Link key={article.slug} href={article.href} className="grid grid-cols-[20px_58px_minmax(0,1fr)] items-center gap-3 rounded-[8px] transition hover:bg-[#f7fbf8]">
             <span className="grid h-5 w-5 place-items-center rounded-full bg-[#e4f7eb] text-[#159b50]">
               <Icon name="regular" className="h-3.5 w-3.5" />
             </span>
             <span className="h-[58px] w-[58px] overflow-hidden rounded-[6px] bg-[#08140f]">
-              <img src={post.image} alt="" className="h-full w-full object-cover" loading="lazy" />
+              <img src={article.image} alt="" className="h-full w-full object-cover" loading="lazy" />
             </span>
             <span className="min-w-0">
-              <span className="line-clamp-2 block text-[13px] font-bold leading-5 text-[#07101f]">{post.title}</span>
-              <span className="mt-1 block text-[12px] text-[#738195]">{post.date}</span>
+              <span className="line-clamp-2 block text-[13px] font-bold leading-5 text-[#07101f]">{article.title}</span>
+              <span className="mt-1 block text-[12px] text-[#738195]">{article.date}</span>
             </span>
           </Link>
         ))}

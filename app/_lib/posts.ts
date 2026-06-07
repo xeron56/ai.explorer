@@ -7,6 +7,7 @@ export type Post = {
   formattedDate: string; category?: string; readingTime: number;
   cover?: string; cardClassName?: string; type: "post" | "note"; content: string;
   tags: string[]; pinned?: boolean; favorite?: boolean; accent?: string;
+  hideFromListings?: boolean;
   noteKind?: string; collection?: string; updated?: string; recentLabel?: string;
   liveCode?: string; liveOutput?: string;
 };
@@ -98,6 +99,7 @@ async function readDir(dir: string, type: "post" | "note"): Promise<Post[]> {
       tags: arrayValue(data.tags),
       pinned: boolValue(data.pinned),
       favorite: boolValue(data.favorite),
+      hideFromListings: boolValue(data.hideFromListings),
       accent: data.accent ? String(data.accent) : undefined,
       noteKind: data.noteKind ? String(data.noteKind) : undefined,
       collection: data.collection ? String(data.collection) : undefined,

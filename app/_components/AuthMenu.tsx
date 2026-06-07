@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "./AuthProvider";
 
+const PROFILE_PHOTO = "/img/profile/profile_picture.png";
+
 export function AuthMenu() {
   const { user, loading, signInWithGoogle, signOutUser, bookmarks, completed } = useAuth();
   const [open, setOpen] = useState(false);
@@ -45,7 +47,7 @@ export function AuthMenu() {
           className="flex h-9 items-center gap-2 rounded-md px-1.5 transition hover:bg-[#f3fbf6]"
         >
           <span className="relative grid h-8 w-8 place-items-center overflow-hidden rounded-full border border-[#dbe2df] bg-[#eaf5ef]">
-            <img src="/img/finance/avatar-investor.png" alt="" className="h-full w-full object-cover" />
+            <img src={PROFILE_PHOTO} alt="" className="h-full w-full object-cover" />
           </span>
           <ChevronDown />
         </button>
@@ -80,13 +82,6 @@ export function AuthMenu() {
   }
 
   const name = user.displayName ?? user.email ?? "Account";
-  const initials = name
-    .split(" ")
-    .map((p) => p[0])
-    .filter(Boolean)
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
 
   return (
     <div ref={ref} className="relative">
@@ -97,12 +92,7 @@ export function AuthMenu() {
         className="flex h-9 items-center gap-2 rounded-md px-1.5 transition hover:bg-[#f3fbf6]"
       >
         <span className="relative grid h-8 w-8 place-items-center overflow-hidden rounded-full border border-[#dbe2df] bg-[#eaf5ef] text-[12px] font-bold text-[#16a34a]">
-          {user.photoURL ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={user.photoURL} alt="" referrerPolicy="no-referrer" className="h-full w-full object-cover" />
-          ) : (
-            initials || "U"
-          )}
+          <img src={user.photoURL ?? PROFILE_PHOTO} alt="" referrerPolicy="no-referrer" className="h-full w-full object-cover" />
         </span>
         <ChevronDown />
       </button>

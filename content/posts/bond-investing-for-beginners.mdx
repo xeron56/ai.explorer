@@ -65,15 +65,15 @@ export const BondPriceSeeSaw = () => (
       </g>
 
       <g>
-        <rect x="110" y="107" width="210" height="70" rx="18" fill="#dbeafe" />
-        <text x="215" y="137" textAnchor="middle" fontSize="19" fontWeight="800" fill="#1d4ed8">Market rates ↓</text>
-        <text x="215" y="161" textAnchor="middle" fontSize="14" fill="#1e3a8a">Your old coupon looks better</text>
+        <rect x="110" y="107" width="210" height="70" rx="18" fill="#edf9f2" />
+        <text x="215" y="137" textAnchor="middle" fontSize="19" fontWeight="800" fill="#0f8f49">Market rates ↓</text>
+        <text x="215" y="161" textAnchor="middle" fontSize="14" fill="#14532d">Your old coupon looks better</text>
       </g>
 
       <g>
-        <rect x="580" y="220" width="210" height="70" rx="18" fill="#fef3c7" />
-        <text x="685" y="250" textAnchor="middle" fontSize="19" fontWeight="800" fill="#92400e">Old bond price ↑</text>
-        <text x="685" y="274" textAnchor="middle" fontSize="14" fill="#78350f">Investors may pay premium</text>
+        <rect x="580" y="220" width="210" height="70" rx="18" fill="#eef8f1" />
+        <text x="685" y="250" textAnchor="middle" fontSize="19" fontWeight="800" fill="#15803d">Old bond price ↑</text>
+        <text x="685" y="274" textAnchor="middle" fontSize="14" fill="#14532d">Investors may pay premium</text>
       </g>
 
       <text x="450" y="342" textAnchor="middle" fontSize="15" fill="currentColor" opacity=".78">Core rule: market interest rates and existing bond prices usually move in opposite directions.</text>
@@ -114,56 +114,61 @@ export const BOND_INTERACTIVE_LAB_HTML = String.raw`<!doctype html>
 <title>Bond Interactive Lab</title>
 <style>
   :root {
-    --bg: #0b1220;
-    --panel: #111827;
-    --panel-2: #172033;
-    --text: #e5e7eb;
-    --muted: #9ca3af;
-    --line: rgba(255,255,255,.12);
-    --accent: #38bdf8;
-    --good: #34d399;
-    --warn: #fbbf24;
-    --bad: #fb7185;
-    --purple: #a78bfa;
-    --white: #ffffff;
+    --bg: #f7fbf8;
+    --panel: #ffffff;
+    --panel-2: #f0fdf4;
+    --text: #07101f;
+    --muted: #526173;
+    --line: #dce8e1;
+    --accent: #169b52;
+    --good: #16a34a;
+    --warn: #d97706;
+    --bad: #dc2626;
+    --purple: #4d7c0f;
+    --white: #07101f;
   }
   * { box-sizing: border-box; }
-  html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-  body { padding: 18px; }
+  html, body { margin: 0; min-height: 100%; overflow: hidden; background: linear-gradient(180deg, #ffffff 0%, var(--bg) 100%); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+  body { padding: 14px; }
   .lab { max-width: 1180px; margin: 0 auto; }
-  .hero { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(280px, .65fr); gap: 16px; align-items: stretch; }
-  .card { background: linear-gradient(180deg, rgba(255,255,255,.075), rgba(255,255,255,.035)); border: 1px solid var(--line); border-radius: 22px; padding: 18px; box-shadow: 0 20px 45px rgba(0,0,0,.23); }
-  h1 { font-size: clamp(24px, 4vw, 40px); line-height: 1.02; margin: 0 0 10px; letter-spacing: -.04em; }
-  h2 { font-size: 19px; margin: 0 0 12px; letter-spacing: -.02em; }
+  .hero { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(280px, .65fr); gap: 14px; align-items: stretch; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px; box-shadow: 0 16px 34px rgba(15, 23, 42, .07); }
+  h1 { font-size: clamp(24px, 4vw, 38px); line-height: 1.05; margin: 0 0 10px; letter-spacing: -.04em; }
+  h2 { font-size: 18px; margin: 0 0 11px; letter-spacing: -.02em; }
   h3 { font-size: 15px; margin: 14px 0 8px; color: var(--white); }
   p { color: var(--muted); line-height: 1.55; margin: 0; }
-  .pill { display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(56,189,248,.3); color: #bae6fd; background: rgba(56,189,248,.08); border-radius: 999px; padding: 6px 10px; font-size: 12px; font-weight: 800; margin-bottom: 12px; }
-  .grid { display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: 16px; margin-top: 16px; }
-  .controls { display: grid; gap: 12px; }
-  label { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; color: #cbd5e1; margin-bottom: 6px; }
-  label b { color: #f8fafc; font-variant-numeric: tabular-nums; }
+  .pill { display: inline-flex; align-items: center; gap: 8px; border: 1px solid #bfe9cf; color: #0f8f49; background: #edf9f2; border-radius: 999px; padding: 6px 10px; font-size: 12px; font-weight: 800; margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: 290px minmax(0, 1fr); grid-template-areas: "controls summary" "visual visual"; gap: 14px; margin-top: 14px; align-items: start; }
+  .controls { display: grid; gap: 10px; }
+  .controls { grid-area: controls; }
+  .summary { grid-area: summary; }
+  .visual-panel { grid-area: visual; }
+  label { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; color: #425466; margin-bottom: 6px; }
+  label b { color: #07101f; font-variant-numeric: tabular-nums; }
   input[type="range"] { width: 100%; accent-color: var(--accent); }
   .selectrow { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  select, input[type="number"] { width: 100%; background: rgba(0,0,0,.24); color: var(--text); border: 1px solid var(--line); border-radius: 12px; padding: 9px 10px; outline: none; }
-  .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
-  .stat { min-height: 78px; padding: 12px; border-radius: 16px; background: rgba(0,0,0,.2); border: 1px solid var(--line); }
-  .stat span { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 6px; }
-  .stat strong { display: block; font-size: 22px; letter-spacing: -.03em; font-variant-numeric: tabular-nums; color: #f8fafc; }
+  select, input[type="number"] { width: 100%; background: #ffffff; color: var(--text); border: 1px solid var(--line); border-radius: 10px; padding: 9px 10px; outline: none; }
+  select:focus, input[type="number"]:focus, input[type="range"]:focus-visible, button:focus-visible { border-color: #75d49c; box-shadow: 0 0 0 4px #c7f1d6; outline: none; }
+  .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .stat { min-height: 70px; padding: 10px; border-radius: 12px; background: #f8fbf9; border: 1px solid var(--line); }
+  .stat span { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 6px; }
+  .stat strong { display: block; font-size: 19px; letter-spacing: -.03em; font-variant-numeric: tabular-nums; color: #07101f; }
   .stat.good strong { color: var(--good); }
   .stat.bad strong { color: var(--bad); }
-  .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
-  button { border: 1px solid var(--line); background: rgba(255,255,255,.06); color: var(--text); border-radius: 999px; padding: 9px 12px; font-weight: 800; cursor: pointer; }
-  button.active { background: rgba(56,189,248,.18); border-color: rgba(56,189,248,.5); color: #e0f2fe; }
-  .chart { width: 100%; min-height: 360px; border-radius: 18px; background: rgba(0,0,0,.16); border: 1px solid var(--line); overflow: hidden; }
-  svg { width: 100%; height: 100%; min-height: 360px; display: block; }
-  .formula { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; background: rgba(0,0,0,.22); border: 1px solid var(--line); border-radius: 14px; padding: 12px; color: #dbeafe; font-size: 13px; line-height: 1.55; white-space: pre-wrap; }
-  .note { margin-top: 12px; padding: 12px; border-radius: 16px; background: rgba(16,185,129,.08); border: 1px solid rgba(52,211,153,.22); color: #d1fae5; font-size: 13px; line-height: 1.5; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
+  button { border: 1px solid var(--line); background: #ffffff; color: var(--text); border-radius: 999px; padding: 9px 12px; font-weight: 800; cursor: pointer; }
+  button:hover { border-color: #9fd7b4; color: #0f8f49; background: #f4fbf7; }
+  button.active { background: #169b52; border-color: #169b52; color: #ffffff; }
+  .chart { width: 100%; min-height: 430px; border-radius: 14px; background: #fbfefc; border: 1px solid var(--line); overflow: hidden; }
+  svg { width: 100%; height: 100%; min-height: 430px; display: block; }
+  .formula { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; background: #f8fbf9; border: 1px solid var(--line); border-radius: 12px; padding: 12px; color: #14532d; font-size: 13px; line-height: 1.55; white-space: pre-wrap; }
+  .note { margin-top: 12px; padding: 12px; border-radius: 12px; background: #edf9f2; border: 1px solid #cfeada; color: #264135; font-size: 13px; line-height: 1.5; }
   .quiz { display: grid; gap: 8px; }
   .choice { width: 100%; text-align: left; border-radius: 14px; padding: 12px; }
-  .choice.correct { border-color: rgba(52,211,153,.6); background: rgba(52,211,153,.14); }
-  .choice.wrong { border-color: rgba(251,113,133,.6); background: rgba(251,113,133,.12); }
-  .answer { color: #f8fafc; margin-top: 10px; min-height: 42px; line-height: 1.45; }
-  @media (max-width: 900px) { .hero, .grid { grid-template-columns: 1fr; } .stats { grid-template-columns: 1fr 1fr; } }
+  .choice.correct { border-color: #86efac; background: #f0fdf4; }
+  .choice.wrong { border-color: #fecaca; background: #fef2f2; }
+  .answer { color: #07101f; margin-top: 10px; min-height: 42px; line-height: 1.45; }
+  @media (max-width: 640px) { .hero { grid-template-columns: 1fr; } .grid { grid-template-columns: 1fr; grid-template-areas: "controls" "summary" "visual"; } .stats { grid-template-columns: 1fr 1fr; } }
   @media (max-width: 560px) { body { padding: 10px; } .stats { grid-template-columns: 1fr; } .selectrow { grid-template-columns: 1fr; } .card { padding: 14px; border-radius: 18px; } }
 </style>
 </head>
@@ -172,8 +177,8 @@ export const BOND_INTERACTIVE_LAB_HTML = String.raw`<!doctype html>
   <section class="hero">
     <div class="card">
       <div class="pill">Interactive Bond Lab</div>
-      <h1>Move the sliders. Watch the bond change.</h1>
-      <p>This lab turns the article formulas into touchable examples. Change coupon, price, maturity, and market yield to see coupon income, clean value, dirty value, approximate YTM, and interest-rate sensitivity.</p>
+      <h1>Adjust the bond and see the numbers update.</h1>
+      <p>Use the controls like a simple bond worksheet. Change coupon, price, maturity, and market yield to see coupon income, clean value, dirty value, approximate YTM, and interest-rate sensitivity.</p>
     </div>
     <div class="card">
       <h2>Beginner mental model</h2>
@@ -236,7 +241,7 @@ YTM = estimated annual return if held to maturity</div>
       </div>
     </aside>
 
-    <main class="card">
+    <main class="card summary">
       <div class="stats">
         <div class="stat"><span>Total face value</span><strong id="totalFace">Tk 50,000</strong></div>
         <div class="stat good"><span>Annual coupon income</span><strong id="annualCoupon">Tk 4,250</strong></div>
@@ -255,10 +260,12 @@ YTM = estimated annual return if held to maturity</div>
         <button id="tabDuration" type="button">Duration test</button>
         <button id="tabQuiz" type="button">Mini quiz</button>
       </div>
+    </main>
 
+    <section class="card visual-panel">
       <div class="chart" id="chart"></div>
       <div class="note" id="explain">A coupon bond has repeated interest payments plus principal repayment at the end. The final year is usually the biggest cash flow because it includes the last coupon and the principal.</div>
-    </main>
+    </section>
   </section>
 </div>
 
@@ -353,11 +360,11 @@ YTM = estimated annual return if held to maturity</div>
       var h = Math.max(8, cf / maxCash * 235);
       var x = 80 + (i - 1) * (760 / Math.max(1, s.years));
       var w = Math.min(46, 620 / Math.max(1, s.years));
-      bars += '<rect x="' + x + '" y="' + (315 - h) + '" width="' + w + '" height="' + h + '" rx="8" fill="' + (i === s.years ? '#34d399' : '#38bdf8') + '" opacity=".9" />';
-      bars += '<text x="' + (x + w / 2) + '" y="340" text-anchor="middle" font-size="12" fill="#cbd5e1">Y' + i + '</text>';
-      bars += '<text x="' + (x + w / 2) + '" y="' + (300 - h) + '" text-anchor="middle" font-size="11" fill="#f8fafc">' + (cf >= 100000 ? Math.round(cf / 1000) + 'k' : Math.round(cf).toLocaleString('en-US')) + '</text>';
+      bars += '<rect x="' + x + '" y="' + (315 - h) + '" width="' + w + '" height="' + h + '" rx="8" fill="' + (i === s.years ? '#16a34a' : '#7bd69a') + '" opacity=".95" />';
+      bars += '<text x="' + (x + w / 2) + '" y="340" text-anchor="middle" font-size="12" fill="#526173">Y' + i + '</text>';
+      bars += '<text x="' + (x + w / 2) + '" y="' + (300 - h) + '" text-anchor="middle" font-size="11" font-weight="800" fill="#07101f">' + (cf >= 100000 ? Math.round(cf / 1000) + 'k' : Math.round(cf).toLocaleString('en-US')) + '</text>';
     }
-    svgWrap('<text x="40" y="45" font-size="24" font-weight="800" fill="#f8fafc">Cash-flow chart</text><text x="40" y="72" font-size="14" fill="#9ca3af">Each bar is money you receive. The last bar includes principal repayment.</text><line x1="55" y1="315" x2="850" y2="315" stroke="rgba(255,255,255,.25)" />' + bars + '<rect x="620" y="38" width="230" height="70" rx="16" fill="rgba(255,255,255,.06)"/><circle cx="645" cy="64" r="7" fill="#38bdf8"/><text x="660" y="69" font-size="13" fill="#cbd5e1">Coupon payments</text><circle cx="645" cy="91" r="7" fill="#34d399"/><text x="660" y="96" font-size="13" fill="#cbd5e1">Final coupon + principal</text>');
+    svgWrap('<rect width="900" height="390" fill="#fbfefc"/><text x="40" y="45" font-size="24" font-weight="800" fill="#07101f">Cash-flow chart</text><text x="40" y="72" font-size="14" fill="#526173">Each bar is money you receive. The last bar includes principal repayment.</text><line x1="55" y1="315" x2="850" y2="315" stroke="#dce8e1" />' + bars + '<rect x="620" y="38" width="230" height="70" rx="16" fill="#f0fdf4" stroke="#cfeada"/><circle cx="645" cy="64" r="7" fill="#7bd69a"/><text x="660" y="69" font-size="13" fill="#425466">Coupon payments</text><circle cx="645" cy="91" r="7" fill="#16a34a"/><text x="660" y="96" font-size="13" fill="#425466">Final coupon + principal</text>');
     explain.textContent = "A normal coupon bond pays repeated interest. At maturity, the final cash flow is larger because it includes the last coupon plus the original principal.";
   }
   function drawYield(s) {
@@ -375,7 +382,7 @@ YTM = estimated annual return if held to maturity</div>
     var d = points.map(function (pt, i) { return (i === 0 ? 'M' : 'L') + X(pt.y).toFixed(1) + ' ' + Y(pt.p).toFixed(1); }).join(' ');
     var myX = X(Math.max(1, Math.min(20, s.marketYield)));
     var myY = Y(s.modelPrice);
-    svgWrap('<text x="40" y="45" font-size="24" font-weight="800" fill="#f8fafc">Price vs market yield</text><text x="40" y="72" font-size="14" fill="#9ca3af">Same coupon, same maturity. Only the market yield changes.</text><line x1="70" y1="320" x2="830" y2="320" stroke="rgba(255,255,255,.25)"/><line x1="70" y1="80" x2="70" y2="320" stroke="rgba(255,255,255,.25)"/><path d="' + d + '" fill="none" stroke="#38bdf8" stroke-width="5" stroke-linecap="round"/><line x1="' + myX + '" y1="80" x2="' + myX + '" y2="320" stroke="#fbbf24" stroke-dasharray="8 8"/><circle cx="' + myX + '" cy="' + myY + '" r="8" fill="#fbbf24"/><text x="' + (myX + 12) + '" y="' + (myY - 12) + '" font-size="13" fill="#fef3c7">Yield ' + pct(s.marketYield) + ', price ' + s.modelPrice.toFixed(2) + '</text><text x="70" y="350" font-size="12" fill="#9ca3af">1% yield</text><text x="775" y="350" font-size="12" fill="#9ca3af">20% yield</text><text x="18" y="90" font-size="12" fill="#9ca3af">High price</text><text x="18" y="318" font-size="12" fill="#9ca3af">Low price</text>');
+    svgWrap('<rect width="900" height="390" fill="#fbfefc"/><text x="40" y="45" font-size="24" font-weight="800" fill="#07101f">Price vs market yield</text><text x="40" y="72" font-size="14" fill="#526173">Same coupon, same maturity. Only the market yield changes.</text><line x1="70" y1="320" x2="830" y2="320" stroke="#dce8e1"/><line x1="70" y1="80" x2="70" y2="320" stroke="#dce8e1"/><path d="' + d + '" fill="none" stroke="#169b52" stroke-width="5" stroke-linecap="round"/><line x1="' + myX + '" y1="80" x2="' + myX + '" y2="320" stroke="#d97706" stroke-dasharray="8 8"/><circle cx="' + myX + '" cy="' + myY + '" r="8" fill="#d97706"/><text x="' + (myX + 12) + '" y="' + (myY - 12) + '" font-size="13" font-weight="800" fill="#92400e">Yield ' + pct(s.marketYield) + ', price ' + s.modelPrice.toFixed(2) + '</text><text x="70" y="350" font-size="12" fill="#526173">1% yield</text><text x="775" y="350" font-size="12" fill="#526173">20% yield</text><text x="18" y="90" font-size="12" fill="#526173">High price</text><text x="18" y="318" font-size="12" fill="#526173">Low price</text>');
     explain.textContent = "This curve slopes downward because a higher market yield discounts future cash flows more heavily. That usually means a lower bond price.";
   }
   function drawDuration(s) {
@@ -389,9 +396,9 @@ YTM = estimated annual return if held to maturity</div>
       var scale = 12;
       var h = Math.min(130, Math.abs(val) * scale);
       var y = val >= 0 ? base - h : base;
-      return '<rect x="' + x + '" y="' + y + '" width="140" height="' + h + '" rx="14" fill="' + color + '"/><text x="' + (x + 70) + '" y="' + (val >= 0 ? y - 12 : y + h + 24) + '" text-anchor="middle" font-size="18" font-weight="800" fill="#f8fafc">' + (val >= 0 ? '+' : '') + val.toFixed(2) + '%</text><text x="' + (x + 70) + '" y="330" text-anchor="middle" font-size="14" fill="#cbd5e1">' + label + '</text>';
+      return '<rect x="' + x + '" y="' + y + '" width="140" height="' + h + '" rx="14" fill="' + color + '"/><text x="' + (x + 70) + '" y="' + (val >= 0 ? y - 12 : y + h + 24) + '" text-anchor="middle" font-size="18" font-weight="800" fill="#07101f">' + (val >= 0 ? '+' : '') + val.toFixed(2) + '%</text><text x="' + (x + 70) + '" y="330" text-anchor="middle" font-size="14" fill="#526173">' + label + '</text>';
     }
-    svgWrap('<text x="40" y="45" font-size="24" font-weight="800" fill="#f8fafc">Duration test</text><text x="40" y="72" font-size="14" fill="#9ca3af">Duration gives a quick estimate of price movement when interest rates change.</text><line x1="110" y1="210" x2="790" y2="210" stroke="rgba(255,255,255,.25)"/><text x="110" y="195" font-size="12" fill="#9ca3af">Price change = 0%</text>' + bar(260, estimateMove, '#a78bfa', 'Duration estimate') + bar(510, actualMove, '#38bdf8', 'Pricing formula') + '<rect x="70" y="92" width="760" height="58" rx="16" fill="rgba(255,255,255,.06)"/><text x="90" y="126" font-size="15" fill="#dbeafe">Market yield moves from ' + pct(s.marketYield) + ' to ' + pct(newYield) + '. Modified duration is about ' + s.duration.toFixed(2) + ' years.</text>');
+    svgWrap('<rect width="900" height="390" fill="#fbfefc"/><text x="40" y="45" font-size="24" font-weight="800" fill="#07101f">Duration test</text><text x="40" y="72" font-size="14" fill="#526173">Duration gives a quick estimate of price movement when interest rates change.</text><line x1="110" y1="210" x2="790" y2="210" stroke="#dce8e1"/><text x="110" y="195" font-size="12" fill="#526173">Price change = 0%</text>' + bar(260, estimateMove, '#84cc16', 'Duration estimate') + bar(510, actualMove, '#169b52', 'Pricing formula') + '<rect x="70" y="92" width="760" height="58" rx="16" fill="#f0fdf4" stroke="#cfeada"/><text x="90" y="126" font-size="15" fill="#14532d">Market yield moves from ' + pct(s.marketYield) + ' to ' + pct(newYield) + '. Modified duration is about ' + s.duration.toFixed(2) + ' years.</text>');
     explain.textContent = "Duration is an estimate, not a perfect rule. It is most useful for small rate changes. For large changes, the full bond-pricing formula is more accurate.";
   }
   function drawQuiz() {
@@ -442,7 +449,17 @@ export const BondInteractiveLab = () => (
     srcDoc={BOND_INTERACTIVE_LAB_HTML}
     sandbox="allow-scripts"
     loading="lazy"
-    style={{ width: "100%", minHeight: "860px", border: "1px solid rgba(148,163,184,.35)", borderRadius: "24px", background: "#0b1220", margin: "2rem 0" }}
+    scrolling="no"
+    style={{
+      width: "100%",
+      height: "1530px",
+      border: "1px solid #dce8e1",
+      borderRadius: "18px",
+      background: "#f7fbf8",
+      margin: "2rem 0",
+      overflow: "hidden",
+      boxShadow: "0 18px 42px rgba(15, 23, 42, .08)",
+    }}
   />
 );
 
@@ -932,7 +949,7 @@ You receive **4,900 per year**.
 
 Use this lab before continuing. It makes the formulas visible.
 
-Move the sliders and watch the values change.
+Adjust the controls and watch the values update.
 
 <BondInteractiveLab />
 
