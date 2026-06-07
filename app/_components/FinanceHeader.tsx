@@ -14,15 +14,15 @@ const navItems = [
 export function FinanceHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-[#e6ebe8] bg-white/95 backdrop-blur-xl">
-      <div className="mx-auto flex h-[58px] max-w-[1160px] items-center gap-4 px-4 md:px-6">
+      <div className="mx-auto flex h-[72px] max-w-[1160px] items-center gap-4 px-4 md:px-6">
         <Link href="/" className="flex shrink-0 items-center gap-3 text-[#102117]">
-          <span className="grid h-8 w-8 place-items-center rounded-md bg-[#e9f8ee] text-[#16a34a]">
+          <span className="grid h-8 w-8 place-items-center text-[#16a34a]">
             <LogoMark />
           </span>
-          <span className="text-[18px] font-extrabold">Stock&amp;Trade</span>
+          <span className="text-[20px] font-extrabold tracking-[-0.03em]">Stock&amp;Trade</span>
         </Link>
 
-        <nav className="ml-5 hidden items-center gap-7 lg:flex">
+        <nav className="ml-6 hidden items-center gap-8 lg:flex">
           {navItems.map((item) => (
             <Link
               key={item.label}
@@ -32,7 +32,7 @@ export function FinanceHeader() {
               }`}
             >
               {item.label}
-              {item.active && <span className="absolute -bottom-[20px] left-0 h-[2px] w-full rounded-full bg-[#22a35f]" />}
+              {item.active && <span className="absolute -bottom-[26px] left-0 h-[2px] w-full rounded-full bg-[#22a35f]" />}
             </Link>
           ))}
         </nav>
@@ -44,7 +44,7 @@ export function FinanceHeader() {
               type="search"
               name="q"
               placeholder="Search blog..."
-              className="h-9 w-full rounded-md border border-[#dbe2df] bg-[#fbfcfb] pl-9 pr-3 text-[13px] text-[#17212c] outline-none transition focus:border-[#75d49c] focus:ring-4 focus:ring-[#c7f1d6]"
+              className="h-9 w-full rounded-[6px] border border-[#dbe2df] bg-[#fbfcfb] pl-9 pr-3 text-[13px] text-[#17212c] outline-none transition focus:border-[#75d49c] focus:ring-4 focus:ring-[#c7f1d6]"
             />
           </label>
         </form>
@@ -52,7 +52,7 @@ export function FinanceHeader() {
         <div className="flex items-center gap-2 md:gap-3">
           <button
             aria-label="Notifications"
-            className="grid h-9 w-9 place-items-center rounded-md text-[#385166]"
+            className="grid h-9 w-9 place-items-center rounded-md text-[#25384f] transition hover:bg-[#f4f8f6]"
           >
             <BellIcon />
           </button>

@@ -1,183 +1,253 @@
+"use client";
+
+import { FormEvent, useMemo, useState } from "react";
 import Link from "next/link";
 import { BookmarkButton } from "./BookmarkButton";
-import {
-  getAllPosts,
-  getLearningChapters,
-  getLearningSeriesBySlug,
-  type LearningChapter,
-  type Post,
-} from "../_lib/posts";
 
-const toolbarItems = [
-  "All Content",
-  "Tutorials",
-  "Guides",
-  "Concepts",
-  "Case Studies",
-  "Glossary",
-  "Books",
-  "More",
-];
-
-const valueProps = [
-  {
-    title: "Structured Learning",
-    description: "Chapter-wise tutorials for easy understanding.",
-    icon: "book",
-  },
-  {
-    title: "Practical Examples",
-    description: "Real-life examples and case studies.",
-    icon: "briefcase",
-  },
-  {
-    title: "Expert Insights",
-    description: "Learn from experienced finance professionals.",
-    icon: "people",
-  },
-  {
-    title: "Regular Updates",
-    description: "New content added every week.",
-    icon: "check",
-  },
-];
-
-const postImages: Record<string, string> = {
-  "understanding-transformer-attention": "/img/finance/bull-market.png",
-  "how-layernorm-stabilizes-transformers": "/img/finance/diversified-portfolio.png",
-  "gentle-intro-to-diffusion-models": "/img/finance/trading-candles.png",
-  "why-self-supervised-learning-works": "/img/finance/emergency-fund.png",
-  "understanding-interest-rates": "/img/finance/interest-rates.png",
-  "crypto-investing-for-beginners": "/img/finance/crypto-bitcoin.png",
+type Article = {
+  title: string;
+  description: string;
+  href: string;
+  image: string;
+  author: string;
+  avatar: string;
+  date: string;
+  readTime: string;
+  category: string;
 };
 
-const fallbackImages = [
-  "/img/finance/bull-market.png",
-  "/img/finance/diversified-portfolio.png",
-  "/img/finance/trading-candles.png",
-  "/img/finance/emergency-fund.png",
-  "/img/finance/interest-rates.png",
-  "/img/finance/crypto-bitcoin.png",
-  "/img/finance/etf-comparison.png",
-  "/img/finance/compounding.png",
-  "/img/finance/finance-asset-atlas.png",
-];
+type Topic = {
+  label: string;
+  count: number;
+  icon: IconName;
+};
+
+type IconName =
+  | "article"
+  | "investing"
+  | "trading"
+  | "personal"
+  | "economy"
+  | "stock"
+  | "crypto"
+  | "more"
+  | "mail"
+  | "data"
+  | "expert"
+  | "advice"
+  | "regular"
+  | "retirement"
+  | "tax";
 
 type FinanceBlogHomeProps = {
   query?: string;
 };
 
-export async function FinanceBlogHome({ query }: FinanceBlogHomeProps) {
-  const [posts, series, allChapters] = await Promise.all([
-    getAllPosts(),
-    getLearningSeriesBySlug("finance-education"),
-    getLearningChapters("finance-education"),
-  ]);
+const categories: Array<{ label: string; icon: IconName }> = [
+  { label: "All Articles", icon: "article" },
+  { label: "Investing", icon: "investing" },
+  { label: "Trading", icon: "trading" },
+  { label: "Personal Finance", icon: "personal" },
+  { label: "Economy", icon: "economy" },
+  { label: "Stock Market", icon: "stock" },
+  { label: "Crypto", icon: "crypto" },
+  { label: "More", icon: "more" },
+];
 
-  const normalizedQuery = query?.trim().toLowerCase() ?? "";
-  const filteredChapters = normalizedQuery
-    ? allChapters.filter((chapter) => matchesTutorialQuery(chapter, normalizedQuery))
-    : allChapters;
-  const chapters = filteredChapters.length > 0 ? filteredChapters : allChapters;
-  const visibleChapters = chapters.slice(0, 6);
-  const popularPosts = posts.slice(0, 5);
-  const topicStats = buildTopicStats(posts, allChapters);
-  const firstChapter = chapters[0] ?? allChapters[0];
+const readerAvatars = [
+  "/img/finance/avatar-investor.png",
+  "/img/profile/avatar-sm.png",
+  "/img/profile/avatar.png",
+  "/img/profile/profile_picture.png",
+];
+
+const latestArticles: Article[] = [
+  {
+    title: "How to Build a Diversified Portfolio",
+    description: "A step-by-step guide to diversify your investments and manage risk effectively.",
+    href: "/blog/bond-investing-for-beginners",
+    image: "/img/finance/diversified-portfolio.png",
+    author: "Priya Sharma",
+    avatar: "/img/profile/avatar-sm.png",
+    date: "May 10, 2024",
+    readTime: "5 min read",
+    category: "Investing",
+  },
+  {
+    title: "Swing Trading Strategies That Work",
+    description: "Simple and proven swing trading strategies for consistent returns.",
+    href: "/learning/candlestick-reading-live-chart",
+    image: "/img/finance/trading-candles.png",
+    author: "Arjun Patel",
+    avatar: "/img/profile/avatar.png",
+    date: "May 8, 2024",
+    readTime: "7 min read",
+    category: "Trading",
+  },
+  {
+    title: "Emergency Fund: Why It's Your First Investment",
+    description: "Why an emergency fund is crucial and how to build one step by step.",
+    href: "/learning/personal-finance-budgeting",
+    image: "/img/finance/emergency-fund.png",
+    author: "Neha Verma",
+    avatar: "/img/profile/avatar-sm.png",
+    date: "May 6, 2024",
+    readTime: "4 min read",
+    category: "Personal Finance",
+  },
+  {
+    title: "Understanding Interest Rates and Their Impact",
+    description: "How interest rates influence markets, stocks, and the economy.",
+    href: "/blog/understanding-interest-rates",
+    image: "/img/finance/interest-rates.png",
+    author: "Vikram Iyer",
+    avatar: "/img/profile/avatar.png",
+    date: "May 4, 2024",
+    readTime: "6 min read",
+    category: "Economy",
+  },
+  {
+    title: "Crypto Investing for Beginners",
+    description: "Everything you need to know before investing in cryptocurrencies.",
+    href: "/blog/crypto-investing-for-beginners",
+    image: "/img/finance/crypto-bitcoin.png",
+    author: "Ananya Rao",
+    avatar: "/img/profile/avatar-sm.png",
+    date: "May 2, 2024",
+    readTime: "6 min read",
+    category: "Crypto",
+  },
+];
+
+const popularPosts = [
+  {
+    title: "Best Blue-Chip Stocks to Buy in 2024",
+    date: "May 1, 2024",
+    image: "/img/finance/bull-market.png",
+    href: "/blog/the-equation-that-beat-wall-street",
+  },
+  {
+    title: "Dollar Cost Averaging Explained",
+    date: "Apr 28, 2024",
+    image: "/img/finance/compounding.png",
+    href: "/learning/introduction-to-investing",
+  },
+  {
+    title: "How Inflation Affects Your Investments",
+    date: "Apr 25, 2024",
+    image: "/img/finance/interest-rates.png",
+    href: "/blog/understanding-interest-rates",
+  },
+  {
+    title: "VTI vs SPY: Which ETF Is Better?",
+    date: "Apr 22, 2024",
+    image: "/img/finance/etf-comparison.png",
+    href: "/blog/bond-investing-for-beginners",
+  },
+  {
+    title: "The Power of Compounding",
+    date: "Apr 20, 2024",
+    image: "/img/finance/compounding.png",
+    href: "/learning/basics-of-finance",
+  },
+];
+
+const topics: Topic[] = [
+  { label: "Investing", count: 42, icon: "investing" },
+  { label: "Trading", count: 38, icon: "trading" },
+  { label: "Personal Finance", count: 35, icon: "personal" },
+  { label: "Economy", count: 27, icon: "economy" },
+  { label: "Stock Market", count: 31, icon: "stock" },
+  { label: "Crypto", count: 24, icon: "crypto" },
+  { label: "Retirement", count: 18, icon: "retirement" },
+  { label: "Tax & Planning", count: 16, icon: "tax" },
+];
+
+const valueProps = [
+  {
+    title: "Data-Driven Insights",
+    description: "In-depth analysis backed by real market data.",
+    icon: "data" as const,
+  },
+  {
+    title: "Expert Contributors",
+    description: "Learn from experienced investors and market experts.",
+    icon: "expert" as const,
+  },
+  {
+    title: "Actionable Advice",
+    description: "Practical tips you can apply to your investments.",
+    icon: "advice" as const,
+  },
+  {
+    title: "Updated Regularly",
+    description: "New articles and market insights every week.",
+    icon: "regular" as const,
+  },
+];
+
+export function FinanceBlogHome({ query }: FinanceBlogHomeProps) {
+  const [activeCategory, setActiveCategory] = useState("All Articles");
+  const [search, setSearch] = useState(query ?? "");
+  const [subscribed, setSubscribed] = useState(false);
+
+  const visibleArticles = useMemo(() => {
+    const normalizedSearch = search.trim().toLowerCase();
+    return latestArticles.filter((article) => {
+      const categoryMatch = activeCategory === "All Articles" || activeCategory === "More" || article.category === activeCategory;
+      const searchMatch =
+        !normalizedSearch ||
+        [article.title, article.description, article.category, article.author].some((value) =>
+          value.toLowerCase().includes(normalizedSearch),
+        );
+      return categoryMatch && searchMatch;
+    });
+  }, [activeCategory, search]);
+
+  function handleSubscribe(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setSubscribed(true);
+  }
 
   return (
-    <div className="mx-auto max-w-[1240px] pb-10 pt-8">
-      <Hero firstChapterHref={firstChapter ? `/learning/${firstChapter.slug}` : "/learning"} />
-      <TopicToolbar />
+    <div className="mx-auto max-w-[1160px] pb-10 pt-0">
+      <Hero search={search} setSearch={setSearch} />
+      <CategoryTabs activeCategory={activeCategory} setActiveCategory={setActiveCategory} />
 
-      {normalizedQuery && (
-        <div className="mt-5 rounded-[22px] border border-[#d8e8dc] bg-white px-5 py-4 text-[14px] text-[#52606d] shadow-[0_12px_34px_rgba(15,23,42,0.04)]">
-          Showing chapter results for <span className="font-bold text-[#162330]">&quot;{query}&quot;</span>.
-          {filteredChapters.length === 0 && (
-            <span className="ml-2 text-[#7a8a96]">No direct matches found, so the full learning path is shown.</span>
-          )}
-        </div>
-      )}
+      <div className="mt-8 grid gap-7 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <main className="min-w-0">
+          <section>
+            <h2 className="text-[18px] font-extrabold tracking-[-0.02em] text-[#07101f]">Featured Article</h2>
+            <FeaturedArticle />
+          </section>
 
-      <div className="mt-7 grid gap-6 xl:grid-cols-[240px_minmax(0,1fr)_288px]">
-        <aside className="space-y-4">
-          <section className="rounded-[26px] border border-[#dfe9e1] bg-white p-4 shadow-[0_10px_32px_rgba(15,23,42,0.035)]">
-            <div className="flex items-center justify-between">
-              <h2 className="text-[18px] font-extrabold text-[#111a27]">Chapters</h2>
-              {series && (
-                <span className="rounded-full bg-[#eef8f2] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[#15924c]">
-                  {series.chapterCount} total
-                </span>
+          <section id="latest-articles" className="mt-7">
+            <h2 className="text-[20px] font-extrabold tracking-[-0.02em] text-[#07101f]">Latest Articles</h2>
+            <div className="mt-3 space-y-4">
+              {visibleArticles.length > 0 ? (
+                visibleArticles.map((article) => <ArticleRow key={article.title} article={article} />)
+              ) : (
+                <div className="rounded-[10px] border border-[#e0e8e4] bg-white px-5 py-8 text-center text-[14px] font-semibold text-[#64748b]">
+                  No articles found for this filter.
+                </div>
               )}
             </div>
-            <div className="mt-4 space-y-2.5">
-              {allChapters.map((chapter, index) => (
-                <Link
-                  key={chapter.slug}
-                  href={`/learning/${chapter.slug}`}
-                  className={`group flex items-center gap-3 rounded-[18px] border px-3 py-3 transition ${
-                    index === 0
-                      ? "border-[#d2ead9] bg-[#f3fbf6] shadow-[0_10px_22px_rgba(22,163,74,0.08)]"
-                      : "border-transparent hover:border-[#e0ebe2] hover:bg-[#f8fbf8]"
-                  }`}
-                >
-                  <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-[14px] ${chapterToneBg(chapter.tone)} ${chapterToneText(chapter.tone)}`}>
-                    <ChapterIcon />
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <div className="text-[12px] font-bold uppercase tracking-[0.1em] text-[#7b8a96]">Chapter {chapter.order}</div>
-                    <div className="mt-1 text-[14px] font-bold leading-5 text-[#18222e]">{chapter.chapterTitle}</div>
-                    <div className="mt-1 text-[12px] text-[#778692]">{chapter.topicCount} topics</div>
-                  </div>
-                  <span className="text-[#91a09b] transition group-hover:text-[#15924c]">
-                    <ArrowMiniIcon />
-                  </span>
-                </Link>
-              ))}
+            <div className="mt-5 flex justify-center">
+              <button
+                type="button"
+                className="inline-flex h-10 items-center gap-3 rounded-[7px] border border-[#dbe5df] bg-white px-8 text-[13px] font-semibold text-[#334155] shadow-sm transition hover:border-[#9fd7b4] hover:text-[#0f8b45]"
+              >
+                Load More Articles
+                <Icon name="more" className="h-4 w-4" />
+              </button>
             </div>
-            <Link
-              href="/learning"
-              className="mt-4 inline-flex h-11 w-full items-center justify-center rounded-[16px] border border-[#cfe3d5] bg-[#f7fcf8] text-[14px] font-bold text-[#15924c] transition hover:-translate-y-0.5"
-            >
-              View All Chapters
-            </Link>
           </section>
-        </aside>
-
-        <main className="min-w-0">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <h2 className="text-[26px] font-extrabold tracking-[-0.03em] text-[#111a27]">Tutorials by Chapter</h2>
-              <p className="mt-1 text-[14px] text-[#62717d]">
-                {series?.description ?? "A structured path from the basics to advanced finance topics."}
-              </p>
-            </div>
-            <Link href="/learning" className="inline-flex items-center gap-2 text-[14px] font-bold text-[#167aef]">
-              View All Tutorials
-              <ArrowMiniIcon />
-            </Link>
-          </div>
-
-          <div className="mt-4 space-y-4">
-            {visibleChapters.map((chapter) => (
-              <TutorialCard key={chapter.slug} chapter={chapter} />
-            ))}
-          </div>
-
-          <div className="mt-5 flex justify-center">
-            <Link
-              href="/learning"
-              className="inline-flex h-12 items-center gap-2 rounded-[18px] border border-[#d9e5db] bg-white px-6 text-[14px] font-semibold text-[#405263] shadow-[0_10px_24px_rgba(15,23,42,0.04)] transition hover:-translate-y-0.5"
-            >
-              Browse Full Learning Path
-              <ChevronDownIcon />
-            </Link>
-          </div>
         </main>
 
         <aside className="space-y-5">
-          <PopularPostsCard posts={popularPosts} />
-          <SubscribeCard />
-          <TopicCountCard topics={topicStats} />
+          <PopularPosts />
+          <SubscribeCard onSubmit={handleSubscribe} subscribed={subscribed} />
+          <ExploreTopics />
         </aside>
       </div>
 
@@ -187,133 +257,175 @@ export async function FinanceBlogHome({ query }: FinanceBlogHomeProps) {
   );
 }
 
-function Hero({ firstChapterHref }: { firstChapterHref: string }) {
+function Hero({
+  search,
+  setSearch,
+}: {
+  search: string;
+  setSearch: (value: string) => void;
+}) {
   return (
-    <section className="relative overflow-hidden rounded-[40px] border border-[#deebe0] bg-[radial-gradient(circle_at_top_left,rgba(34,197,94,0.12),transparent_32%),linear-gradient(135deg,#ffffff_0%,#f6fbf7_46%,#ffffff_100%)] px-5 py-7 shadow-[0_22px_60px_rgba(15,23,42,0.05)] md:px-8 lg:px-10 lg:py-8">
-      <div className="absolute right-[-70px] top-[-50px] h-[260px] w-[260px] rounded-full bg-[radial-gradient(circle,rgba(34,197,94,0.16),rgba(34,197,94,0)_68%)]" />
-      <div className="grid items-center gap-10 lg:grid-cols-[0.94fr_1.06fr]">
-        <div>
-          <span className="inline-flex text-[12px] font-extrabold uppercase tracking-[0.12em] text-[#15924c]">
-            Finance Education
-          </span>
-          <h1 className="mt-3 max-w-[620px] text-[48px] font-extrabold leading-[0.98] tracking-[-0.05em] text-[#101924] md:text-[64px]">
-            Learn Finance.
-            <br />
-            Build Your <span className="text-[#18a052]">Future.</span>
-          </h1>
-          <p className="mt-5 max-w-[520px] text-[18px] leading-8 text-[#435363]">
-            Chapter-wise tutorials, practical examples, and expert insights to help you master finance step by step.
-          </p>
-          <div className="mt-6 flex flex-wrap items-center gap-4">
-            <Link
-              href={firstChapterHref}
-              className="inline-flex h-12 items-center rounded-[14px] bg-[#169b52] px-6 text-[15px] font-bold text-white shadow-[0_16px_28px_rgba(22,163,74,0.22)] transition hover:-translate-y-0.5"
-            >
-              Start Learning
-            </Link>
-            <span className="inline-flex items-center gap-2 text-[14px] font-semibold text-[#304252]">
-              New tutorials every week
-              <CalendarIcon />
-            </span>
-          </div>
-        </div>
-
-        <div className="relative min-h-[320px]">
-          <div className="absolute right-[40px] top-[18px] h-[210px] w-[210px] rounded-full bg-[radial-gradient(circle,rgba(34,197,94,0.14),rgba(34,197,94,0)_68%)]" />
-          <div className="absolute left-[54px] top-[120px] h-[146px] w-[206px] rotate-[-10deg] rounded-[18px] bg-[linear-gradient(180deg,#8ee3ab_0%,#1a9f55_88%)] shadow-[0_24px_44px_rgba(16,152,72,0.18)]" />
-          <div className="absolute left-[34px] top-[154px] h-[146px] w-[206px] rotate-[-10deg] rounded-[18px] bg-[linear-gradient(180deg,#d7f8e2_0%,#74cf93_88%)] shadow-[0_20px_34px_rgba(16,152,72,0.12)]" />
-          <div className="absolute left-[70px] top-[86px] h-[148px] w-[210px] rotate-[-10deg] rounded-[18px] bg-[linear-gradient(180deg,#c2f2d1_0%,#27b567_90%)] shadow-[0_26px_46px_rgba(16,152,72,0.15)]" />
-          <div className="absolute left-[88px] top-[36px] h-[78px] w-[172px] rounded-[18px] bg-[linear-gradient(180deg,#39424f_0%,#111827_100%)] shadow-[0_22px_44px_rgba(15,23,42,0.22)]" />
-          <div className="absolute left-[118px] top-[18px] h-[34px] w-[112px] rounded-[12px] bg-[linear-gradient(180deg,#303947_0%,#111827_100%)]" />
-          <div className="absolute left-[252px] top-[108px] w-[160px] rounded-[28px] border border-[#dbe8df] bg-white/94 p-5 shadow-[0_22px_44px_rgba(15,23,42,0.07)] backdrop-blur">
-            <div className="h-2.5 w-20 rounded-full bg-[#4dbf79]" />
-            <div className="mt-4 flex items-end gap-2">
-              {[30, 46, 40, 58, 72].map((height) => (
-                <span key={height} className="w-4 rounded-t-full bg-[#e1f5e7]" style={{ height }} />
+    <section className="grid min-h-[340px] items-center gap-8 py-9 lg:grid-cols-[0.97fr_1.03fr] lg:py-11">
+      <div>
+        <p className="text-[12px] font-extrabold uppercase tracking-[0.12em] text-[#0f9650]">Finance Blog</p>
+        <h1 className="mt-4 max-w-[560px] text-[46px] font-extrabold leading-[1.08] tracking-[-0.055em] text-[#07101f] md:text-[54px]">
+          Insights. Analysis.
+          <br />
+          <span className="text-[#159b50]">Smarter</span> Decisions.
+        </h1>
+        <p className="mt-6 max-w-[510px] text-[16px] leading-7 text-[#263244]">
+          Actionable insights on investing, trading, personal finance, and market trends to help you grow your wealth.
+        </p>
+        <div className="mt-6 flex flex-wrap items-center gap-5">
+          <Link
+            href="#latest-articles"
+            className="inline-flex h-11 items-center justify-center rounded-[5px] bg-[#169b52] px-7 text-[14px] font-bold text-white shadow-[0_14px_24px_rgba(22,155,82,0.22)] transition hover:-translate-y-0.5 hover:bg-[#118746]"
+          >
+            Start Reading
+          </Link>
+          <div className="flex items-center gap-3 text-[14px] font-bold text-[#07101f]">
+            <span>Join 25,000+ readers</span>
+            <div className="flex -space-x-2">
+              {readerAvatars.map((avatar) => (
+                <span key={avatar} className="h-8 w-8 overflow-hidden rounded-full border-2 border-white bg-[#e9f5ee]">
+                  <img src={avatar} alt="" className="h-full w-full object-cover" />
+                </span>
               ))}
+              <span className="grid h-8 w-8 place-items-center rounded-full border-2 border-white bg-[#17a65a] text-[16px] font-bold leading-none text-white">
+                +
+              </span>
             </div>
-            <svg viewBox="0 0 120 60" className="mt-[-56px] h-[72px] w-full">
-              <path d="M6 46 28 40 46 46 64 28 82 24 102 11" fill="none" stroke="#1aa152" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="m97 11 5 0-2-5" fill="none" stroke="#1aa152" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            <div className="mt-3 h-20 rounded-[20px] bg-[radial-gradient(circle_at_68%_36%,#d9f5e3_0%,#d9f5e3_24%,transparent_26%),linear-gradient(180deg,#f6fbf7_0%,#edf7f0_100%)]" />
-          </div>
-          <div className="absolute bottom-[28px] right-[14px] h-[88px] w-[66px] rounded-[24px] bg-[linear-gradient(180deg,#fefefe_0%,#f3f7f4_100%)] shadow-[0_18px_34px_rgba(15,23,42,0.08)]">
-            <div className="absolute left-[28px] top-[-24px] h-9 w-1.5 rounded-full bg-[#6ab887]" />
-            <div className="absolute left-[10px] top-[-14px] h-10 w-10 rounded-full bg-[#d9f5e3]" />
-            <div className="absolute right-[6px] top-[-8px] h-8 w-8 rounded-full bg-[#b7ecc8]" />
           </div>
         </div>
+        <label className="sr-only" htmlFor="home-search">
+          Search articles
+        </label>
+        <input
+          id="home-search"
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          className="sr-only"
+          aria-hidden
+          tabIndex={-1}
+        />
+      </div>
+
+      <div className="relative hidden min-h-[260px] lg:block">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_58%_44%,rgba(33,181,103,0.22),transparent_36%)]" />
+        <img
+          src="/img/finance/home-hero-market-overview.png"
+          alt="Market overview card with rising chart and green analytics graphics"
+          className="absolute right-[-8px] top-[-18px] h-[330px] w-[560px] object-contain"
+        />
       </div>
     </section>
   );
 }
 
-function TopicToolbar() {
+function CategoryTabs({
+  activeCategory,
+  setActiveCategory,
+}: {
+  activeCategory: string;
+  setActiveCategory: (category: string) => void;
+}) {
   return (
-    <div className="mt-6 flex flex-wrap items-center gap-3 rounded-[20px] border border-[#dfe9e1] bg-white px-5 py-3 shadow-[0_8px_24px_rgba(15,23,42,0.03)]">
-      {toolbarItems.map((item, index) => (
-        <button
-          key={item}
-          className={`inline-flex h-10 items-center gap-2 rounded-[14px] px-4 text-[13px] font-semibold transition ${
-            index === 0 ? "bg-[#effaf2] text-[#15924c] shadow-[inset_0_0_0_1px_#cef0d8]" : "text-[#233247] hover:bg-[#f4f8f4]"
-          }`}
-        >
-          {index === 0 && <ToolbarGridIcon />}
-          {item}
-          {item === "More" && <ChevronDownIcon />}
-        </button>
-      ))}
+    <div className="flex min-h-[57px] flex-wrap items-center gap-2 rounded-[9px] border border-[#e0e8e4] bg-white px-4 py-2 shadow-[0_8px_20px_rgba(15,23,42,0.035)]">
+      {categories.map((category) => {
+        const active = activeCategory === category.label;
+        return (
+          <button
+            key={category.label}
+            type="button"
+            onClick={() => setActiveCategory(category.label)}
+            className={`relative inline-flex h-10 items-center gap-2 rounded-[8px] px-3 text-[13px] font-semibold transition ${
+              active ? "bg-[#edf9f2] text-[#0f8f49]" : "text-[#263244] hover:bg-[#f6faf8] hover:text-[#0f8f49]"
+            }`}
+          >
+            <Icon name={category.icon} className="h-4 w-4" />
+            {category.label}
+            {category.label === "More" && <Icon name="more" className="h-3.5 w-3.5" />}
+            {active && <span className="absolute bottom-[-8px] left-3 right-3 h-[2px] rounded-full bg-[#15a45a]" />}
+          </button>
+        );
+      })}
     </div>
   );
 }
 
-function TutorialCard({ chapter }: { chapter: LearningChapter }) {
+function FeaturedArticle() {
   return (
-    <article className="grid gap-4 rounded-[24px] border border-[#dfe9e1] bg-white p-3 shadow-[0_8px_24px_rgba(15,23,42,0.03)] md:grid-cols-[210px_minmax(0,1fr)]">
-      <Link href={`/learning/${chapter.slug}`} className="overflow-hidden rounded-[18px]">
-        <ArticleImage src={chapterImage(chapter)} alt="" />
+    <article className="mt-2 grid overflow-hidden rounded-[10px] border border-[#e1e8e4] bg-white p-3 shadow-[0_5px_18px_rgba(15,23,42,0.025)] md:grid-cols-[320px_minmax(0,1fr)]">
+      <Link href="/blog/the-equation-that-beat-wall-street" className="overflow-hidden rounded-[8px] bg-[#06140e]">
+        <img src="/img/finance/bull-market.png" alt="" className="h-full min-h-[210px] w-full object-cover" />
       </Link>
-      <div className="flex min-w-0 flex-col justify-center py-1">
-        <div className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-[#16914a]">
-          Chapter {chapter.order} <span className="mx-1 text-[#a4b8aa]">•</span> {chapter.chapterTitle}
-        </div>
+      <div className="flex min-w-0 flex-col justify-center px-5 py-4">
+        <span className="w-fit rounded-full bg-[#dff7e8] px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.08em] text-[#169b52]">
+          Featured
+        </span>
         <Link
-          href={`/learning/${chapter.slug}`}
-          className="mt-2 max-w-[32ch] text-[20px] font-extrabold leading-[1.22] text-[#101924] transition hover:text-[#15924c]"
+          href="/blog/the-equation-that-beat-wall-street"
+          className="mt-4 max-w-[460px] text-[22px] font-extrabold leading-[1.25] tracking-[-0.025em] text-[#07101f] transition hover:text-[#13944b]"
         >
-          {chapter.title}
+          AI Revolution in Investing: Opportunities and Risks in 2024
         </Link>
-        <p className="mt-2 max-w-[58ch] text-[14px] leading-6 text-[#334155]">{chapter.description}</p>
-        <div className="mt-4 flex flex-wrap items-center gap-3 text-[13px] text-[#70808d]">
-          <AuthorBadge name={chapter.author} compact />
-          <span>{chapter.formattedDate}</span>
-          <span className="text-[#adc0b2]">•</span>
-          <span>{chapter.readingTime} min read</span>
-          <BookmarkButton slug={chapter.slug} className="ml-auto" />
+        <p className="mt-3 max-w-[560px] text-[14px] leading-6 text-[#45556a]">
+          How artificial intelligence is transforming the investment landscape and what it means for your portfolio.
+        </p>
+        <div className="mt-5 flex items-center gap-3 text-[12px] text-[#66788a]">
+          <AuthorAvatar src="/img/finance/avatar-investor.png" />
+          <div>
+            <div className="font-bold text-[#1c2938]">Rahul Mehta</div>
+            <div>May 12, 2024 <span className="mx-2 text-[#a3b0bd]">•</span> 6 min read</div>
+          </div>
+          <BookmarkButton slug="ai-revolution-investing" className="ml-auto" />
         </div>
       </div>
     </article>
   );
 }
 
-function PopularPostsCard({ posts }: { posts: Post[] }) {
+function ArticleRow({ article }: { article: Article }) {
   return (
-    <section className="rounded-[26px] border border-[#dfe9e1] bg-white p-4 shadow-[0_8px_24px_rgba(15,23,42,0.03)]">
-      <h2 className="text-[18px] font-extrabold text-[#111a27]">Popular Posts</h2>
-      <div className="mt-4 space-y-3">
-        {posts.map((post, index) => (
-          <Link key={post.slug} href={`/blog/${post.slug}`} className="flex items-center gap-3 rounded-[16px] p-1.5 transition hover:bg-[#f6faf7]">
-            <span className="grid h-5 w-5 place-items-center rounded-full bg-[#eaf8ee] text-[#16914a]">
-              <ArrowMiniIcon />
+    <article className="grid min-h-[130px] overflow-hidden rounded-[10px] border border-[#e2e9e5] bg-white p-0 shadow-[0_4px_14px_rgba(15,23,42,0.02)] md:grid-cols-[210px_minmax(0,1fr)]">
+      <Link href={article.href} className="m-3 overflow-hidden rounded-[7px] bg-[#08140f]">
+        <img src={article.image} alt="" className="h-full min-h-[105px] w-full object-cover" loading="lazy" />
+      </Link>
+      <div className="flex min-w-0 flex-col justify-center px-3 py-4 md:py-3">
+        <Link href={article.href} className="max-w-[420px] text-[18px] font-extrabold leading-[1.24] tracking-[-0.02em] text-[#07101f] transition hover:text-[#15924c]">
+          {article.title}
+        </Link>
+        <p className="mt-2 max-w-[520px] text-[14px] leading-6 text-[#45556a]">{article.description}</p>
+        <div className="mt-4 flex items-center gap-3 text-[12px] text-[#66788a]">
+          <AuthorAvatar src={article.avatar} />
+          <span className="font-bold text-[#1c2938]">{article.author}</span>
+          <span>{article.date}</span>
+          <span className="text-[#a3b0bd]">•</span>
+          <span>{article.readTime}</span>
+          <BookmarkButton slug={article.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")} className="ml-auto" />
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function PopularPosts() {
+  return (
+    <section className="rounded-[10px] border border-[#e0e8e4] bg-white p-5 shadow-[0_5px_18px_rgba(15,23,42,0.025)]">
+      <h2 className="text-[18px] font-extrabold tracking-[-0.02em] text-[#07101f]">Popular Posts</h2>
+      <div className="mt-4 space-y-4">
+        {popularPosts.map((post) => (
+          <Link key={post.title} href={post.href} className="grid grid-cols-[20px_58px_minmax(0,1fr)] items-center gap-3 rounded-[8px] transition hover:bg-[#f7fbf8]">
+            <span className="grid h-5 w-5 place-items-center rounded-full bg-[#e4f7eb] text-[#159b50]">
+              <Icon name="regular" className="h-3.5 w-3.5" />
             </span>
-            <div className="h-[56px] w-[56px] shrink-0 overflow-hidden rounded-[14px]">
-              <img src={imageForPost(post, index)} alt="" className="h-full w-full object-cover" loading="lazy" />
-            </div>
-            <div className="min-w-0">
-              <div className="line-clamp-2 text-[13px] font-bold leading-5 text-[#17212c]">{post.title}</div>
-              <div className="mt-1 text-[12px] text-[#82919d]">{post.formattedDate}</div>
-            </div>
+            <span className="h-[58px] w-[58px] overflow-hidden rounded-[6px] bg-[#08140f]">
+              <img src={post.image} alt="" className="h-full w-full object-cover" loading="lazy" />
+            </span>
+            <span className="min-w-0">
+              <span className="line-clamp-2 block text-[13px] font-bold leading-5 text-[#07101f]">{post.title}</span>
+              <span className="mt-1 block text-[12px] text-[#738195]">{post.date}</span>
+            </span>
           </Link>
         ))}
       </div>
@@ -321,49 +433,56 @@ function PopularPostsCard({ posts }: { posts: Post[] }) {
   );
 }
 
-function SubscribeCard() {
+function SubscribeCard({
+  onSubmit,
+  subscribed,
+}: {
+  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
+  subscribed: boolean;
+}) {
   return (
-    <section className="rounded-[26px] border border-[#cfe4d7] bg-[#eef8f2] p-4 shadow-[0_8px_24px_rgba(15,23,42,0.03)]">
+    <section className="rounded-[10px] border border-[#d5e9dd] bg-[linear-gradient(135deg,#eefaf3_0%,#f8fffb_100%)] p-5 shadow-[0_5px_18px_rgba(15,23,42,0.025)]">
       <div className="flex items-center gap-3">
-        <span className="grid h-8 w-8 place-items-center rounded-[10px] bg-white text-[#15924c] shadow-sm">
-          <MailIcon />
+        <span className="grid h-8 w-8 place-items-center rounded-[8px] bg-[#ddf5e6] text-[#159b50]">
+          <Icon name="mail" className="h-4.5 w-4.5" />
         </span>
-        <h2 className="text-[18px] font-extrabold text-[#111a27]">Stay Ahead in Finance</h2>
+        <h2 className="text-[17px] font-extrabold tracking-[-0.02em] text-[#07101f]">Stay Ahead in Finance</h2>
       </div>
-      <p className="mt-3 text-[13px] leading-6 text-[#405263]">
-        Subscribe to get the latest tutorials, guides, and expert insights straight to your inbox.
+      <p className="mt-3 text-[14px] leading-6 text-[#405064]">
+        Subscribe to get the latest insights, market updates, and expert analysis straight to your inbox.
       </p>
-      <input
-        type="email"
-        placeholder="Enter your email"
-        className="mt-4 h-10 w-full rounded-[12px] border border-[#d7e7db] bg-white px-3 text-[12px] text-[#17212c] outline-none focus:border-[#75d49c] focus:ring-4 focus:ring-[#c7f1d6]"
-      />
-      <button className="mt-3 inline-flex h-10 w-full items-center justify-center rounded-[12px] bg-[#169b52] text-[13px] font-bold text-white shadow-[0_12px_22px_rgba(22,163,74,0.18)]">
-        Subscribe
-      </button>
-      <p className="mt-3 text-center text-[12px] text-[#7e8d99]">No spam, unsubscribe anytime.</p>
+      <form onSubmit={onSubmit} className="mt-4">
+        <input
+          required
+          type="email"
+          placeholder="Enter your email"
+          className="h-10 w-full rounded-[5px] border border-[#dce7e1] bg-white px-3 text-[13px] text-[#17212c] outline-none transition focus:border-[#75d49c] focus:ring-4 focus:ring-[#c7f1d6]"
+        />
+        <button className="mt-3 h-10 w-full rounded-[5px] bg-[#169b52] text-[13px] font-bold text-white shadow-[0_12px_22px_rgba(22,163,74,0.16)] transition hover:bg-[#118746]">
+          {subscribed ? "Subscribed" : "Subscribe"}
+        </button>
+      </form>
+      <p className="mt-3 text-center text-[11px] text-[#7e8d99]">No spam. Unsubscribe anytime.</p>
     </section>
   );
 }
 
-function TopicCountCard({ topics }: { topics: Array<{ label: string; count: number }> }) {
+function ExploreTopics() {
   return (
-    <section className="rounded-[26px] border border-[#dfe9e1] bg-white p-4 shadow-[0_8px_24px_rgba(15,23,42,0.03)]">
-      <h2 className="text-[18px] font-extrabold text-[#111a27]">Explore Topics</h2>
-      <div className="mt-4 space-y-2">
+    <section className="rounded-[10px] border border-[#e0e8e4] bg-white p-5 shadow-[0_5px_18px_rgba(15,23,42,0.025)]">
+      <h2 className="text-[18px] font-extrabold tracking-[-0.02em] text-[#07101f]">Explore Topics</h2>
+      <div className="mt-4 space-y-2.5">
         {topics.map((topic) => (
-          <div key={topic.label} className="flex items-center gap-3 rounded-[14px] px-1 py-1">
-            <span className="grid h-6 w-6 place-items-center rounded-[8px] bg-[#edf8f1] text-[#16914a]">
-              <ToolbarGridIcon small />
-            </span>
-            <span className="flex-1 text-[13px] font-medium text-[#304252]">{topic.label}</span>
-            <span className="rounded-full bg-[#f3f7f4] px-2.5 py-1 text-[12px] font-bold text-[#728391]">{topic.count}</span>
-          </div>
+          <button key={topic.label} className="flex w-full items-center gap-3 rounded-[7px] py-0.5 text-left transition hover:bg-[#f7fbf8]">
+            <Icon name={topic.icon} className="h-4 w-4 text-[#159b50]" />
+            <span className="flex-1 text-[13px] font-semibold text-[#334155]">{topic.label}</span>
+            <span className="rounded-full bg-[#f1f5f4] px-2 py-0.5 text-[11px] font-bold text-[#738195]">{topic.count}</span>
+          </button>
         ))}
       </div>
-      <Link href="/learning" className="mt-5 inline-flex items-center gap-2 text-[14px] font-bold text-[#15924c]">
+      <Link href="/learning" className="mt-5 inline-flex items-center gap-2 text-[13px] font-bold text-[#0f8f49]">
         View all topics
-        <ArrowMiniIcon />
+        <Icon name="regular" className="h-3.5 w-3.5" />
       </Link>
     </section>
   );
@@ -371,15 +490,15 @@ function TopicCountCard({ topics }: { topics: Array<{ label: string; count: numb
 
 function ValueStrip() {
   return (
-    <section className="mt-10 grid gap-4 rounded-[28px] border border-[#dfe9e1] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.03)] md:grid-cols-2 lg:grid-cols-4">
+    <section className="mt-10 grid gap-4 rounded-[8px] border border-[#e0e8e4] bg-[linear-gradient(135deg,#f8fffb_0%,#f0faf4_100%)] p-6 md:grid-cols-2 lg:grid-cols-4">
       {valueProps.map((item) => (
-        <div key={item.title} className="flex items-start gap-4 px-2 py-2">
-          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-[12px] bg-[#ebf8ef] text-[#16914a]">
-            <FeatureIcon variant={item.icon} />
+        <div key={item.title} className="flex items-start gap-4">
+          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-[8px] bg-[#ddf5e6] text-[#159b50]">
+            <Icon name={item.icon} className="h-5 w-5" />
           </span>
           <div>
-            <div className="text-[13px] font-extrabold text-[#15222f]">{item.title}</div>
-            <p className="mt-1 text-[12px] leading-5 text-[#405263]">{item.description}</p>
+            <h3 className="text-[13px] font-extrabold text-[#07101f]">{item.title}</h3>
+            <p className="mt-1 text-[12px] leading-5 text-[#405064]">{item.description}</p>
           </div>
         </div>
       ))}
@@ -389,175 +508,164 @@ function ValueStrip() {
 
 function Footer() {
   return (
-    <footer className="mt-6 flex flex-col gap-4 px-1 pb-2 pt-2 text-[13px] text-[#7a8895] md:flex-row md:items-center md:justify-between">
-      <p>© 2026 Stock&amp;Trade. All rights reserved.</p>
-      <div className="flex flex-wrap items-center gap-5">
-        <Link href="#" className="transition hover:text-[#15924c]">About Us</Link>
-        <Link href="#" className="transition hover:text-[#15924c]">Contact</Link>
-        <Link href="#" className="transition hover:text-[#15924c]">Privacy Policy</Link>
-        <Link href="#" className="transition hover:text-[#15924c]">Terms of Service</Link>
-      </div>
+    <footer className="mt-8 flex flex-col gap-4 pb-2 text-[12px] text-[#556274] md:flex-row md:items-center md:justify-between">
+      <p>© 2024 Stock&amp;Trade. All rights reserved.</p>
+      <nav className="flex flex-wrap items-center gap-8">
+        {["About Us", "Contact", "Privacy Policy", "Terms of Service"].map((item) => (
+          <Link key={item} href="#" className="transition hover:text-[#159b50]">
+            {item}
+          </Link>
+        ))}
+      </nav>
     </footer>
   );
 }
 
-function AuthorBadge({ name, compact = false }: { name: string; compact?: boolean }) {
+function AuthorAvatar({ src }: { src: string }) {
   return (
-    <span className="inline-flex items-center gap-2 text-[13px] font-semibold text-[#253444]">
-      <span className={`${compact ? "h-7 w-7" : "h-8 w-8"} overflow-hidden rounded-full bg-[#eaf5ef]`}>
-        <img src="/img/profile/avatar.png" alt="" className="h-full w-full object-cover" />
-      </span>
-      {name}
+    <span className="h-8 w-8 overflow-hidden rounded-full bg-[#eaf5ef]">
+      <img src={src} alt="" className="h-full w-full object-cover" />
     </span>
   );
 }
 
-function ArticleImage({ src, alt }: { src: string; alt: string }) {
-  return <img src={src} alt={alt} className="aspect-[1.28] w-full object-cover" loading="lazy" />;
-}
-
-function chapterImage(chapter: LearningChapter) {
-  return chapter.thumbnail.startsWith("/") ? chapter.thumbnail : fallbackImages[(chapter.order - 1) % fallbackImages.length];
-}
-
-function matchesTutorialQuery(chapter: LearningChapter, query: string) {
-  return [
-    chapter.title,
-    chapter.chapterTitle,
-    chapter.description,
-    chapter.author,
-    chapter.tags.join(" "),
-  ].some((value) => value.toLowerCase().includes(query));
-}
-
-function imageForPost(post: Post, index: number) {
-  return postImages[post.slug] ?? fallbackImages[index % fallbackImages.length];
-}
-
-function buildTopicStats(posts: Post[], chapters: LearningChapter[]) {
-  const counts = new Map<string, number>();
-
-  for (const chapter of chapters) {
-    counts.set(chapter.chapterTitle, (counts.get(chapter.chapterTitle) ?? 0) + Math.max(1, chapter.topicCount));
-  }
-
-  for (const post of posts) {
-    if (post.category) counts.set(post.category, (counts.get(post.category) ?? 0) + 2);
-  }
-
-  return [...counts.entries()]
-    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
-    .slice(0, 7)
-    .map(([label, count]) => ({ label, count }));
-}
-
-function chapterToneBg(tone: string) {
-  if (tone === "green" || tone === "emerald") return "bg-[#edfdf3]";
-  if (tone === "teal") return "bg-[#ecfeff]";
-  if (tone === "blue") return "bg-[#eef5ff]";
-  return "bg-[#f3f5f9]";
-}
-
-function chapterToneText(tone: string) {
-  if (tone === "green" || tone === "emerald") return "text-[#1f9c5c]";
-  if (tone === "teal") return "text-[#0f766e]";
-  if (tone === "blue") return "text-[#2370ea]";
-  return "text-[#64748b]";
-}
-
-function FeatureIcon({ variant }: { variant: string }) {
-  if (variant === "briefcase") {
+function Icon({ name, className = "h-4 w-4" }: { name: IconName; className?: string }) {
+  if (name === "article") {
     return (
-      <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="3" y="7" width="18" height="13" rx="3" />
-        <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+      <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="5" y="5" width="14" height="14" rx="2" />
+        <path d="M9 9h6" />
+        <path d="M9 13h4" />
+      </svg>
+    );
+  }
+  if (name === "investing") {
+    return (
+      <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4 19V5" />
+        <path d="M4 19h16" />
+        <path d="m7 15 4-4 3 3 5-7" />
+        <path d="M16 7h3v3" />
+      </svg>
+    );
+  }
+  if (name === "trading") {
+    return (
+      <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M7 7v10" />
+        <path d="M17 7v10" />
+        <path d="M4 12h6" />
+        <path d="M14 12h6" />
+        <path d="m9 9 3-3 3 3" />
+        <path d="m9 15 3 3 3-3" />
+      </svg>
+    );
+  }
+  if (name === "personal") {
+    return (
+      <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M6 7h12v13H6z" />
+        <path d="M9 7V5h6v2" />
+        <path d="M9 12h6" />
+        <path d="M9 16h4" />
+      </svg>
+    );
+  }
+  if (name === "economy") {
+    return (
+      <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4 20h16" />
+        <path d="M6 10v7" />
+        <path d="M11 10v7" />
+        <path d="M16 10v7" />
+        <path d="M3 10h18L12 4 3 10Z" />
+      </svg>
+    );
+  }
+  if (name === "stock") {
+    return (
+      <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="4" y="12" width="3" height="7" rx="1" />
+        <rect x="10.5" y="8" width="3" height="11" rx="1" />
+        <rect x="17" y="5" width="3" height="14" rx="1" />
+        <path d="m4 9 5-4 4 2 6-5" />
+      </svg>
+    );
+  }
+  if (name === "crypto") {
+    return (
+      <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="8" />
+        <path d="M10 8h3.2a2 2 0 0 1 0 4H10h3.8a2 2 0 1 1 0 4H10" />
+        <path d="M10 6v12" />
+      </svg>
+    );
+  }
+  if (name === "mail") {
+    return (
+      <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="4" y="6" width="16" height="12" rx="2" />
+        <path d="m6 9 6 4 6-4" />
+      </svg>
+    );
+  }
+  if (name === "data") {
+    return (
+      <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 3v18" />
         <path d="M3 12h18" />
+        <circle cx="12" cy="12" r="3" />
+        <path d="M6 6h.01M18 6h.01M6 18h.01M18 18h.01" />
       </svg>
     );
   }
-  if (variant === "people") {
+  if (name === "expert") {
     return (
-      <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2" />
-        <circle cx="9.5" cy="7" r="3" />
-        <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-        <path d="M16 4.13a4 4 0 0 1 0 7.75" />
+      <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="8" r="4" />
+        <path d="M6 21v-2a6 6 0 0 1 12 0v2" />
       </svg>
     );
   }
-  if (variant === "check") {
+  if (name === "advice") {
     return (
-      <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="m5 12 4 4L19 6" />
-        <rect x="3" y="3" width="18" height="18" rx="4" />
+      <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="5" y="4" width="14" height="16" rx="2" />
+        <path d="m9 12 2 2 4-5" />
+      </svg>
+    );
+  }
+  if (name === "regular") {
+    return (
+      <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M5 12h14" />
+        <path d="m13 6 6 6-6 6" />
+      </svg>
+    );
+  }
+  if (name === "retirement") {
+    return (
+      <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M7 20h10" />
+        <path d="M9 20v-5h6v5" />
+        <path d="M6 15h12l-2-8H8l-2 8Z" />
+        <path d="M10 7V4h4v3" />
+      </svg>
+    );
+  }
+  if (name === "tax") {
+    return (
+      <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="6" y="4" width="12" height="16" rx="2" />
+        <path d="M9 9h6" />
+        <path d="M9 13h6" />
+        <path d="M9 17h2" />
       </svg>
     );
   }
   return (
-    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4 19.5V6.5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v13" />
-      <path d="M8 4.5V19" />
-      <path d="M8 8h8" />
-      <path d="M8 12h6" />
-    </svg>
-  );
-}
-
-function ToolbarGridIcon({ small = false }: { small?: boolean }) {
-  return (
-    <svg viewBox="0 0 20 20" className={small ? "h-4 w-4" : "h-4 w-4"} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="3" width="5" height="5" rx="1.2" />
-      <rect x="12" y="3" width="5" height="5" rx="1.2" />
-      <rect x="3" y="12" width="5" height="5" rx="1.2" />
-      <rect x="12" y="12" width="5" height="5" rx="1.2" />
-    </svg>
-  );
-}
-
-function ChapterIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4 6.5A2.5 2.5 0 0 1 6.5 4H20v15.5a.5.5 0 0 1-.5.5H6.5A2.5 2.5 0 0 0 4 22" />
-      <path d="M8 8h8" />
-      <path d="M8 12h8" />
-      <path d="M8 16h5" />
-    </svg>
-  );
-}
-
-function MailIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="5" width="18" height="14" rx="3" />
-      <path d="m5 8 7 5 7-5" />
-    </svg>
-  );
-}
-
-function CalendarIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="h-4 w-4 text-[#169b52]" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="5" width="18" height="16" rx="3" />
-      <path d="M16 3v4" />
-      <path d="M8 3v4" />
-      <path d="M3 10h18" />
-    </svg>
-  );
-}
-
-function ArrowMiniIcon() {
-  return (
-    <svg viewBox="0 0 20 20" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4 10h12" />
-      <path d="m10 4 6 6-6 6" />
-    </svg>
-  );
-}
-
-function ChevronDownIcon() {
-  return (
-    <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="m5 7.5 5 5 5-5" />
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m7 9 5 5 5-5" />
     </svg>
   );
 }

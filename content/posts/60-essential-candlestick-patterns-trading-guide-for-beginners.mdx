@@ -27,6 +27,141 @@ export const CandlestickInteractiveLab = () => (
   />
 )
 
+export const PATTERN_CHARTS = (() => {
+  const match = CANDLESTICK_LAB_HTML.match(/const patterns = (\[.*?\]);\nconst categories/s)
+  return match ? JSON.parse(match[1]) : []
+})()
+
+export const CandlestickPatternChart = ({ pattern }) => {
+  const item = PATTERN_CHARTS.find((entry) => entry.name === pattern)
+  if (!item) return null
+
+  const width = 720
+  const height = 320
+  const pad = { left: 48, right: 20, top: 26, bottom: 42 }
+  const values = item.candles.flatMap((candle) => [candle[1], candle[2]])
+  const min = Math.min(...values) - 2
+  const max = Math.max(...values) + 2
+  const chartWidth = width - pad.left - pad.right
+  const chartHeight = height - pad.top - pad.bottom
+  const slot = chartWidth / item.candles.length
+  const y = (value) => pad.top + ((max - value) / (max - min || 1)) * chartHeight
+  const biasTone = item.bias.toLowerCase().includes("bull")
+    ? "text-[#128447] bg-[#e9fbf1]"
+    : item.bias.toLowerCase().includes("bear")
+      ? "text-[#b92323] bg-[#fff0f0]"
+      : "text-[#315f9f] bg-[#eef5ff]"
+
+  return (
+    <figure className="not-prose my-6 overflow-hidden rounded-[22px] border border-[#d9e7dd] bg-white shadow-[0_16px_40px_rgba(15,23,42,0.06)]">
+      <div className="flex flex-col gap-2 border-b border-[#e3ece6] px-4 py-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <div className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#15924c]">
+            Pattern chart
+          </div>
+          <figcaption className="mt-1 text-[20px] font-extrabold tracking-[-0.02em] text-[#122131]">
+            {item.name}
+          </figcaption>
+        </div>
+        <span className={`w-fit rounded-full px-3 py-1 text-[12px] font-extrabold ${biasTone}`}>
+          {item.bias}
+        </span>
+      </div>
+
+      <svg
+        viewBox={`0 0 ${width} ${height}`}
+        role="img"
+        aria-label={`${item.name} candlestick pattern chart`}
+        className="block h-auto w-full"
+      >
+        <rect width={width} height={height} fill="#ffffff" />
+        <rect
+          x={pad.left}
+          y={pad.top}
+          width={chartWidth}
+          height={chartHeight}
+          rx="14"
+          fill="#f8fafc"
+        />
+        {Array.from({ length: 5 }).map((_, index) => {
+          const gridY = pad.top + (index * chartHeight) / 4
+          const price = max - (index * (max - min)) / 4
+          return (
+            <g key={`grid-${index}`}>
+              <line
+                x1={pad.left}
+                x2={width - pad.right}
+                y1={gridY}
+                y2={gridY}
+                stroke="#e2e8f0"
+              />
+              <text x="10" y={gridY + 4} fill="#64748b" fontSize="12">
+                {price.toFixed(0)}
+              </text>
+            </g>
+          )
+        })}
+        {item.candles.map((candle, index) => {
+          const [open, high, low, close] = candle
+          const x = pad.left + slot * index + slot / 2
+          const wickTop = y(high)
+          const wickBottom = y(low)
+          const openY = y(open)
+          const closeY = y(close)
+          const isDoji = Math.abs(close - open) < 0.2
+          const bullish = close >= open
+          const color = isDoji ? "#64748b" : bullish ? "#16a34a" : "#dc2626"
+          const bodyTop = Math.min(openY, closeY)
+          const bodyHeight = Math.max(3, Math.abs(closeY - openY))
+          const bodyWidth = Math.min(54, slot * 0.55)
+
+          return (
+            <g key={`${item.name}-${index}`}>
+              <line
+                x1={x}
+                x2={x}
+                y1={wickTop}
+                y2={wickBottom}
+                stroke={color}
+                strokeWidth="4"
+                strokeLinecap="round"
+              />
+              <rect
+                x={x - bodyWidth / 2}
+                y={bodyTop}
+                width={bodyWidth}
+                height={bodyHeight}
+                rx="5"
+                fill={color}
+              />
+              <text
+                x={x}
+                y={height - 16}
+                textAnchor="middle"
+                fill="#64748b"
+                fontSize="12"
+              >
+                {index + 1}
+              </text>
+            </g>
+          )
+        })}
+      </svg>
+
+      <div className="grid gap-3 border-t border-[#e3ece6] bg-[#fbfdfc] px-4 py-4 text-[13px] leading-6 text-[#526170] sm:grid-cols-2">
+        <div>
+          <span className="font-extrabold text-[#122131]">Context: </span>
+          {item.context}
+        </div>
+        <div>
+          <span className="font-extrabold text-[#122131]">Confirmation: </span>
+          {item.confirm}
+        </div>
+      </div>
+    </figure>
+  )
+}
+
 # 60 Essential Candlestick Patterns: Trading Guide for Beginners
 
 Candlestick charts are popular because one candle can show a full price story in a tiny space.
@@ -434,6 +569,8 @@ Use this section like a field guide. For every pattern, look for four things:
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
 
+<CandlestickPatternChart pattern="Marubozu" />
+
 
 ### 2. Doji
 
@@ -451,6 +588,8 @@ Use this section like a field guide. For every pattern, look for four things:
 **Invalidation:** No follow-through; price keeps chopping around the same range.
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+<CandlestickPatternChart pattern="Doji" />
 
 
 ### 3. Dragonfly Doji
@@ -470,6 +609,8 @@ Use this section like a field guide. For every pattern, look for four things:
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
 
+<CandlestickPatternChart pattern="Dragonfly Doji" />
+
 
 ### 4. Gravestone Doji
 
@@ -487,6 +628,8 @@ Use this section like a field guide. For every pattern, look for four things:
 **Invalidation:** Price breaks above the long upper wick.
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+<CandlestickPatternChart pattern="Gravestone Doji" />
 
 
 ### 5. Long Legged Doji
@@ -506,6 +649,8 @@ Use this section like a field guide. For every pattern, look for four things:
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
 
+<CandlestickPatternChart pattern="Long Legged Doji" />
+
 
 ### 6. Bullish Spinning Top
 
@@ -523,6 +668,8 @@ Use this section like a field guide. For every pattern, look for four things:
 **Invalidation:** A close below the low.
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+<CandlestickPatternChart pattern="Bullish Spinning Top" />
 
 
 ### 7. Bearish Spinning Top
@@ -542,6 +689,8 @@ Use this section like a field guide. For every pattern, look for four things:
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
 
+<CandlestickPatternChart pattern="Bearish Spinning Top" />
+
 
 ### 8. High-Wave Candlestick
 
@@ -559,6 +708,8 @@ Use this section like a field guide. For every pattern, look for four things:
 **Invalidation:** The market remains inside the wide range.
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+<CandlestickPatternChart pattern="High-Wave Candlestick" />
 
 
 ### 9. Long Wicks
@@ -578,6 +729,8 @@ Use this section like a field guide. For every pattern, look for four things:
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
 
+<CandlestickPatternChart pattern="Long Wicks" />
+
 
 ### 10. Pin Bar
 
@@ -595,6 +748,8 @@ Use this section like a field guide. For every pattern, look for four things:
 **Invalidation:** Price breaks the long-tail extreme.
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+<CandlestickPatternChart pattern="Pin Bar" />
 
 
 ### 11. Hammer
@@ -614,6 +769,8 @@ Use this section like a field guide. For every pattern, look for four things:
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
 
+<CandlestickPatternChart pattern="Hammer" />
+
 
 ### 12. Hanging Man
 
@@ -631,6 +788,8 @@ Use this section like a field guide. For every pattern, look for four things:
 **Invalidation:** Price continues above the Hanging Man high.
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+<CandlestickPatternChart pattern="Hanging Man" />
 
 
 ### 13. Inverted Hammer
@@ -650,6 +809,8 @@ Use this section like a field guide. For every pattern, look for four things:
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
 
+<CandlestickPatternChart pattern="Inverted Hammer" />
+
 
 ### 14. Shooting Star
 
@@ -667,6 +828,8 @@ Use this section like a field guide. For every pattern, look for four things:
 **Invalidation:** A close above the long upper wick.
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+<CandlestickPatternChart pattern="Shooting Star" />
 
 
 ### 15. Bullish Engulfing
@@ -686,6 +849,8 @@ Use this section like a field guide. For every pattern, look for four things:
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
 
+<CandlestickPatternChart pattern="Bullish Engulfing" />
+
 
 ### 16. Bearish Engulfing
 
@@ -703,6 +868,8 @@ Use this section like a field guide. For every pattern, look for four things:
 **Invalidation:** Price closes above the engulfing candle high.
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+<CandlestickPatternChart pattern="Bearish Engulfing" />
 
 
 ### 17. Piercing Line
@@ -722,6 +889,8 @@ Use this section like a field guide. For every pattern, look for four things:
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
 
+<CandlestickPatternChart pattern="Piercing Line" />
+
 
 ### 18. Dark Cloud Cover
 
@@ -739,6 +908,8 @@ Use this section like a field guide. For every pattern, look for four things:
 **Invalidation:** Price rises above the pattern high.
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+<CandlestickPatternChart pattern="Dark Cloud Cover" />
 
 
 ### 19. Bullish Harami
@@ -758,6 +929,8 @@ Use this section like a field guide. For every pattern, look for four things:
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
 
+<CandlestickPatternChart pattern="Bullish Harami" />
+
 
 ### 20. Bearish Harami
 
@@ -775,6 +948,8 @@ Use this section like a field guide. For every pattern, look for four things:
 **Invalidation:** A close above the mother candle high.
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+<CandlestickPatternChart pattern="Bearish Harami" />
 
 
 ### 21. Tweezer Bottom
@@ -794,6 +969,8 @@ Use this section like a field guide. For every pattern, look for four things:
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
 
+<CandlestickPatternChart pattern="Tweezer Bottom" />
+
 
 ### 22. Tweezer Top
 
@@ -811,6 +988,8 @@ Use this section like a field guide. For every pattern, look for four things:
 **Invalidation:** Price breaks above the matching highs.
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+<CandlestickPatternChart pattern="Tweezer Top" />
 
 
 ### 23. Bullish Counterattack
@@ -830,6 +1009,8 @@ Use this section like a field guide. For every pattern, look for four things:
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
 
+<CandlestickPatternChart pattern="Bullish Counterattack" />
+
 
 ### 24. Bearish Counterattack
 
@@ -847,6 +1028,8 @@ Use this section like a field guide. For every pattern, look for four things:
 **Invalidation:** Price breaks above the pattern high.
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+<CandlestickPatternChart pattern="Bearish Counterattack" />
 
 
 ### 25. Morning Star
@@ -866,6 +1049,8 @@ Use this section like a field guide. For every pattern, look for four things:
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
 
+<CandlestickPatternChart pattern="Morning Star" />
+
 
 ### 26. Evening Star
 
@@ -883,6 +1068,8 @@ Use this section like a field guide. For every pattern, look for four things:
 **Invalidation:** Price breaks above the star candle high.
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+<CandlestickPatternChart pattern="Evening Star" />
 
 
 ### 27. Morning Star Doji
@@ -902,6 +1089,8 @@ Use this section like a field guide. For every pattern, look for four things:
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
 
+<CandlestickPatternChart pattern="Morning Star Doji" />
+
 
 ### 28. Evening Star Doji
 
@@ -919,6 +1108,8 @@ Use this section like a field guide. For every pattern, look for four things:
 **Invalidation:** Break above the Doji high.
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+<CandlestickPatternChart pattern="Evening Star Doji" />
 
 
 ### 29. Three White Soldiers
@@ -938,6 +1129,8 @@ Use this section like a field guide. For every pattern, look for four things:
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
 
+<CandlestickPatternChart pattern="Three White Soldiers" />
+
 
 ### 30. Three Black Crows
 
@@ -955,6 +1148,8 @@ Use this section like a field guide. For every pattern, look for four things:
 **Invalidation:** A sharp bullish reversal erases the crows.
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+<CandlestickPatternChart pattern="Three Black Crows" />
 
 
 ### 31. Rising Three
@@ -974,6 +1169,8 @@ Use this section like a field guide. For every pattern, look for four things:
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
 
+<CandlestickPatternChart pattern="Rising Three" />
+
 
 ### 32. Falling Three
 
@@ -991,6 +1188,8 @@ Use this section like a field guide. For every pattern, look for four things:
 **Invalidation:** The small candles break above the first candle high.
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+<CandlestickPatternChart pattern="Falling Three" />
 
 
 ### 33. Tasuki Gap
@@ -1010,6 +1209,8 @@ Use this section like a field guide. For every pattern, look for four things:
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
 
+<CandlestickPatternChart pattern="Tasuki Gap" />
+
 
 ### 34. Mat Hold
 
@@ -1027,6 +1228,8 @@ Use this section like a field guide. For every pattern, look for four things:
 **Invalidation:** Pullback candles break deep below the first candle body.
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+<CandlestickPatternChart pattern="Mat Hold" />
 
 
 ### 35. Bullish Abandoned Baby
@@ -1046,6 +1249,8 @@ Use this section like a field guide. For every pattern, look for four things:
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
 
+<CandlestickPatternChart pattern="Bullish Abandoned Baby" />
+
 
 ### 36. Bearish Abandoned Baby
 
@@ -1063,6 +1268,8 @@ Use this section like a field guide. For every pattern, look for four things:
 **Invalidation:** Price rises back above the Doji high.
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+<CandlestickPatternChart pattern="Bearish Abandoned Baby" />
 
 
 ### 37. Three Outside Up
@@ -1082,6 +1289,8 @@ Use this section like a field guide. For every pattern, look for four things:
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
 
+<CandlestickPatternChart pattern="Three Outside Up" />
+
 
 ### 38. Three Outside Down
 
@@ -1099,6 +1308,8 @@ Use this section like a field guide. For every pattern, look for four things:
 **Invalidation:** Price rises above the engulfing candle high.
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+<CandlestickPatternChart pattern="Three Outside Down" />
 
 
 ### 39. Three Inside Up
@@ -1118,6 +1329,8 @@ Use this section like a field guide. For every pattern, look for four things:
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
 
+<CandlestickPatternChart pattern="Three Inside Up" />
+
 
 ### 40. Three Inside Down
 
@@ -1135,6 +1348,8 @@ Use this section like a field guide. For every pattern, look for four things:
 **Invalidation:** Price breaks above the first candle high.
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+<CandlestickPatternChart pattern="Three Inside Down" />
 
 
 ### 41. Bullish Kicker
@@ -1154,6 +1369,8 @@ Use this section like a field guide. For every pattern, look for four things:
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
 
+<CandlestickPatternChart pattern="Bullish Kicker" />
+
 
 ### 42. Bearish Kicker
 
@@ -1171,6 +1388,8 @@ Use this section like a field guide. For every pattern, look for four things:
 **Invalidation:** Price closes back above the gap area.
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+<CandlestickPatternChart pattern="Bearish Kicker" />
 
 
 ### 43. Bullish Belt Hold Pattern
@@ -1190,6 +1409,8 @@ Use this section like a field guide. For every pattern, look for four things:
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
 
+<CandlestickPatternChart pattern="Bullish Belt Hold Pattern" />
+
 
 ### 44. Bearish Belt Hold Pattern
 
@@ -1207,6 +1428,8 @@ Use this section like a field guide. For every pattern, look for four things:
 **Invalidation:** Price closes above the candle high.
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+<CandlestickPatternChart pattern="Bearish Belt Hold Pattern" />
 
 
 ### 45. Doji Star
@@ -1226,6 +1449,8 @@ Use this section like a field guide. For every pattern, look for four things:
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
 
+<CandlestickPatternChart pattern="Doji Star" />
+
 
 ### 46. Bearish Doji Star Pattern
 
@@ -1243,6 +1468,8 @@ Use this section like a field guide. For every pattern, look for four things:
 **Invalidation:** Price breaks above the Doji high.
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+<CandlestickPatternChart pattern="Bearish Doji Star Pattern" />
 
 
 ### 47. Matching Low / Matching High
@@ -1262,6 +1489,8 @@ Use this section like a field guide. For every pattern, look for four things:
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
 
+<CandlestickPatternChart pattern="Matching Low / Matching High" />
+
 
 ### 48. Inside Bars
 
@@ -1279,6 +1508,8 @@ Use this section like a field guide. For every pattern, look for four things:
 **Invalidation:** False breakout returns into the mother candle range.
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+<CandlestickPatternChart pattern="Inside Bars" />
 
 
 ### 49. Three-Line Strike Pattern
@@ -1298,6 +1529,8 @@ Use this section like a field guide. For every pattern, look for four things:
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
 
+<CandlestickPatternChart pattern="Three-Line Strike Pattern" />
+
 
 ### 50. Bullish Separating Lines Pattern
 
@@ -1315,6 +1548,8 @@ Use this section like a field guide. For every pattern, look for four things:
 **Invalidation:** Price closes below the separating candle low.
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+<CandlestickPatternChart pattern="Bullish Separating Lines Pattern" />
 
 
 ### 51. Bearish Separating Lines
@@ -1334,6 +1569,8 @@ Use this section like a field guide. For every pattern, look for four things:
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
 
+<CandlestickPatternChart pattern="Bearish Separating Lines" />
+
 
 ### 52. Meeting Lines Pattern
 
@@ -1351,6 +1588,8 @@ Use this section like a field guide. For every pattern, look for four things:
 **Invalidation:** Price drifts sideways with no follow-through.
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+<CandlestickPatternChart pattern="Meeting Lines Pattern" />
 
 
 ### 53. On-Neck Pattern
@@ -1370,6 +1609,8 @@ Use this section like a field guide. For every pattern, look for four things:
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
 
+<CandlestickPatternChart pattern="On-Neck Pattern" />
+
 
 ### 54. In-Neck Pattern
 
@@ -1387,6 +1628,8 @@ Use this section like a field guide. For every pattern, look for four things:
 **Invalidation:** A strong bullish close above the prior body midpoint.
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+<CandlestickPatternChart pattern="In-Neck Pattern" />
 
 
 ### 55. Thrusting Pattern
@@ -1406,6 +1649,8 @@ Use this section like a field guide. For every pattern, look for four things:
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
 
+<CandlestickPatternChart pattern="Thrusting Pattern" />
+
 
 ### 56. Upside Gap Two Crows Pattern
 
@@ -1423,6 +1668,8 @@ Use this section like a field guide. For every pattern, look for four things:
 **Invalidation:** Price breaks above the crows and continues higher.
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+<CandlestickPatternChart pattern="Upside Gap Two Crows Pattern" />
 
 
 ### 57. Tri-Star
@@ -1442,6 +1689,8 @@ Use this section like a field guide. For every pattern, look for four things:
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
 
+<CandlestickPatternChart pattern="Tri-Star" />
+
 
 ### 58. Hikkake Pattern (Bullish/Bearish)
 
@@ -1459,6 +1708,8 @@ Use this section like a field guide. For every pattern, look for four things:
 **Invalidation:** The first breakout continues instead of failing.
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+<CandlestickPatternChart pattern="Hikkake Pattern (Bullish/Bearish)" />
 
 
 ### 59. Ladder Bottom Pattern
@@ -1478,6 +1729,8 @@ Use this section like a field guide. For every pattern, look for four things:
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
 
+<CandlestickPatternChart pattern="Ladder Bottom Pattern" />
+
 
 ### 60. Concealing Baby Swallow Pattern
 
@@ -1495,6 +1748,8 @@ Use this section like a field guide. For every pattern, look for four things:
 **Invalidation:** Price continues to new lows without recovery.
 
 **Beginner warning:** If the pattern appears in the middle of a messy sideways range, reduce confidence. The same candle shape is more useful when it appears at a meaningful level.
+
+<CandlestickPatternChart pattern="Concealing Baby Swallow Pattern" />
 
 
 ---

@@ -37,16 +37,39 @@ export function AuthMenu() {
 
   if (!user) {
     return (
-      <div className="relative flex flex-col items-end">
+      <div ref={ref} className="relative">
         <button
           type="button"
-          onClick={handleSignIn}
-          disabled={busy}
-          className="inline-flex h-9 items-center gap-2 rounded-md border border-[#dbe2df] bg-white px-3 text-[13px] font-semibold text-[#17402a] shadow-sm transition hover:border-[#75d49c] hover:bg-[#f3fbf6] disabled:opacity-60"
+          aria-label="Account menu"
+          onClick={() => setOpen((v) => !v)}
+          className="flex h-9 items-center gap-2 rounded-md px-1.5 transition hover:bg-[#f3fbf6]"
         >
-          <GoogleIcon />
-          {busy ? "Signing in…" : "Sign in"}
+          <span className="relative grid h-8 w-8 place-items-center overflow-hidden rounded-full border border-[#dbe2df] bg-[#eaf5ef]">
+            <img src="/img/finance/avatar-investor.png" alt="" className="h-full w-full object-cover" />
+          </span>
+          <ChevronDown />
         </button>
+
+        {open && (
+          <div className="absolute right-0 top-11 z-50 w-60 overflow-hidden rounded-xl border border-[#e6ebe8] bg-white shadow-[0_20px_45px_rgba(15,42,26,0.16)]">
+            <div className="border-b border-[#eef2ef] px-4 py-3">
+              <p className="truncate text-[13px] font-bold text-[#102117]">Guest reader</p>
+              <p className="truncate text-[11px] text-[#6b7c72]">Sign in to save articles</p>
+            </div>
+            <div className="p-1.5">
+              <button
+                type="button"
+                onClick={handleSignIn}
+                disabled={busy}
+                className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-[13px] font-semibold text-[#17402a] transition hover:bg-[#f3fbf6] disabled:opacity-60"
+              >
+                <GoogleIcon />
+                {busy ? "Signing in…" : "Sign in with Google"}
+              </button>
+            </div>
+          </div>
+        )}
+
         {error && (
           <span className="absolute top-11 right-0 z-50 w-56 rounded-md border border-[#f2cccc] bg-[#fff5f5] px-3 py-2 text-[11px] font-medium text-[#9b2c2c] shadow-lg">
             {error}
