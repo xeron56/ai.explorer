@@ -1,0 +1,211 @@
+---
+series: cnn
+order: 1
+title: Introduction to Convolutional Neural Networks
+description: "CNN fundamentals, motivation, architecture, mathematical foundations, training, and applications."
+date: 2024-06-01
+readingTime: 6
+thumbnail: network
+tone: purple
+bookmarked: true
+---
+
+Chapter 1: Introduction to Convolutional Neural Networks
+========================================================
+
+1.1 Overview
+------------
+
+Convolutional Neural Networks (CNNs) have revolutionized the field of computer vision and have applications in various domains such as image recognition, object detection, and natural language processing. Inspired by the visual cortex of animals, CNNs are designed to automatically and adaptively learn spatial hierarchies of features from input data, typically images.
+
+This chapter provides an introduction to CNNs, outlining their fundamental concepts, motivations, and the mathematical foundations that underpin their functionality.
+
+1.2 Motivation
+--------------
+
+Traditional neural networks, also known as fully connected networks, treat every input feature equally and do not consider the spatial structure inherent in data like images. This approach leads to a large number of parameters, making the model computationally expensive and prone to overfitting, especially with high-dimensional data.
+
+CNNs address these challenges by leveraging two key ideas:
+
+1.  **Local Connectivity**: Neurons in a layer are connected only to a local region of the input, capturing local patterns.
+2.  **Parameter Sharing**: The same set of weights (filters) is used across different spatial locations, significantly reducing the number of parameters.
+
+These principles make CNNs highly efficient for processing grid-like data, such as images, where spatial hierarchies and local patterns are crucial.
+
+1.3 Basic Architecture of CNNs
+------------------------------
+
+A typical CNN architecture consists of a series of layers, each performing specific operations to extract and process features from the input data. The primary types of layers in a CNN include:
+
+1.  **Convolutional Layer**
+2.  **Activation Function**
+3.  **Pooling Layer**
+4.  **Fully Connected Layer**
+
+We will briefly describe each of these components.
+
+### 1.3.1 Convolutional Layer
+
+The convolutional layer is the core building block of a CNN. It performs a convolution operation between the input data and a set of learnable filters (also known as kernels), producing feature maps that highlight specific patterns in the data.
+
+Mathematically, the convolution operation can be expressed as:
+
+$$
+\text{FeatureMap}_{i,j} = \sum_{m=1}^{M} \sum_{n=1}^{N} \text{Input}_{i+m, j+n} \cdot \text{Filter}_{m,n}
+$$
+
+Where:
+
+*    $\text{Input}$  is the input data (e.g., an image).
+*    $\text{Filter}$  is the convolutional kernel.
+*    $(i,j)$  denotes the spatial position in the feature map.
+*    $M$  and  $N$  are the dimensions of the filter.
+
+In multiple dimensions (e.g., RGB images with multiple channels), the convolution is performed across all channels and summed to produce a single feature map.
+
+### 1.3.2 Activation Function
+
+After the convolution operation, an activation function introduces non-linearity into the model, allowing it to learn more complex patterns. The most commonly used activation function in CNNs is the Rectified Linear Unit (ReLU), defined as:
+
+$$
+\text{ReLU}(x) = \max(0, x)
+$$
+
+ReLU sets all negative values to zero, enabling faster and more effective training compared to traditional activation functions like sigmoid or tanh.
+
+### 1.3.3 Pooling Layer
+
+Pooling layers reduce the spatial dimensions (width and height) of the feature maps, which decreases the number of parameters and computations in the network. They also help make the representations invariant to small translations in the input.
+
+The most common type of pooling is **Max Pooling**, which selects the maximum value within a defined window. Mathematically, for a pooling window of size  $p \times p$ :
+
+$$
+\text{Output}_{i,j} = \max \{ \text{FeatureMap}_{m,n} \ | \ (m,n) \in \text{window}(i,j) \}
+$$
+
+### 1.3.4 Fully Connected Layer
+
+After several convolutional and pooling layers, the high-level reasoning in the network is performed via fully connected layers. These layers are similar to those in traditional neural networks, where each neuron is connected to every neuron in the previous layer. The final fully connected layer typically uses a softmax activation function for classification tasks:
+
+$$
+\text{Softmax}(z_i) = \frac{e^{z_i}}{\sum_{j=1}^{K} e^{z_j}}
+$$
+
+Where  $z_i$  is the input to the  $i$ \-th neuron and  $K$  is the number of classes.
+
+1.4 Mathematical Foundations
+----------------------------
+
+Understanding the mathematical operations in CNNs is crucial for designing and training effective models. This section delves into the key mathematical concepts involved in CNNs.
+
+### 1.4.1 Convolution Operation
+
+The convolution operation is a linear transformation applied to the input data using a filter. For a 2D input  $I$  and a filter  $K$ , the convolution  $I * K$  at position  $(i,j)$  is given by:
+
+$$
+(I * K)(i,j) = \sum_{m=0}^{M-1} \sum_{n=0}^{N-1} I(i+m, j+n) \cdot K(m,n)
+$$
+
+Where:
+
+*    $I$  is the input matrix of size  $H \times W$ .
+*    $K$  is the filter matrix of size  $M \times N$ .
+*    $(i,j)$  is the position in the output feature map.
+
+### 1.4.2 Stride and Padding
+
+Two important hyperparameters in the convolution operation are stride and padding:
+
+*   **Stride ( $s$ )**: Determines the step size with which the filter moves across the input.
+
+$$
+\text{Output Size} = \left\lfloor \frac{H - M}{s} \right\rfloor + 1
+$$
+
+*   **Padding ( $p$ )**: Adds zeros around the input to control the spatial dimensions of the output.
+
+With padding, the output size becomes:
+
+$$
+\text{Output Size} = \left\lfloor \frac{H - M + 2p}{s} \right\rfloor + 1
+$$
+
+### 1.4.3 Parameter Sharing
+
+In CNNs, the same filter is applied across different spatial locations of the input. This parameter sharing reduces the number of parameters from  $O(H \times W \times M \times N)$  in a fully connected layer to  $O(M \times N)$  in a convolutional layer, making the model more efficient and less prone to overfitting.
+
+### 1.4.4 Activation Functions and Non-Linearity
+
+Activation functions introduce non-linearities into the network, enabling it to learn complex mappings. Besides ReLU, other activation functions include:
+
+*   **Sigmoid**:
+    
+    $$
+    \sigma(x) = \frac{1}{1 + e^{-x}}
+    $$
+    
+*   **Tanh**:
+    
+    $$
+    \tanh(x) = \frac{e^{x} - e^{-x}}{e^{x} + e^{-x}}
+    $$
+    
+
+Non-linear activation functions allow the network to model intricate relationships in the data, which linear transformations alone cannot capture.
+
+1.5 Training Convolutional Neural Networks
+------------------------------------------
+
+Training CNNs involves optimizing the network's parameters (weights and biases) to minimize a loss function, typically using gradient-based optimization methods like Stochastic Gradient Descent (SGD).
+
+### 1.5.1 Loss Function
+
+For classification tasks, the cross-entropy loss is commonly used:
+
+$$
+\mathcal{L} = -\sum_{i=1}^{K} y_i \log(\hat{y}_i)
+$$
+
+Where:
+
+*    $y_i$  is the true label (one-hot encoded).
+*    $\hat{y}_i$  is the predicted probability for class  $i$ .
+
+### 1.5.2 Backpropagation
+
+Backpropagation is the algorithm used to compute gradients of the loss function with respect to the network's parameters. It involves two main steps:
+
+1.  **Forward Pass**: Compute the output and loss.
+2.  **Backward Pass**: Compute gradients and update parameters.
+
+The gradients are computed using the chain rule of calculus, allowing efficient computation of partial derivatives through the network's layers.
+
+### 1.5.3 Optimization Algorithms
+
+Several optimization algorithms can be used to update the network's parameters based on the computed gradients:
+
+*   **Stochastic Gradient Descent (SGD)**
+*   **Momentum**
+*   **AdaGrad**
+*   **RMSProp**
+*   **Adam**
+
+Each optimizer has its own mechanism for adjusting learning rates and handling gradient updates, affecting the convergence speed and stability during training.
+
+1.6 Applications of CNNs
+------------------------
+
+CNNs have a wide range of applications beyond image classification, including:
+
+*   **Object Detection**: Identifying and localizing objects within an image.
+*   **Semantic Segmentation**: Assigning a class label to each pixel in an image.
+*   **Face Recognition**: Identifying or verifying individuals based on facial features.
+*   **Medical Image Analysis**: Diagnosing diseases from medical scans.
+*   **Natural Language Processing**: Handling tasks like text classification and sentiment analysis using CNN-based models.
+
+1.7 Summary
+-----------
+
+This chapter provided an introductory overview of Convolutional Neural Networks, highlighting their motivation, basic architecture, and mathematical foundations. We explored the core components of CNNs, including convolutional layers, activation functions, pooling layers, and fully connected layers, along with the key mathematical operations that enable these networks to learn and perform complex tasks efficiently.
+
+In the following chapters, we will delve deeper into each component, exploring advanced concepts, architectural variations, and practical considerations for designing and training effective CNN models.
