@@ -54,6 +54,10 @@ Several normalization techniques have been developed, each with unique character
 5.  **Weight Normalization (WeightNorm)**
 6.  **Other Techniques**: Such as Batch Renormalization, Switchable Normalization, etc.
 
+<NormalizationTypesExplorer />
+
+*Interactive Normalization Explorer: Select BatchNorm, LayerNorm, InstanceNorm, or GroupNorm. Hover any sample/channel block to see which tensor slices $[N, C, H, W]$ are standardized together.*
+
 ### 5.3.1 Batch Normalization (BatchNorm)
 
 #### Definition
@@ -404,6 +408,10 @@ Visualizing the effects of normalization layers can provide insights into their 
 ### 5.7.1 Activation Distributions
 
 Plotting the distribution of activations before and after normalization can illustrate how normalization stabilizes input distributions.
+
+<NormalizationEffectVisualizer />
+
+*Interactive Scale & Shift Simulator: Adjust learnable scale ($\gamma$) and shift ($\beta$) parameters to see how normalization standardizes raw activations to zero mean ($\mu=0$) and unit variance ($\sigma=1$), then reconstructs optimal output distributions $y = \gamma \hat{x} + \beta$.*
 
 ```python
 import numpy as np

@@ -37,6 +37,10 @@ Where:
 *    $H$  and  $W$  are the height and width of the input.
 *    $M$  and  $N$  are the height and width of the filter.
 
+<CnnConvolutionPlayground />
+
+*Interactive Visualizer: Try hovering over the input matrix, kernel, or output cells to trace exact weight multiplications. Change presets or click cells to test custom feature extraction filters.*
+
 ### 2.2.2 Multi-Channel Convolution
 
 In practical applications, especially with color images, inputs often have multiple channels (e.g., RGB channels). For an input with  $C$  channels, the convolution operation extends as follows:
@@ -84,10 +88,18 @@ $$
 
 Thus, the output feature map will be  $28 \times 28$ .
 
+<ConvDimensionCalculator />
+
+*Interactive Dimension Calculator: Test different input dimensions, kernel sizes, stride ($s$), padding ($p$), and dilation ($d$). Toggle Transposed mode to see upsampling calculations.*
+
 2.3 Types of Convolutions
 -------------------------
 
 Various convolutional techniques have been developed to enhance the flexibility and efficiency of CNNs. This section discusses several important types of convolutions.
+
+<ConvTypesExplorer />
+
+*Interactive Convolution Explorer: Compare parameters, FLOPs, and receptive fields for Standard, Depthwise Separable, Dilated, and Transposed convolutions.*
 
 ### 2.3.1 Standard (Dense) Convolution
 

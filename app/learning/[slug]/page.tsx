@@ -3,6 +3,15 @@ import { notFound } from "next/navigation";
 import { compileMdx } from "../../_lib/mdx";
 import { getLearningChapters, getLearningSeriesBySlug } from "../../_lib/posts";
 import { ArrowRightIcon, ClockIcon } from "../../_components/icons";
+import { CnnConvolutionPlayground } from "../../_components/learning/CnnConvolutionPlayground";
+import { ConvDimensionCalculator } from "../../_components/learning/ConvDimensionCalculator";
+import { ConvTypesExplorer } from "../../_components/learning/ConvTypesExplorer";
+import { ActivationFunctionVisualizer } from "../../_components/learning/ActivationFunctionVisualizer";
+import { ActivationFeatureMapTransform } from "../../_components/learning/ActivationFeatureMapTransform";
+import { PoolingOperationVisualizer } from "../../_components/learning/PoolingOperationVisualizer";
+import { TranslationInvarianceVisualizer } from "../../_components/learning/TranslationInvarianceVisualizer";
+import { NormalizationTypesExplorer } from "../../_components/learning/NormalizationTypesExplorer";
+import { NormalizationEffectVisualizer } from "../../_components/learning/NormalizationEffectVisualizer";
 
 export async function generateStaticParams() {
   const chapters = await getLearningChapters();
@@ -39,7 +48,7 @@ export default async function LearningChapterPage({ params }: { params: Promise<
         </div>
       </header>
       <article className="prose-post mt-[34px]">
-        <MDX />
+        <MDX components={{ CnnConvolutionPlayground, ConvDimensionCalculator, ConvTypesExplorer, ActivationFunctionVisualizer, ActivationFeatureMapTransform, PoolingOperationVisualizer, TranslationInvarianceVisualizer, NormalizationTypesExplorer, NormalizationEffectVisualizer }} />
       </article>
       <nav className="mt-[36px] grid gap-4 md:grid-cols-2">
         {previous ? <Pager href={`/learning/${previous.slug}`} label="Previous chapter" title={previous.title} /> : <span />}

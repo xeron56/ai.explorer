@@ -6,7 +6,13 @@ import rehypePrettyCode from "rehype-pretty-code";
 import * as runtime from "react/jsx-runtime";
 import type { ComponentType } from "react";
 
-export async function compileMdx(source: string): Promise<ComponentType> {
+type MdxComponents = Record<string, ComponentType<Record<string, unknown>>>;
+
+type MdxProps = {
+  components?: MdxComponents;
+};
+
+export async function compileMdx(source: string): Promise<ComponentType<MdxProps>> {
   const compiled = await compile(source, {
     outputFormat: "function-body",
     development: false,
@@ -30,5 +36,5 @@ export async function compileMdx(source: string): Promise<ComponentType> {
     ...(runtime as object),
     baseUrl: import.meta.url,
   } as unknown as Parameters<typeof run>[1]);
-  return mod.default as ComponentType;
+  return mod.default as ComponentType<MdxProps>;
 }

@@ -33,6 +33,10 @@ Pooling reduces the spatial size of feature maps, which:
 
 Pooling introduces a degree of invariance to small translations and distortions in the input by summarizing regions of feature maps, ensuring that the network focuses on the presence of features rather than their exact locations.
 
+<TranslationInvarianceVisualizer />
+
+*Interactive Translation Invariance Simulator: Try shifting the input feature pattern horizontally ($\Delta x$) or vertically ($\Delta y$). Notice how Max Pooling retains the peak feature response in the pooled output feature map.*
+
 ### 4.2.3 Hierarchical Feature Extraction
 
 By progressively reducing spatial dimensions, pooling allows subsequent layers to capture more abstract and high-level features, facilitating a hierarchical understanding of the input data.
@@ -47,6 +51,10 @@ Several pooling strategies exist, each with its unique characteristics and use-c
 3.  **Global Pooling**
 4.  **Stochastic Pooling**
 5.  **Adaptive Pooling**
+
+<PoolingOperationVisualizer />
+
+*Interactive Pooling Visualizer: Select Max, Average, Global, or Mixed Pooling. Hover any output cell to trace the input window region and see the live arithmetic reduction step.*
 
 ### 4.3.1 Max Pooling
 

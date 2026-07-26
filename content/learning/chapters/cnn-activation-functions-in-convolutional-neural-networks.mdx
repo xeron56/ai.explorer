@@ -33,6 +33,10 @@ Activation functions introduce non-linearities, enabling neural networks to appr
 
 This section delves into the most widely used activation functions in CNNs, providing their mathematical definitions, properties, and practical considerations.
 
+<ActivationFunctionVisualizer />
+
+*Interactive Activation Visualizer: Select any function, adjust slope ($\alpha$), scale ($\beta$), or temperature ($T$), toggle gradient derivatives $f'(x)$, or compare two activation functions side-by-side.*
+
 ### 3.3.1 Rectified Linear Unit (ReLU)
 
 #### Definition
@@ -438,7 +442,11 @@ _Figure 3.4: Comparison of various activation functions._
 
 ### 3.9.2 Impact on Feature Maps
 
-Activation functions influence the distribution and sparsity of feature maps. For instance, ReLU can lead to sparse activations, which can be visualized by plotting the activation maps after applying different functions.
+Activation functions influence the distribution and sparsity of feature maps. For instance, ReLU leads to sparse activations by zeroing negative responses, whereas Leaky ReLU and ELU preserve small negative gradients.
+
+<ActivationFeatureMapTransform />
+
+*Interactive Feature Map Transformation: Toggle between Edge Detection, Center Highlight, or Random Noise patterns to see how activations transform raw convolution responses $z$ into sparse, non-linear feature maps $f(z)$.*
 
 3.10 Best Practices
 -------------------

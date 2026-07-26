@@ -63,6 +63,10 @@ Where:
 
 In multiple dimensions (e.g., RGB images with multiple channels), the convolution is performed across all channels and summed to produce a single feature map.
 
+<CnnConvolutionPlayground />
+
+Try hovering over the input, kernel, and output matrices to trace their dependencies. Then animate the scan or change the stride, padding, and dilation. Notice that the **same kernel weights** are reused everywhere: this is parameter sharing in action.
+
 ### 1.3.2 Activation Function
 
 After the convolution operation, an activation function introduces non-linearity into the model, allowing it to learn more complex patterns. The most commonly used activation function in CNNs is the Rectified Linear Unit (ReLU), defined as:
